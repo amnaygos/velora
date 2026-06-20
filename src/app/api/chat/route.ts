@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+export const dynamic = "force-dynamic";
 
 const SYSTEM = `You are VELORA's client concierge — a refined, knowledgeable assistant for a luxury wellness and fitness space design firm based in Doha, Qatar.
 
@@ -13,6 +13,12 @@ Location: Safwa Building, Gate 20, Second Floor, Barwa Commercial Avenue, Doha, 
 Contact: hello@velora.qa`;
 
 export async function POST(req: NextRequest) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: "Missing OPENAI_API_KEY" }, { status: 500 });
+  }
+
+  const openai = new OpenAI({ apiKey });
   const { messages } = await req.json();
 
   const stream = await openai.chat.completions.create({
