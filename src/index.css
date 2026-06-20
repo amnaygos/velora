@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Leaflet popup dark theme */
+.velora-popup .leaflet-popup-content-wrapper {
+  background: #242426;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  padding: 0;
+}
+.velora-popup .leaflet-popup-tip {
+  background: #242426;
+}
+.velora-popup .leaflet-popup-content {
+  margin: 0;
+}
+.leaflet-container {
+  background: #1C1C1C;
+  font-family: inherit;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 11%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 11%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 57%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 0 0% 57%;
+    --radius: 0;
+  }
+
+  html {
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  body {
+    @apply bg-carbon text-white antialiased;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  * {
+    border-radius: 0 !important;
+  }
+
+  ::selection {
+    background: rgba(145, 146, 141, 0.3);
+    color: white;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-olive text-carbon px-9 py-4 text-[11px] font-semibold tracking-[0.2em] cursor-pointer transition-colors duration-300;
+  }
+  .btn-primary:hover {
+    @apply bg-white;
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-white border border-gunmetal px-9 py-4 text-[11px] font-semibold tracking-[0.2em] cursor-pointer transition-all duration-300;
+  }
+  .btn-outline:hover {
+    @apply border-olive text-olive;
+  }
+
+  .body-text {
+    @apply text-[13px] font-normal leading-[2.2] tracking-[0.12em] text-white text-justify;
+  }
+
+  .section-label {
+    @apply text-[11px] font-semibold tracking-[0.3em] text-gunmetal mb-[30px];
+  }
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #1C1C1C;
+}
+::-webkit-scrollbar-thumb {
+  background: #404140;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #91928D;
+}
