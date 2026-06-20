@@ -19,8 +19,10 @@ function HeroSection() {
     return () => ctx.revert();
   }, []);
   return (
-    <section ref={s} className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center bg-carbon">
-      <h1 ref={t} className="text-[24px] sm:text-[32px] md:text-[44px] lg:text-[56px] font-light leading-[0.9] tracking-[0.05em] text-center opacity-0">
+    <section ref={s} className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+      <img src="/images/yoga-arch.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-carbon/70" />
+      <h1 ref={t} className="relative z-10 text-[24px] sm:text-[32px] md:text-[44px] lg:text-[56px] font-light leading-[0.9] tracking-[0.05em] text-center opacity-0">
         BEGIN YOUR<br />JOURNEY
       </h1>
     </section>
@@ -79,12 +81,6 @@ function ContactForm() {
               </a>
             </div>
             <div>
-              <p className="text-[12px] font-light tracking-[0.05em] text-white/40 mb-1">WhatsApp</p>
-              <a href="https://wa.me/97412345678" className="text-[14px] font-light tracking-[0.02em] text-white hover:text-olive transition-colors duration-500">
-                +974 1234 5678
-              </a>
-            </div>
-            <div>
               <p className="text-[12px] font-light tracking-[0.05em] text-white/40 mb-2">Studio</p>
               <p className="text-[13px] font-light leading-[1.8] tracking-[0.02em] text-white/70">
                 Safwa Building, Gate 20<br />
@@ -98,9 +94,14 @@ function ContactForm() {
             <p className="text-[12px] md:text-[13px] font-light leading-[1.8] tracking-[0.02em] text-white/50 mb-6">
               Every project begins with a conversation. A member of our principals team will review your message personally and respond within one business day.
             </p>
-            <span className="text-[10px] font-medium tracking-[0.15em] text-olive border-b border-olive/50 pb-1 cursor-pointer hover:border-olive transition-colors duration-500">
+            <a
+              href={process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/velora/discovery-call"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] font-medium tracking-[0.15em] text-olive border-b border-olive/50 pb-1 hover:border-olive transition-colors duration-500"
+            >
               SCHEDULE A CALL &rarr;
-            </span>
+            </a>
           </div>
         </div>
 
@@ -152,7 +153,7 @@ function ContactForm() {
             {/* Budget */}
             <div>
               <label className="text-[10px] font-normal tracking-[0.15em] text-white/50 mb-3 block">Approximate Budget Range</label>
-              <select className="w-full bg-transparent border-b border-white/20 pb-3 text-[12px] tracking-[0.05em] text-white/50 focus:outline-none focus:border-olive transition-colors duration-500 appearance-none cursor-pointer">
+              <select className="w-full bg-transparent border-b border-white/20 pb-3 min-h-[44px] text-[12px] tracking-[0.05em] text-white/50 focus:outline-none focus:border-olive transition-colors duration-500 appearance-none cursor-pointer">
                 <option value="" className="bg-shadow text-white">Select budget range...</option>
                 {budgets.map((b) => <option key={b} value={b} className="bg-shadow text-white">{b}</option>)}
               </select>
@@ -174,7 +175,7 @@ function ContactForm() {
             {/* Vision */}
             <div>
               <label className="text-[10px] font-normal tracking-[0.15em] text-white/50 mb-2 block">Tell us about your vision *</label>
-              <textarea required rows={5} className="w-full bg-transparent border border-white/10 p-4 text-[13px] tracking-[0.02em] text-white placeholder:text-white/20 focus:outline-none focus:border-olive transition-colors duration-500 resize-none" placeholder="Describe your space, your goals, and what excellence means to you." />
+              <textarea required rows={5} className="w-full bg-transparent border border-white/10 p-4 text-[13px] tracking-[0.02em] text-white placeholder:text-white/20 focus:outline-none focus:border-olive transition-colors duration-500 resize-none" placeholder="Tell us about your project — the space, the ambition, the constraints. The more we understand now, the more precise our first conversation will be." />
             </div>
 
             <button type="submit" className="btn-primary">SEND YOUR ENQUIRY &rarr;</button>
@@ -236,7 +237,14 @@ function AlternativeCTA() {
         <p className="text-[13px] md:text-[14px] font-light leading-[1.8] text-white/60 mb-8">
           Book a complimentary 30-minute discovery call.<br />No preparation required. No obligation.
         </p>
-        <span className="btn-outline cursor-pointer">SCHEDULE A CALL &rarr;</span>
+        <a
+          href={process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/velora/discovery-call"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-outline"
+        >
+          SCHEDULE A CALL &rarr;
+        </a>
       </div>
     </section>
   );

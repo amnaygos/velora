@@ -23,6 +23,9 @@ function HeroSection() {
   }, []);
   return (
     <section ref={s} className="relative w-full h-[70vh] md:h-screen bg-carbon flex flex-col items-center justify-center overflow-hidden gap-10 md:gap-14">
+      {/* Background image */}
+      <img src="/images/yoga-arch.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+
       {/* Grain texture */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -60,7 +63,7 @@ function HeroSection() {
       <div className="text-center px-6">
         <h1 className="text-[24px] sm:text-[32px] md:text-[44px] lg:text-[56px] font-light leading-[0.9] tracking-[0.05em]">
           <div ref={l1} className="opacity-0">PIONEERING WELLNESS</div>
-          <div ref={l2} className="opacity-0 mt-2">SINCE DAY ONE</div>
+          <div ref={l2} className="opacity-0 mt-2">PROVEN RESULTS.</div>
         </h1>
       </div>
     </section>
@@ -82,7 +85,7 @@ function WhoWeAre() {
         <div className="w-full md:w-2/5 flex items-start justify-center md:justify-start pt-4">
           <motion.svg
             viewBox="0 0 185.71 219.39"
-            style={{ width: 200, height: "auto" }}
+            style={{ width: "clamp(100px, 30vw, 200px)", height: "auto" }}
             fill="white"
             initial={{ opacity: 0, scale: 0.82, y: 24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -109,13 +112,7 @@ function WhoWeAre() {
           </h3>
           <div className="space-y-6">
             <p className="text-[13px] md:text-[14px] font-light leading-[1.9] tracking-[0.02em] text-white/80">
-              Welcome to VELORA, where wellness, lifestyle, and refined living come together to create a more elevated everyday experience.
-            </p>
-            <p className="text-[13px] md:text-[14px] font-light leading-[1.9] tracking-[0.02em] text-white/80">
-              At VELORA, we are dedicated to elevating the health, wellness, and fitness experience within both commercial and residential settings. Our comprehensive approach integrates hospitality, consultation, management, architectural design, and setup — ensuring a seamless and holistic journey towards well-being and physical excellence.
-            </p>
-            <p className="text-[13px] md:text-[14px] font-light leading-[1.9] tracking-[0.02em] text-white/80">
-              We do not bring a template to a project. We bring precision, vision, and the accumulated intelligence of over two decades designing spaces where people choose to live at their best.
+              We do not bring a template to a project. We bring precision, vision, and the accumulated intelligence of over two decades designing spaces where people choose to live at their best. Every VELORA environment begins with a single question: what do you want people to feel? From that answer, we design, build, and sustain spaces that do not just meet a brief — they redefine what the brief should have been.
             </p>
           </div>
         </div>
@@ -170,30 +167,18 @@ function CredentialsBar() {
   const stats = useRef<(HTMLDivElement | null)[]>([]);
   useEffect(() => {
     const ctx = gsap.context(() => {
-      stats.current.forEach((st, i) => {
-        if (!st) return;
-        gsap.fromTo(st, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, delay: i * 0.2, ease: "power2.out", scrollTrigger: { trigger: s.current, start: "top 80%" } });
-      });
+      gsap.fromTo(stats.current[0], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", scrollTrigger: { trigger: s.current, start: "top 80%" } });
     }, s);
     return () => ctx.revert();
   }, []);
-  const data = [
-    { num: "50,000", label: "SQM OF COMPLETED SPACES" },
-    { num: "20+", label: "YEARS OF COLLECTIVE EXPERTISE" },
-    { num: "100+", label: "PROJECTS AND AFFILIATE COLLABORATIONS" },
-  ];
   return (
     <section ref={s} className="w-full bg-carbon py-16 md:py-24 px-6 md:px-16">
-      <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-0">
-        {data.map((d, i) => (
-          <div key={d.label} className="flex items-center gap-10 md:gap-0">
-            <div ref={(el) => { stats.current[i] = el; }} className="text-center md:px-12 lg:px-20 opacity-0">
-              <div className="text-[36px] md:text-[48px] lg:text-[56px] font-light tracking-[0.04em] text-olive">{d.num}</div>
-              <div className="text-[9px] md:text-[10px] font-normal tracking-[0.2em] text-white/50 mt-2">{d.label}</div>
-            </div>
-            {i < data.length - 1 && <div className="hidden md:block w-[1px] h-16 bg-white/10" />}
-          </div>
-        ))}
+      <div className="max-w-[900px] mx-auto text-center opacity-0" ref={(el) => { stats.current[0] = el; }}>
+        <p className="text-[14px] md:text-[18px] font-light leading-[1.8] tracking-[0.04em] text-white/60">
+          <span className="text-olive">50,000 SQM</span> completed.{" "}
+          <span className="text-olive">100+</span> projects delivered.{" "}
+          <span className="text-olive">20+</span> years of excellence.
+        </p>
       </div>
     </section>
   );

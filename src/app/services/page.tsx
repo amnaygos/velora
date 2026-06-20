@@ -34,7 +34,7 @@ const services = [
     num: "04",
     cat: "HOSPITALITY",
     title: "HOSPITALITY WELLNESS",
-    desc: "VELORA redefines fitness hospitality by merging luxury with functionality. Every interaction, every material, every moment of stillness in a VELORA hospitality space reflects our commitment to the unparalleled.",
+    desc: "VELORA redefines fitness hospitality by merging luxury with functionality. Every interaction, every material, every moment of stillness in a VELORA hospitality space reflects our commitment to standards that have no equal.",
     image: "/images/cedar-pool.jpg",
   },
   {
@@ -84,7 +84,7 @@ function HeroSection() {
       <div ref={t} className="relative z-10 px-6 md:px-16 pb-12 md:pb-20 opacity-0">
         <p className="text-[9px] tracking-[0.5em] text-olive mb-4">VELORA — SERVICES</p>
         <h1 className="text-[24px] sm:text-[32px] md:text-[44px] lg:text-[56px] font-light leading-[0.9] tracking-[0.05em]">
-          WHAT WE<br />DO
+          EVERY DISCIPLINE.<br />ONE STANDARD.
         </h1>
       </div>
     </section>
@@ -219,7 +219,7 @@ function ServicesExplorer() {
                 <span className="text-[8px] tracking-[0.3em] text-olive/50 w-5 flex-shrink-0">{svc.num}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-[7px] tracking-[0.35em] text-white/25 mb-1">{svc.cat}</p>
-                  <h3 className="text-[14px] font-light tracking-[0.02em] truncate">{svc.title}</h3>
+                  <h3 className="text-[14px] font-light tracking-[0.02em] leading-tight">{svc.title}</h3>
                 </div>
                 <span className={`text-[14px] text-white/30 flex-shrink-0 transition-transform duration-300 ${open === i ? "rotate-45" : ""}`}>
                   +

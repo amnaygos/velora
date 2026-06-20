@@ -5,8 +5,15 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { projectData } from "./projectData";
 
+const allProjectSlugs = Object.keys(projectData);
+
 export default function PortfolioDetailClient({ slug }: { slug: string }) {
   const project = projectData[slug || ""];
+  const currentIndex = allProjectSlugs.indexOf(slug || "");
+  const prevSlug = currentIndex > 0 ? allProjectSlugs[currentIndex - 1] : null;
+  const nextSlug = currentIndex < allProjectSlugs.length - 1 ? allProjectSlugs[currentIndex + 1] : null;
+  const prevProject = prevSlug ? projectData[prevSlug] : null;
+  const nextProject = nextSlug ? projectData[nextSlug] : null;
   const hero = useRef<HTMLDivElement>(null);
   const meta = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
@@ -65,17 +72,24 @@ export default function PortfolioDetailClient({ slug }: { slug: string }) {
           <Link href="/contact" className="btn-outline">REQUEST A CONSULTATION</Link>
         </div>
       </section>
-      <section className="w-full py-12 md:py-20 px-6 md:px-16">
-        <div className="max-w-[1440px] mx-auto">
-          <h3 className="text-[11px] font-normal tracking-[0.2em] text-white/50 mb-8">RELATED PROJECTS</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-            {project.galleryImages.map((img, i) => (
-              <Link href="/portfolio" key={i} className="group relative aspect-[4/3] overflow-hidden">
-                <img src={img} alt={`Related ${i + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </Link>
-            ))}
-          </div>
+      {/* TODO: Implement real related projects from projectData */}
+      <section className="w-full py-12 md:py-16 px-6 md:px-16 border-t border-white/5">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
+          {prevProject && prevSlug ? (
+            <Link href={`/portfolio/${prevSlug}`} className="group flex flex-col gap-1 max-w-[45%]">
+              <span className="text-[8px] tracking-[0.35em] text-white/30 group-hover:text-olive transition-colors duration-300">&larr; PREVIOUS</span>
+              <span className="text-[11px] md:text-[13px] font-light tracking-[0.04em] text-white/70 group-hover:text-white transition-colors duration-300 leading-tight">{prevProject.name}</span>
+            </Link>
+          ) : <div />}
+          <Link href="/portfolio" className="text-[9px] tracking-[0.3em] text-white/25 hover:text-olive transition-colors duration-300 hidden sm:block">
+            ALL WORK
+          </Link>
+          {nextProject && nextSlug ? (
+            <Link href={`/portfolio/${nextSlug}`} className="group flex flex-col gap-1 items-end max-w-[45%]">
+              <span className="text-[8px] tracking-[0.35em] text-white/30 group-hover:text-olive transition-colors duration-300">NEXT &rarr;</span>
+              <span className="text-[11px] md:text-[13px] font-light tracking-[0.04em] text-white/70 group-hover:text-white transition-colors duration-300 leading-tight text-right">{nextProject.name}</span>
+            </Link>
+          ) : <div />}
         </div>
       </section>
     </div>

@@ -59,7 +59,7 @@ function HeroSection() {
           <div ref={l1} className="opacity-0">WHERE WELLNESS</div>
           <div ref={l2} className="opacity-0">MEETS WONDER</div>
         </h1>
-        <div ref={si} className="absolute -bottom-28 md:-bottom-36 flex flex-col items-center gap-3 opacity-0">
+        <div ref={si} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0">
           <div className="w-[1px] h-10 bg-white/30" />
           <span className="text-[9px] tracking-[0.3em] text-white/40">SCROLL</span>
         </div>
@@ -85,7 +85,7 @@ function ManifestoSection() {
     <section ref={s} className="w-full bg-shadow py-[120px] md:py-[200px] px-6 md:px-16">
       <div className="max-w-[680px] mx-auto text-center">
         <p ref={t} className="text-[18px] sm:text-[22px] md:text-[26px] font-light leading-[1.6] tracking-[0.04em] opacity-0">
-          VELORA is a refined wellness and leisure concept designed to elevate everyday living through thoughtful spaces, premium experiences, and a holistic approach to wellbeing.
+          VELORA exists because most wellness spaces feel like afterthoughts. We replace the generic with the intentional — environments where every material, proportion, and sightline has been considered before the first wall is drawn.
           <br /><br />
           We do not build gyms. We craft environments that change how people feel about where they live and how they move.
         </p>
@@ -124,17 +124,19 @@ function ServicesGrid() {
       <div className="max-w-[1440px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {services.map((svc, i) => (
-            <div key={svc.title} ref={(el) => { tiles.current[i] = el; }} className="group relative aspect-[4/5] overflow-hidden cursor-pointer opacity-0">
-              <img src={svc.image} alt={svc.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-all duration-300" />
-              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                <h3 className="text-[13px] md:text-[14px] font-medium tracking-[0.15em]">{svc.title}</h3>
-                <div className="h-[1px] w-0 bg-olive mt-3 transition-all duration-500 group-hover:w-16" />
-                <p className="text-[11px] md:text-[12px] font-light tracking-[0.05em] text-white/70 mt-3 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                  {svc.desc}
-                </p>
+            <Link key={svc.title} href="/services" aria-label={svc.title}>
+              <div ref={(el) => { tiles.current[i] = el; }} className="group relative aspect-[4/5] overflow-hidden cursor-pointer opacity-0">
+                <img src={svc.image} alt={svc.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-all duration-300" />
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                  <h3 className="text-[13px] md:text-[14px] font-medium tracking-[0.15em]">{svc.title}</h3>
+                  <div className="h-[1px] w-0 bg-olive mt-3 transition-all duration-500 group-hover:w-16" />
+                  <p className="text-[11px] md:text-[12px] font-light tracking-[0.05em] text-white/70 mt-3 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                    {svc.desc}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -160,8 +162,8 @@ function CredentialsBar() {
   }, []);
   const data = [
     { num: "50,000", label: "SQM OF COMPLETED SPACES" },
-    { num: "20+", label: "YEARS OF COLLECTIVE EXPERTISE" },
-    { num: "100+", label: "PROJECTS AND AFFILIATE COLLABORATIONS" },
+    { num: "20+", label: "YEARS OF DELIVERING EXCELLENCE" },
+    { num: "100+", label: "PROJECTS DELIVERED" },
   ];
   return (
     <section ref={s} className="w-full bg-shadow py-16 md:py-24 px-6 md:px-16">
@@ -182,9 +184,9 @@ function CredentialsBar() {
 
 /* ─── Featured Portfolio ─── */
 const portfolioGrid = [
-  { src: "/Portfolio/BigroomGym-A.png",      name: "GRAND TRAINING HALL", cat: "GYMS & FITNESS",  num: "01" },
-  { src: "/Portfolio/pool-A.png",            name: "NIGHTFALL LAP POOL",  cat: "SPA & WELLNESS",  num: "02" },
-  { src: "/Portfolio/small yoga room-A.png", name: "THE YOGA ALCOVE",     cat: "SPA & WELLNESS",  num: "03" },
+  { src: "/Portfolio/BigroomGym-A.png", name: "GRAND TRAINING HALL", cat: "GYMS & FITNESS", num: "01", slug: "grand-training-hall" },
+  { src: "/Portfolio/pool-A.png",       name: "NIGHTFALL LAP POOL",  cat: "SPA & WELLNESS", num: "02", slug: "nightfall-lap-pool" },
+  { src: "/Portfolio/small yoga room-A.png", name: "THE YOGA ALCOVE", cat: "SPA & WELLNESS", num: "03", slug: "the-yoga-alcove" },
 ];
 
 function FeaturedPortfolio() {
@@ -210,7 +212,7 @@ function FeaturedPortfolio() {
         <h3 className="text-[11px] font-normal tracking-[0.2em] text-white/50 mb-3">SELECTED WORK</h3>
         <div className="w-8 h-[1px] bg-olive" />
         <p className="text-[16px] md:text-[20px] font-light leading-[1.6] text-white/70 mt-6 max-w-[500px]">
-          Each project begins where vision ends and precision begins.
+          Clarity of vision. Certainty of execution.
         </p>
       </motion.div>
 
@@ -219,7 +221,7 @@ function FeaturedPortfolio() {
         {portfolioGrid.map((item, i) => (
           <Link
             key={item.name}
-            href="/portfolio"
+            href={"/portfolio/" + item.slug}
             className="group relative overflow-hidden block"
             style={{ height: "68vh" }}
           >
@@ -367,16 +369,16 @@ function DividerQuote() {
     return () => ctx.revert();
   }, []);
   return (
-    <section ref={s} className="w-full bg-carbon py-[150px] md:py-[250px] px-6 md:px-16 flex items-center justify-center">
+    <section ref={s} className="w-full bg-carbon py-[80px] md:py-[120px] lg:py-[160px] px-6 md:px-16 flex items-center justify-center">
       <div className="text-center">
-        <div ref={(el) => { lines.current[0] = el; }} className="text-[40px] sm:text-[56px] md:text-[80px] lg:text-[100px] font-light leading-[1.0] tracking-[0.06em] opacity-0">
-          &ldquo;MORE THAN FITNESS,
+        <div ref={(el) => { lines.current[0] = el; }} className="text-[28px] sm:text-[44px] md:text-[72px] lg:text-[96px] font-light leading-[1.0] tracking-[0.06em] opacity-0">
+          &ldquo;THEY DIDN&apos;T DESIGN A GYM.
         </div>
-        <div ref={(el) => { lines.current[1] = el; }} className="text-[40px] sm:text-[56px] md:text-[80px] lg:text-[100px] font-light leading-[1.0] tracking-[0.06em] text-olive mt-2 md:mt-4 opacity-0">
-          IT'S A WAY OF LIFE.&rdquo;
+        <div ref={(el) => { lines.current[1] = el; }} className="text-[28px] sm:text-[44px] md:text-[72px] lg:text-[96px] font-light leading-[1.0] tracking-[0.06em] text-olive mt-2 md:mt-4 opacity-0">
+          THEY DESIGNED THE REASON I WAKE UP AT 5:30.&rdquo;
         </div>
         <div ref={(el) => { lines.current[2] = el; }} className="text-[11px] font-normal tracking-[0.3em] text-white/40 mt-8 md:mt-12 opacity-0">
-          — VELORA
+          — PRIVATE CLIENT, DOHA
         </div>
       </div>
     </section>
