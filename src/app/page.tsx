@@ -19,9 +19,8 @@ function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.5 });
-      tl.fromTo(w.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" })
-        .fromTo(l1.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, "-=0.5")
+      const tl = gsap.timeline({ delay: 1.1 });
+      tl.fromTo(l1.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" })
         .fromTo(l2.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, "-=0.6")
         .fromTo(si.current, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, "-=0.2");
     }, s);
@@ -52,9 +51,21 @@ function HeroSection() {
         onEnded={(e) => e.currentTarget.pause()}
       />
       <div className="relative z-10 flex flex-col items-center text-center px-6">
-        <div ref={w} className="text-[11px] md:text-[12px] font-normal tracking-[0.3em] text-olive mb-8 md:mb-12 opacity-0">
-          VELORA &copy;
-        </div>
+        <motion.div
+          className="mb-8 md:mb-12 overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.01, delay: 0.4 }}
+        >
+          <motion.img
+            src="/images/logo full velora.svg"
+            alt="VELORA"
+            initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0.9 }}
+            animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
+            transition={{ duration: 1.1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            style={{ width: "clamp(90px, 13vw, 160px)", height: "auto", filter: "brightness(0) invert(1)", display: "block" }}
+          />
+        </motion.div>
         <h1 className="text-[24px] sm:text-[32px] md:text-[44px] lg:text-[56px] font-light leading-[0.9] tracking-[0.05em]">
           <div ref={l1} className="opacity-0">WHERE WELLNESS</div>
           <div ref={l2} className="opacity-0">MEETS WONDER</div>
