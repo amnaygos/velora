@@ -11,7 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 /* ─── Hero ─── */
 function HeroSection() {
   const s = useRef<HTMLDivElement>(null);
-  const w = useRef<HTMLDivElement>(null);
   const l1 = useRef<HTMLDivElement>(null);
   const l2 = useRef<HTMLDivElement>(null);
   const si = useRef<HTMLDivElement>(null);
