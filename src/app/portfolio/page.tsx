@@ -164,7 +164,7 @@ function Hero() {
 }
 
 /* ── Parallax Project Section ──────────────────────────────────────────── */
-function ParallaxProject({ project, index }: { project: Project; index: number }) {
+function ParallaxProject({ project, index, isLast }: { project: Project; index: number; isLast?: boolean }) {
   const sectionRef   = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isEven       = index % 2 === 0;
@@ -281,11 +281,12 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
      */
     <section
       ref={sectionRef}
-      className={`relative bg-carbon h-[200vh]${index > 0 ? " -mt-[100vh]" : ""}`}
+      className={`relative bg-carbon h-[200vh]${index > 0 ? " -mt-[100vh]" : ""}${isLast ? " -mb-[100vh]" : ""}`}
       style={{
         height: "200svh",
         zIndex: index + 1,
         ...(index > 0 ? { marginTop: "-100svh" } : {}),
+        ...(isLast ? { marginBottom: "-100svh" } : {}),
       }}
     >
       <div
@@ -451,7 +452,7 @@ export default function Portfolio() {
     <>
       <Hero />
       {projects.map((p, i) => (
-        <ParallaxProject key={p.slug} project={p} index={i} />
+        <ParallaxProject key={p.slug} project={p} index={i} isLast={i === projects.length - 1} />
       ))}
     </>
   );
