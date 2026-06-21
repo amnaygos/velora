@@ -42,7 +42,8 @@ function HeroSection() {
     <section ref={s} className="relative w-full h-screen flex items-center justify-center overflow-hidden">
       <video
         ref={videoRef}
-        src="/Video/hero.mp4"
+        src="/Video/hero-web.mp4"
+        poster="/Video/hero-poster.jpg"
         muted
         playsInline
         preload="auto"
