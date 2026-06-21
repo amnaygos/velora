@@ -39,7 +39,7 @@ function HeroSection() {
   }, []);
 
   return (
-    <section ref={s} className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+    <section ref={s} className="relative w-full h-screen flex items-center justify-center overflow-hidden" style={{ height: '100svh' }}>
       <video
         ref={videoRef}
         src="/Video/hero-web.mp4"

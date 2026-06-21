@@ -71,7 +71,7 @@ export default function VeloraChat() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3">
+    <div className="fixed bottom-10 right-4 z-[60] flex flex-col items-end gap-3">
 
       {/* ── Panel ── */}
       <AnimatePresence>
@@ -84,8 +84,9 @@ export default function VeloraChat() {
             className="flex flex-col overflow-hidden"
             style={{
               width: 360,
-              maxWidth: "calc(100vw - 48px)",
+              maxWidth: "calc(100vw - 32px)",
               height: 520,
+              maxHeight: "calc(100svh - 100px)",
               background: "#1C1C1C",
               border: "1px solid rgba(255,255,255,0.07)",
               boxShadow: "0 32px 80px rgba(0,0,0,0.75)",

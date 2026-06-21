@@ -112,7 +112,7 @@ function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
 
   return (
-    <section ref={ref} className="relative h-screen bg-carbon flex flex-col items-center justify-center overflow-hidden">
+    <section ref={ref} className="relative h-screen bg-carbon flex flex-col items-center justify-center overflow-hidden" style={{ height: '100svh' }}>
       <motion.div
         style={{ y, opacity }}
         className="flex flex-col items-center px-6 select-none text-center"
