@@ -14,7 +14,6 @@ function HeroSection() {
   const l1 = useRef<HTMLDivElement>(null);
   const l2 = useRef<HTMLDivElement>(null);
   const si = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -26,29 +25,17 @@ function HeroSection() {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const play = () => video.play().catch(() => {});
-    if (video.readyState >= 2) {
-      play();
-    } else {
-      video.addEventListener("loadeddata", play, { once: true });
-      return () => video.removeEventListener("loadeddata", play);
-    }
-  }, []);
-
   return (
     <section ref={s} className="relative w-full h-screen flex items-center justify-center overflow-hidden" style={{ height: '100svh' }}>
       <video
-        ref={videoRef}
         src="/Video/hero-web.mp4"
         poster="/Video/hero-poster.jpg"
+        autoPlay
         muted
         playsInline
         preload="auto"
+        loop
         className="absolute inset-0 w-full h-full object-cover"
-        onEnded={(e) => e.currentTarget.pause()}
       />
       <div className="relative z-10 flex flex-col items-center text-center px-6">
         <motion.div
