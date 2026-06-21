@@ -369,10 +369,10 @@ function DividerQuote() {
   return (
     <section ref={s} className="w-full bg-carbon py-[80px] md:py-[120px] lg:py-[160px] px-6 md:px-16 flex items-center justify-center">
       <div className="text-center">
-        <div ref={(el) => { lines.current[0] = el; }} className="text-[28px] sm:text-[44px] md:text-[72px] lg:text-[96px] font-light leading-[1.0] tracking-[0.06em] opacity-0">
+        <div ref={(el) => { lines.current[0] = el; }} className="text-[18px] sm:text-[24px] md:text-[32px] lg:text-[42px] font-light leading-[1.0] tracking-[0.06em] opacity-0">
           &ldquo;THEY DIDN&apos;T DESIGN A GYM.
         </div>
-        <div ref={(el) => { lines.current[1] = el; }} className="text-[28px] sm:text-[44px] md:text-[72px] lg:text-[96px] font-light leading-[1.0] tracking-[0.06em] text-olive mt-2 md:mt-4 opacity-0">
+        <div ref={(el) => { lines.current[1] = el; }} className="text-[18px] sm:text-[24px] md:text-[32px] lg:text-[42px] font-light leading-[1.0] tracking-[0.06em] text-olive mt-2 md:mt-4 opacity-0">
           THEY DESIGNED THE REASON I WAKE UP AT 5:30.&rdquo;
         </div>
         <div ref={(el) => { lines.current[2] = el; }} className="text-[11px] font-normal tracking-[0.3em] text-white/40 mt-8 md:mt-12 opacity-0">
