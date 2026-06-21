@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-carbon text-white">
+    <div className="min-h-screen bg-carbon text-white overflow-x-hidden">
       <Navbar />
       <main ref={mainRef}>{children}</main>
       <Footer />
