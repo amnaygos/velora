@@ -8,6 +8,7 @@ import {
   useTransform,
   useSpring,
   useInView,
+  useMotionValue,
 } from "framer-motion";
 
 /* ── Data ─────────────────────────────────────────────────────────────── */
@@ -112,7 +113,7 @@ function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
 
   return (
-    <section ref={ref} className="relative h-screen bg-carbon flex flex-col items-center justify-center overflow-hidden" style={{ height: '100svh' }}>
+    <section ref={ref} className="relative bg-carbon flex flex-col items-center justify-center overflow-hidden" style={{ height: "100svh" }}>
       <motion.div
         style={{ y, opacity }}
         className="flex flex-col items-center px-6 select-none text-center"
@@ -165,9 +166,11 @@ function Hero() {
 
 /* ── Parallax Project Section ──────────────────────────────────────────── */
 function ParallaxProject({ project, index }: { project: Project; index: number }) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isEven     = index % 2 === 0;
-  const inView     = useInView(sectionRef, { amount: 0.15, once: false });
+  const sectionRef  = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isEven      = index % 2 === 0;
+  const inView      = useInView(sectionRef, { amount: 0.15, once: false });
+  const isDragging  = useRef(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -176,53 +179,89 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
 
   const s = useSpring(scrollYProgress, { stiffness: 90, damping: 28, restDelta: 0.001 });
 
-  /* Before darkens progressively as after reveals over it */
-  const brightnessVal = useTransform(s, [0, 0.65], [0.75, 0.45]);
-  const beforeFilter  = useTransform(
-    brightnessVal,
-    (b) => `grayscale(90%) brightness(${b.toFixed(3)}) contrast(1.06)`
-  );
+  /* Single source of truth: 0 = full before, 1 = full after */
+  const clipPos = useMotionValue(0);
 
-  /* Diagonal clip — polygon grows left-to-right, top leads bottom by 8% */
-  const clipProgress = useTransform(s, [0.05, 0.62], [0, 1]);
-  const clipPath     = useTransform(
-    clipProgress,
+  /* Scroll updates clipPos when not dragging */
+  useEffect(() => {
+    const unsub = s.on("change", (v) => {
+      if (isDragging.current) return;
+      // Reveal from 5% → 40% of scroll so after is fully visible by mid-section
+      const progress = Math.max(0, Math.min(1, (v - 0.05) / 0.35));
+      clipPos.set(progress);
+    });
+    return unsub;
+  }, []); // eslint-disable-line
+
+  /* Clip path from clipPos */
+  const clipPath = useTransform(
+    clipPos,
     (v) => `polygon(0% 0%, ${v * 100}% 0%, ${v * 100 + 8}% 100%, 0% 100%)`
   );
 
-  /* Diagonal divider: SVG line from (v*100%, 0) to (v*100+8%, 100%) */
-  const lineRef     = useRef<SVGLineElement>(null);
-  const lineOpacity = useTransform(s, [0.04, 0.15, 0.55, 0.66], [0, 1, 1, 0]);
-
+  /* SVG diagonal line — updated via subscription */
+  const lineRef = useRef<SVGLineElement>(null);
   useEffect(() => {
     const update = (v: number) => {
       if (!lineRef.current) return;
       lineRef.current.setAttribute("x1", `${v * 100}%`);
       lineRef.current.setAttribute("x2", `${v * 100 + 8}%`);
     };
-    update(clipProgress.get());
-    return clipProgress.on("change", update);
+    update(clipPos.get());
+    return clipPos.on("change", update);
   }, []); // eslint-disable-line
 
-  /* Handle follows midpoint of diagonal (4% offset at 50% height) */
-  const handleLeft = useTransform(clipProgress, (v) => `${v * 100 + 4}%`);
+  /* Handle tracks midpoint of diagonal */
+  const handleLeft = useTransform(clipPos, (v) => `${v * 100 + 4}%`);
+
+  /* Line / handle visible while section is active */
+  const lineOpacity = useTransform(s, [0.04, 0.18, 0.82, 1.0], [0, 1, 1, 0]);
+
+  /* Before image darkens as after reveals */
+  const brightnessVal = useTransform(s, [0, 0.4], [0.75, 0.3]);
+  const beforeFilter  = useTransform(
+    brightnessVal,
+    (b) => `grayscale(90%) brightness(${b.toFixed(3)}) contrast(1.06)`
+  );
 
   /* BEFORE / AFTER labels */
-  const beforeLabelOpacity = useTransform(s, [0.04, 0.42], [1, 0]);
-  const afterLabelOpacity  = useTransform(s, [0.14, 0.52], [0, 1]);
+  const beforeLabelOpacity = useTransform(clipPos, [0, 0.25], [1, 0]);
+  const afterLabelOpacity  = useTransform(clipPos, [0.1, 0.35], [0, 1]);
 
-  /* Info panel: slides in from side, fades out as section exits */
+  /* Info panel */
   const infoOpacity = useTransform(s, [0.04, 0.28, 0.86, 1.0], [0, 1, 1, 0]);
   const infoX       = useTransform(s, [0.04, 0.28], [isEven ? -50 : 50, 0]);
 
   const num   = String(index + 1).padStart(2, "0");
   const total = String(projects.length).padStart(2, "0");
 
-  return (
-    <section ref={sectionRef} className="relative" style={{ height: "200vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+  /* ── Drag handlers ──────────────────────────────────────────────────── */
+  const onPointerDown = (e: React.PointerEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
 
-        {/* ── BEFORE image (grayscale, still) ── */}
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0.02, Math.min(0.98, (e.clientX - rect.left) / rect.width));
+    clipPos.set(x);
+  };
+
+  const onPointerUp = () => {
+    isDragging.current = false;
+  };
+
+  return (
+    <section ref={sectionRef} className="relative bg-carbon" style={{ height: "200svh" }}>
+      <div
+        ref={containerRef}
+        className="sticky top-0 overflow-hidden"
+        style={{ height: "100svh" }}
+      >
+
+        {/* ── BEFORE image ── */}
         <motion.div
           className="absolute inset-0 w-full h-full"
           style={{ filter: beforeFilter }}
@@ -230,7 +269,7 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           <img src={project.before} alt="" className="w-full h-full object-cover" />
         </motion.div>
 
-        {/* ── AFTER image (color, diagonal clip reveal, no movement) ── */}
+        {/* ── AFTER image (diagonal clip reveal) ── */}
         <motion.div
           className="absolute inset-0 w-full h-full"
           style={{ clipPath }}
@@ -238,12 +277,11 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           <img src={project.after} alt={project.name} className="w-full h-full object-cover" />
         </motion.div>
 
-        {/* Bottom vignette */}
+        {/* Vignettes */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-        {/* Top vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-transparent pointer-events-none" />
 
-        {/* Grain texture */}
+        {/* Grain */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -253,7 +291,7 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           }}
         />
 
-        {/* ── Diagonal divider line (true SVG, matches clip edge) ── */}
+        {/* ── Diagonal divider line ── */}
         <motion.svg
           className="absolute inset-0 w-full h-full z-10 pointer-events-none overflow-visible"
           style={{
@@ -273,15 +311,31 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           />
         </motion.svg>
 
-        {/* Slider handle — tracks midpoint of diagonal */}
+        {/* ── Draggable handle ── */}
         <motion.div
-          className="absolute top-1/2 z-10 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full border border-white/35 bg-black/20 backdrop-blur-md flex items-center justify-center pointer-events-none"
-          style={{ left: handleLeft, opacity: lineOpacity }}
+          className="absolute top-1/2 z-20 -translate-y-1/2 -translate-x-1/2 w-11 h-11 border border-white/50 bg-black/50 flex items-center justify-center cursor-ew-resize select-none"
+          style={{
+            left: handleLeft,
+            opacity: lineOpacity,
+            touchAction: "none",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+          }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.92 }}
         >
-          <div className="w-[5px] h-[5px] rounded-full bg-white/65" />
+          <svg width="18" height="10" viewBox="0 0 18 10" fill="none">
+            <path d="M5 1L1 5L5 9" stroke="rgba(255,255,255,0.75)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M13 1L17 5L13 9" stroke="rgba(255,255,255,0.75)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="9" y1="1" x2="9" y2="9" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8" />
+          </svg>
         </motion.div>
 
-        {/* ── Labels ── */}
+        {/* ── BEFORE / AFTER labels ── */}
         <motion.span
           className="absolute top-8 left-10 md:left-16 z-10 text-[7px] tracking-[0.5em] text-white/40 pointer-events-none"
           style={{ opacity: beforeLabelOpacity }}
@@ -305,14 +359,13 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           {num} / {total}
         </motion.div>
 
-        {/* ── Project info — alternates left / right ── */}
+        {/* ── Project info ── */}
         <motion.div
           className={`absolute bottom-14 z-20 max-w-[520px] ${
             isEven ? "left-10 md:left-16" : "right-10 md:right-16"
           }`}
           style={{ opacity: infoOpacity, x: infoX }}
         >
-          {/* Category */}
           <motion.p
             className="text-[7px] tracking-[0.55em] text-olive mb-4"
             initial={{ opacity: 0, y: 8 }}
@@ -322,7 +375,6 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
             {project.category}
           </motion.p>
 
-          {/* Project name with word-by-word reveal */}
           <Link href={`/portfolio/${project.slug}`} className="group block">
             <h2
               className={`text-[7vw] sm:text-[5vw] md:text-[3.8vw] font-light tracking-[0.02em] leading-[0.9] group-hover:text-olive transition-colors duration-500 ${
@@ -333,7 +385,6 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
             </h2>
           </Link>
 
-          {/* Location + year */}
           <motion.div
             className={`flex items-center gap-3 mt-5 ${!isEven ? "justify-end" : ""}`}
             initial={{ opacity: 0 }}
@@ -345,7 +396,6 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
             <span className="text-[8px] tracking-[0.2em] text-white/25">{project.year}</span>
           </motion.div>
 
-          {/* CTA link */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : { opacity: 0 }}
