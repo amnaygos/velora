@@ -57,10 +57,10 @@ function HeroSection() {
           <div ref={l1} className="opacity-0">WHERE WELLNESS</div>
           <div ref={l2} className="opacity-0">MEETS WONDER</div>
         </h1>
-        <div ref={si} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0">
-          <div className="w-[1px] h-10 bg-white/30" />
-          <span className="text-[9px] tracking-[0.3em] text-white/40">SCROLL</span>
-        </div>
+      </div>
+      <div ref={si} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 opacity-0">
+        <div className="w-[1px] h-10 bg-white/30" />
+        <span className="text-[9px] tracking-[0.3em] text-white/40">SCROLL</span>
       </div>
     </section>
   );
