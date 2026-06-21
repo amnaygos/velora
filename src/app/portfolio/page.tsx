@@ -174,13 +174,12 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
   /*
    * Two scroll contexts:
    *  approachY – "start end" → "start start"
-   *    goes 0→1 as the section scrolls UP from below the fold to fully pinned.
-   *    Used to drive the before→after clip reveal so the after image is 100%
-   *    at the exact moment the section locks onto the screen.
+   *    0→1 as section scrolls up from below-fold to fully pinned.
+   *    Feeds raw clipPos; a display spring smooths the visual reveal.
    *
    *  pinY – "start start" → "end start"
-   *    goes 0→1 while the section is pinned (sticky) and exits.
-   *    Used for info-panel fade, before-image dimming, line visibility.
+   *    0→1 while pinned and exiting.
+   *    Drives info panel, before-image dim, line/handle visibility.
    */
   const { scrollYProgress: approachY } = useScroll({
     target: sectionRef,
@@ -192,29 +191,33 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
     offset: ["start start", "end start"],
   });
 
-  /* Fast spring on approach so it completes before section is fully pinned */
-  const sApproach = useSpring(approachY, { stiffness: 220, damping: 28 });
   /* Smooth spring on pin for info-panel motion */
   const sPin = useSpring(pinY, { stiffness: 90, damping: 28, restDelta: 0.001 });
 
-  /* Single clip position: approach drives it, drag overrides */
+  /*
+   * clipPos = raw source of truth (updated by scroll or drag).
+   * clipPosDisplay = spring-smoothed for all visual output.
+   * One spring instead of two keeps the animation crisp, not double-lagged.
+   */
   const clipPos = useMotionValue(0);
+  const clipPosDisplay = useSpring(clipPos, { stiffness: 100, damping: 22, restDelta: 0.001 });
 
+  /* Approach drives raw clipPos directly (no intermediate spring) */
   useEffect(() => {
-    const unsub = sApproach.on("change", (v) => {
+    const unsub = approachY.on("change", (v) => {
       if (isDragging.current) return;
       clipPos.set(Math.max(0, Math.min(1, v)));
     });
     return unsub;
   }, []); // eslint-disable-line
 
-  /* Clip path */
+  /* Clip path — uses smoothed display value */
   const clipPath = useTransform(
-    clipPos,
+    clipPosDisplay,
     (v) => `polygon(0% 0%, ${v * 100}% 0%, ${v * 100 + 8}% 100%, 0% 100%)`
   );
 
-  /* SVG diagonal line */
+  /* SVG diagonal line tracks smoothed display value */
   const lineRef = useRef<SVGLineElement>(null);
   useEffect(() => {
     const update = (v: number) => {
@@ -222,12 +225,12 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
       lineRef.current.setAttribute("x1", `${v * 100}%`);
       lineRef.current.setAttribute("x2", `${v * 100 + 8}%`);
     };
-    update(clipPos.get());
-    return clipPos.on("change", update);
+    update(clipPosDisplay.get());
+    return clipPosDisplay.on("change", update);
   }, []); // eslint-disable-line
 
   /* Handle midpoint */
-  const handleLeft = useTransform(clipPos, (v) => `${v * 100 + 4}%`);
+  const handleLeft = useTransform(clipPosDisplay, (v) => `${v * 100 + 4}%`);
 
   /* Line / handle visible during pin phase */
   const lineOpacity = useTransform(sPin, [0.0, 0.12, 0.82, 1.0], [0, 1, 1, 0]);
@@ -239,9 +242,9 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
     (b) => `grayscale(90%) brightness(${b.toFixed(3)}) contrast(1.06)`
   );
 
-  /* BEFORE / AFTER labels driven by clip position */
-  const beforeLabelOpacity = useTransform(clipPos, [0, 0.3], [1, 0]);
-  const afterLabelOpacity  = useTransform(clipPos, [0.1, 0.4], [0, 1]);
+  /* BEFORE / AFTER labels driven by smoothed clip position */
+  const beforeLabelOpacity = useTransform(clipPosDisplay, [0, 0.3], [1, 0]);
+  const afterLabelOpacity  = useTransform(clipPosDisplay, [0.1, 0.4], [0, 1]);
 
   /* Info panel */
   const infoOpacity = useTransform(sPin, [0.04, 0.28, 0.86, 1.0], [0, 1, 1, 0]);
@@ -269,8 +272,16 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
   };
 
   return (
-    /* h-screen is the fallback; 100svh overrides it on modern browsers */
-    <section ref={sectionRef} className="relative bg-carbon" style={{ height: "200vh" }}>
+    /*
+     * zIndex: index + 1 — each section stacks above the previous one.
+     * As a new section scrolls up it slides OVER the outgoing one,
+     * eliminating the blank carbon gap visible during the transition.
+     */
+    <section
+      ref={sectionRef}
+      className="relative bg-carbon"
+      style={{ height: "200vh", zIndex: index + 1 }}
+    >
       <div
         ref={containerRef}
         className="sticky top-0 h-screen overflow-hidden"
