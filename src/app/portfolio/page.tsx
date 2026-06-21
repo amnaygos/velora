@@ -113,7 +113,7 @@ function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
 
   return (
-    <section ref={ref} className="relative bg-carbon flex flex-col items-center justify-center overflow-hidden" style={{ height: "100svh" }}>
+    <section ref={ref} className="relative h-screen bg-carbon flex flex-col items-center justify-center overflow-hidden" style={{ height: "100svh" }}>
       <motion.div
         style={{ y, opacity }}
         className="flex flex-col items-center px-6 select-none text-center"
@@ -146,7 +146,6 @@ function Hero() {
         </motion.p>
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8 flex flex-col items-center gap-3"
         initial={{ opacity: 0 }}
@@ -166,40 +165,56 @@ function Hero() {
 
 /* ── Parallax Project Section ──────────────────────────────────────────── */
 function ParallaxProject({ project, index }: { project: Project; index: number }) {
-  const sectionRef  = useRef<HTMLDivElement>(null);
+  const sectionRef   = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isEven      = index % 2 === 0;
-  const inView      = useInView(sectionRef, { amount: 0.15, once: false });
-  const isDragging  = useRef(false);
+  const isEven       = index % 2 === 0;
+  const inView       = useInView(sectionRef, { amount: 0.15, once: false });
+  const isDragging   = useRef(false);
 
-  const { scrollYProgress } = useScroll({
+  /*
+   * Two scroll contexts:
+   *  approachY – "start end" → "start start"
+   *    goes 0→1 as the section scrolls UP from below the fold to fully pinned.
+   *    Used to drive the before→after clip reveal so the after image is 100%
+   *    at the exact moment the section locks onto the screen.
+   *
+   *  pinY – "start start" → "end start"
+   *    goes 0→1 while the section is pinned (sticky) and exits.
+   *    Used for info-panel fade, before-image dimming, line visibility.
+   */
+  const { scrollYProgress: approachY } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "start start"],
+  });
+
+  const { scrollYProgress: pinY } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
 
-  const s = useSpring(scrollYProgress, { stiffness: 90, damping: 28, restDelta: 0.001 });
+  /* Fast spring on approach so it completes before section is fully pinned */
+  const sApproach = useSpring(approachY, { stiffness: 220, damping: 28 });
+  /* Smooth spring on pin for info-panel motion */
+  const sPin = useSpring(pinY, { stiffness: 90, damping: 28, restDelta: 0.001 });
 
-  /* Single source of truth: 0 = full before, 1 = full after */
+  /* Single clip position: approach drives it, drag overrides */
   const clipPos = useMotionValue(0);
 
-  /* Scroll updates clipPos when not dragging */
   useEffect(() => {
-    const unsub = s.on("change", (v) => {
+    const unsub = sApproach.on("change", (v) => {
       if (isDragging.current) return;
-      // Reveal from 5% → 40% of scroll so after is fully visible by mid-section
-      const progress = Math.max(0, Math.min(1, (v - 0.05) / 0.35));
-      clipPos.set(progress);
+      clipPos.set(Math.max(0, Math.min(1, v)));
     });
     return unsub;
   }, []); // eslint-disable-line
 
-  /* Clip path from clipPos */
+  /* Clip path */
   const clipPath = useTransform(
     clipPos,
     (v) => `polygon(0% 0%, ${v * 100}% 0%, ${v * 100 + 8}% 100%, 0% 100%)`
   );
 
-  /* SVG diagonal line — updated via subscription */
+  /* SVG diagonal line */
   const lineRef = useRef<SVGLineElement>(null);
   useEffect(() => {
     const update = (v: number) => {
@@ -211,26 +226,26 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
     return clipPos.on("change", update);
   }, []); // eslint-disable-line
 
-  /* Handle tracks midpoint of diagonal */
+  /* Handle midpoint */
   const handleLeft = useTransform(clipPos, (v) => `${v * 100 + 4}%`);
 
-  /* Line / handle visible while section is active */
-  const lineOpacity = useTransform(s, [0.04, 0.18, 0.82, 1.0], [0, 1, 1, 0]);
+  /* Line / handle visible during pin phase */
+  const lineOpacity = useTransform(sPin, [0.0, 0.12, 0.82, 1.0], [0, 1, 1, 0]);
 
-  /* Before image darkens as after reveals */
-  const brightnessVal = useTransform(s, [0, 0.4], [0.75, 0.3]);
+  /* Before image dims as section exits */
+  const brightnessVal = useTransform(sPin, [0, 0.6], [0.65, 0.3]);
   const beforeFilter  = useTransform(
     brightnessVal,
     (b) => `grayscale(90%) brightness(${b.toFixed(3)}) contrast(1.06)`
   );
 
-  /* BEFORE / AFTER labels */
-  const beforeLabelOpacity = useTransform(clipPos, [0, 0.25], [1, 0]);
-  const afterLabelOpacity  = useTransform(clipPos, [0.1, 0.35], [0, 1]);
+  /* BEFORE / AFTER labels driven by clip position */
+  const beforeLabelOpacity = useTransform(clipPos, [0, 0.3], [1, 0]);
+  const afterLabelOpacity  = useTransform(clipPos, [0.1, 0.4], [0, 1]);
 
   /* Info panel */
-  const infoOpacity = useTransform(s, [0.04, 0.28, 0.86, 1.0], [0, 1, 1, 0]);
-  const infoX       = useTransform(s, [0.04, 0.28], [isEven ? -50 : 50, 0]);
+  const infoOpacity = useTransform(sPin, [0.04, 0.28, 0.86, 1.0], [0, 1, 1, 0]);
+  const infoX       = useTransform(sPin, [0.04, 0.28], [isEven ? -50 : 50, 0]);
 
   const num   = String(index + 1).padStart(2, "0");
   const total = String(projects.length).padStart(2, "0");
@@ -254,26 +269,21 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
   };
 
   return (
-    <section ref={sectionRef} className="relative bg-carbon" style={{ height: "200svh" }}>
+    /* h-screen is the fallback; 100svh overrides it on modern browsers */
+    <section ref={sectionRef} className="relative bg-carbon" style={{ height: "200vh" }}>
       <div
         ref={containerRef}
-        className="sticky top-0 overflow-hidden"
+        className="sticky top-0 h-screen overflow-hidden"
         style={{ height: "100svh" }}
       >
 
-        {/* ── BEFORE image ── */}
-        <motion.div
-          className="absolute inset-0 w-full h-full"
-          style={{ filter: beforeFilter }}
-        >
+        {/* BEFORE */}
+        <motion.div className="absolute inset-0 w-full h-full" style={{ filter: beforeFilter }}>
           <img src={project.before} alt="" className="w-full h-full object-cover" />
         </motion.div>
 
-        {/* ── AFTER image (diagonal clip reveal) ── */}
-        <motion.div
-          className="absolute inset-0 w-full h-full"
-          style={{ clipPath }}
-        >
+        {/* AFTER */}
+        <motion.div className="absolute inset-0 w-full h-full" style={{ clipPath }}>
           <img src={project.after} alt={project.name} className="w-full h-full object-cover" />
         </motion.div>
 
@@ -291,7 +301,7 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           }}
         />
 
-        {/* ── Diagonal divider line ── */}
+        {/* Diagonal divider line */}
         <motion.svg
           className="absolute inset-0 w-full h-full z-10 pointer-events-none overflow-visible"
           style={{
@@ -302,16 +312,13 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
         >
           <line
             ref={lineRef}
-            x1="0%"
-            y1="0%"
-            x2="8%"
-            y2="100%"
+            x1="0%" y1="0%" x2="8%" y2="100%"
             stroke="rgba(255,255,255,0.75)"
             strokeWidth="1"
           />
         </motion.svg>
 
-        {/* ── Draggable handle ── */}
+        {/* Draggable handle */}
         <motion.div
           className="absolute top-1/2 z-20 -translate-y-1/2 -translate-x-1/2 w-11 h-11 border border-white/50 bg-black/50 flex items-center justify-center cursor-ew-resize select-none"
           style={{
@@ -335,7 +342,7 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           </svg>
         </motion.div>
 
-        {/* ── BEFORE / AFTER labels ── */}
+        {/* Labels */}
         <motion.span
           className="absolute top-8 left-10 md:left-16 z-10 text-[7px] tracking-[0.5em] text-white/40 pointer-events-none"
           style={{ opacity: beforeLabelOpacity }}
@@ -349,7 +356,7 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           AFTER
         </motion.span>
 
-        {/* ── Counter ── */}
+        {/* Counter */}
         <motion.div
           className="absolute top-8 left-1/2 -translate-x-1/2 z-10 text-[8px] tracking-[0.25em] text-white/20 pointer-events-none"
           initial={{ opacity: 0, y: -6 }}
@@ -359,7 +366,7 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           {num} / {total}
         </motion.div>
 
-        {/* ── Project info ── */}
+        {/* Project info */}
         <motion.div
           className={`absolute bottom-14 z-20 max-w-[520px] ${
             isEven ? "left-10 md:left-16" : "right-10 md:right-16"
@@ -411,10 +418,10 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
           </motion.div>
         </motion.div>
 
-        {/* ── Scroll progress bar ── */}
+        {/* Scroll progress bar */}
         <motion.div
           className="absolute bottom-0 left-0 h-px bg-olive/60 z-20 origin-left"
-          style={{ scaleX: s }}
+          style={{ scaleX: sPin }}
         />
       </div>
     </section>
