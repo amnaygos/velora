@@ -60,7 +60,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      <div className={`fixed inset-0 z-40 bg-carbon/98 backdrop-blur-sm transition-all duration-700 lg:hidden ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+      <div className={`fixed inset-0 z-40 bg-carbon transition-all duration-700 lg:hidden ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         <div className="flex flex-col items-center justify-center h-full gap-10">
           {navLinks.map((link, i) => (
             <Link key={link.path} href={link.path}
