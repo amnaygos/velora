@@ -273,14 +273,20 @@ function ParallaxProject({ project, index }: { project: Project; index: number }
 
   return (
     /*
-     * zIndex: index + 1 — each section stacks above the previous one.
-     * As a new section scrolls up it slides OVER the outgoing one,
-     * eliminating the blank carbon gap visible during the transition.
+     * Negative margin (index>0): section N+1 starts entering the viewport
+     * exactly when section N's sticky detaches, eliminating the blank carbon
+     * gap between projects. z-index ensures N+1 paints over N during overlap.
+     * h-[200vh] / -mt-[100vh] are vh fallbacks; inline svh values override on
+     * modern browsers so the math stays consistent with the 100svh sticky div.
      */
     <section
       ref={sectionRef}
-      className="relative bg-carbon"
-      style={{ height: "200vh", zIndex: index + 1 }}
+      className={`relative bg-carbon h-[200vh]${index > 0 ? " -mt-[100vh]" : ""}`}
+      style={{
+        height: "200svh",
+        zIndex: index + 1,
+        ...(index > 0 ? { marginTop: "-100svh" } : {}),
+      }}
     >
       <div
         ref={containerRef}
