@@ -253,17 +253,7 @@ function ParallaxProject({ project, index, isLast }: { project: Project; index: 
   const beforeLabelOpacity = useTransform(clipPosDisplay, [0, 0.3], [1, 0]);
   const afterLabelOpacity  = useTransform(clipPosDisplay, [0.1, 0.4], [0, 1]);
 
-  /* Info panel */
-  const infoOpacity = useTransform(
-    sPin,
-    isLast ? [0.0, 0.05, 0.12, 0.14] : [0.04, 0.28, 0.86, 1.0],
-    [0, 1, 1, 1],
-  );
-  const infoX = useTransform(
-    sPin,
-    isLast ? [0.0, 0.05] : [0.04, 0.28],
-    [isEven ? -50 : 50, 0],
-  );
+  /* Info panel driven by inView so text is already visible when section fills the viewport */
 
   const num   = String(index + 1).padStart(2, "0");
   const total = String(projects.length).padStart(2, "0");
@@ -403,7 +393,9 @@ function ParallaxProject({ project, index, isLast }: { project: Project; index: 
           className={`absolute bottom-14 z-20 max-w-[520px] ${
             isEven ? "left-10 md:left-16" : "right-10 md:right-16"
           }`}
-          style={{ opacity: infoOpacity, x: infoX }}
+          initial={{ opacity: 0, x: isEven ? -40 : 40 }}
+          animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: isEven ? -40 : 40 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.p
             className="text-[7px] tracking-[0.55em] text-olive mb-4"
