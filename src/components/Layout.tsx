@@ -34,9 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-carbon text-white overflow-x-hidden">
       <Navbar />
       <main ref={mainRef}>{children}</main>
-      <div className="relative z-20">
-        <Footer />
-      </div>
+      <Footer />
       <VeloraChat />
     </div>
   );

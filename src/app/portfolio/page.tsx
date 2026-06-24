@@ -232,8 +232,15 @@ function ParallaxProject({ project, index, isLast }: { project: Project; index: 
   /* Handle midpoint */
   const handleLeft = useTransform(clipPosDisplay, (v) => `${v * 100 + 4}%`);
 
-  /* Line / handle visible during pin phase */
-  const lineOpacity = useTransform(sPin, [0.0, 0.12, 0.82, 1.0], [0, 1, 1, 0]);
+  /*
+   * isLast section is 100svh tall (= sticky height), so sPin only reaches ~0.14.
+   * Compress animation keyframes into that range so line and panel fully appear.
+   */
+  const lineOpacity = useTransform(
+    sPin,
+    isLast ? [0.0, 0.05, 0.12, 0.14] : [0.0, 0.12, 0.82, 1.0],
+    [0, 1, 1, 0],
+  );
 
   /* Before image dims as section exits */
   const brightnessVal = useTransform(sPin, [0, 0.6], [0.65, 0.3]);
@@ -247,8 +254,16 @@ function ParallaxProject({ project, index, isLast }: { project: Project; index: 
   const afterLabelOpacity  = useTransform(clipPosDisplay, [0.1, 0.4], [0, 1]);
 
   /* Info panel */
-  const infoOpacity = useTransform(sPin, [0.04, 0.28, 0.86, 1.0], [0, 1, 1, 0]);
-  const infoX       = useTransform(sPin, [0.04, 0.28], [isEven ? -50 : 50, 0]);
+  const infoOpacity = useTransform(
+    sPin,
+    isLast ? [0.0, 0.05, 0.12, 0.14] : [0.04, 0.28, 0.86, 1.0],
+    [0, 1, 1, 1],
+  );
+  const infoX = useTransform(
+    sPin,
+    isLast ? [0.0, 0.05] : [0.04, 0.28],
+    [isEven ? -50 : 50, 0],
+  );
 
   const num   = String(index + 1).padStart(2, "0");
   const total = String(projects.length).padStart(2, "0");
@@ -281,12 +296,11 @@ function ParallaxProject({ project, index, isLast }: { project: Project; index: 
      */
     <section
       ref={sectionRef}
-      className={`relative bg-carbon h-[200vh]${index > 0 ? " -mt-[100vh]" : ""}${isLast ? " -mb-[100vh]" : ""}`}
+      className={`relative bg-carbon${isLast ? " h-screen" : " h-[200vh]"}${index > 0 ? " -mt-[100vh]" : ""}`}
       style={{
-        height: "200svh",
+        height: isLast ? "100svh" : "200svh",
         zIndex: index + 1,
         ...(index > 0 ? { marginTop: "-100svh" } : {}),
-        ...(isLast ? { marginBottom: "-100svh" } : {}),
       }}
     >
       <div
