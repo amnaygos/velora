@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Sign In</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="login">
+
+  <div class="login-wrap">
+    <!-- Visual -->
+    <div class="login-visual">
+      <img src="../public/images/dark-gym.jpg" alt="" onerror="this.style.display='none'" />
+      <div class="veil"></div>
+      <div class="q">
+        <p>The studio behind the standard.<br />One place to run every project.</p>
+        <span>VELORA — OPERATIONS</span>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="login-form">
+      <img src="../public/images/logo full velora.svg" alt="VELORA" style="height:26px;width:auto;filter:brightness(0) invert(1);margin-bottom:10px;" />
+      <div class="brand-sub">ADMIN</div>
+      <h2>SIGN IN TO YOUR WORKSPACE</h2>
+
+      <form onsubmit="window.location.href='index.html';return false;">
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@velora.qa" value="admin@velora.qa" required />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" placeholder="••••••••••" value="password" required />
+        </div>
+
+        <div class="between mb-40" style="margin-top:-6px;">
+          <label class="choice" style="border:none;padding:0;gap:9px;cursor:pointer;" onclick="this.classList.toggle('sel')">
+            <span class="box"></span> Keep me signed in
+          </label>
+          <a href="#" class="label" style="color:var(--olive);letter-spacing:0.15em;">FORGOT?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full" style="justify-content:center;padding:15px;">
+          ENTER WORKSPACE
+        </button>
+      </form>
+
+      <p class="dim mt-40" style="font-size:8px;letter-spacing:0.25em;">
+        RESTRICTED ACCESS — VELORA PRINCIPALS &amp; STUDIO TEAM ONLY
+      </p>
+    </div>
+  </div>
+
+  <script src="assets/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — New Project</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="enquiries">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb"><a href="enquiries.html" style="color:var(--olive)">ENQUIRIES</a> — CONVERT</div>
+        <h1>New Project from Enquiry</h1>
+      </div>
+      <div class="topbar-actions">
+        <a href="enquiries.html" class="btn btn-ghost btn-sm">CANCEL</a>
+        <a href="project-detail.html" class="btn btn-primary btn-sm">
+          CREATE PROJECT
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Source enquiry banner -->
+      <div class="panel panel-pad mb-40" style="border-left:2px solid var(--olive);">
+        <div class="between">
+          <div class="flex items-center gap-16">
+            <div class="avatar avatar-lg avatar-olive">KE</div>
+            <div>
+              <div class="eyebrow mb-16">CONVERTING ENQUIRY · RECEIVED 2H AGO</div>
+              <div style="font-size:15px;font-weight:300;letter-spacing:0.04em;">Khalid Al Emadi — Hotel Fitness Centre</div>
+              <div class="dim tt-none mt-8" style="font-size:11px;">khalid@emadi-group.qa · +974 5512 8890 · Emadi Group Hospitality</div>
+            </div>
+          </div>
+          <span class="pill pill-olive">FIELDS PRE-FILLED FROM ENQUIRY</span>
+        </div>
+      </div>
+
+      <div class="grid cols-main">
+        <!-- Left: form -->
+        <div class="panel panel-pad">
+          <div class="section-head mb-40"><span class="eyebrow">PROJECT DETAILS</span></div>
+
+          <div class="field">
+            <label>Project Name <span class="req">*</span></label>
+            <input type="text" value="Marina Signature Fitness Floor" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Client <span class="req">*</span></label>
+              <input type="text" value="Khalid Al Emadi" />
+            </div>
+            <div class="field">
+              <label>Company</label>
+              <input type="text" value="Emadi Group Hospitality" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Project Type</label>
+              <select>
+                <option>Hotel Fitness Centre</option>
+                <option>Private Gym / Fitness Studio</option>
+                <option>Commercial Gym / Health Club</option>
+                <option>Residential Wellness Suite</option>
+                <option>Spa &amp; Recovery Centre</option>
+                <option>Corporate Wellness Facility</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Location</label>
+              <input type="text" value="Lusail Marina, Qatar" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Budget Range</label>
+              <select>
+                <option>QAR 5,000,000 +</option>
+                <option>QAR 2,000,000 – 5,000,000</option>
+                <option>QAR 500,000 – 2,000,000</option>
+                <option>Under QAR 500,000</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Target Completion</label>
+              <input type="text" placeholder="e.g. Q3 2027" value="Q3 2027" />
+            </div>
+          </div>
+
+          <div class="divider-h"></div>
+
+          <div class="section-head mb-24"><span class="eyebrow">STARTING STAGE</span></div>
+          <div class="choice-grid" style="grid-template-columns:repeat(4,1fr);">
+            <label class="choice sel" onclick="pickStage(this)"><span class="box"></span>Consultation</label>
+            <label class="choice" onclick="pickStage(this)"><span class="box"></span>Design</label>
+            <label class="choice" onclick="pickStage(this)"><span class="box"></span>Build</label>
+            <label class="choice" onclick="pickStage(this)"><span class="box"></span>Operations</label>
+          </div>
+
+          <div class="field mt-40" style="margin-bottom:0;">
+            <label>Brief (carried from enquiry)</label>
+            <textarea class="tt-none">Five-star tower in Lusail Marina. Full fitness &amp; recovery floor, ~900 m², sea views two sides. Partner for design through operations — not equipment supply only.</textarea>
+          </div>
+        </div>
+
+        <!-- Right: assignment + first schedule -->
+        <div class="stack gap-24">
+          <div class="panel panel-pad">
+            <div class="label mb-24">ASSIGN TEAM</div>
+            <div class="field">
+              <label>Lead Principal</label>
+              <select><option>Admin</option><option>Rashid K.</option></select>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Designer</label>
+              <select><option>Layla H.</option><option>Omar T.</option><option>Unassigned</option></select>
+            </div>
+          </div>
+
+          <div class="panel panel-pad">
+            <div class="label mb-24">SCHEDULE FIRST STEP</div>
+            <div class="field">
+              <label>Discovery Call</label>
+              <input type="text" value="Fri 10 Jul · 11:00" />
+            </div>
+            <label class="choice sel" style="width:100%;" onclick="toggleChoice(this)">
+              <span class="box"></span>Add to calendar &amp; email client
+            </label>
+          </div>
+
+          <div class="panel panel-pad" style="background:var(--olive-06);border-color:var(--olive-30);">
+            <div class="eyebrow mb-16">WHAT HAPPENS NEXT</div>
+            <p class="tt-none dim" style="font-size:11px;line-height:1.9;">
+              The enquiry is marked <b style="color:var(--olive)">Converted</b>, a Project card appears in
+              <b style="color:var(--white)">Consultation</b>, and the discovery call lands on the
+              <b style="color:var(--white)">Calendar</b>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/admin.js"></script>
+<script>
+  function pickStage(el){ document.querySelectorAll('.choice-grid .choice').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); }
+</script>
+</body>
+</html>

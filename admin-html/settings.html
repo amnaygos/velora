@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Settings</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="settings">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb">VELORA — SYSTEM</div>
+        <h1>Settings</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm">SAVE CHANGES</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="grid cols-main">
+
+        <!-- Left column -->
+        <div class="stack gap-24">
+
+          <!-- Team -->
+          <div class="panel">
+            <div class="panel-head">
+              <h3>TEAM &amp; ACCESS</h3>
+              <button class="btn btn-ghost btn-sm" onclick="openDrawer('inviteMember')">+ INVITE</button>
+            </div>
+            <div class="table-wrap">
+              <table class="tbl">
+                <thead><tr><th>Member</th><th>Role</th><th>Access</th><th class="right">Status</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><div class="who"><div class="avatar avatar-olive">AD</div><div class="n"><b>Admin</b><span class="tt-none">admin@velora.qa</span></div></div></td>
+                    <td class="muted">PRINCIPAL</td>
+                    <td><span class="pill pill-olive">FULL ADMIN</span></td>
+                    <td class="right"><span class="dim">YOU</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="who"><div class="avatar">RK</div><div class="n"><b>Rashid K.</b><span class="tt-none">rashid@velora.qa</span></div></div></td>
+                    <td class="muted">PRINCIPAL</td>
+                    <td><span class="pill pill-olive">FULL ADMIN</span></td>
+                    <td class="right"><span class="pill pill-ghost">ACTIVE</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="who"><div class="avatar">LH</div><div class="n"><b>Layla H.</b><span class="tt-none">layla@velora.qa</span></div></div></td>
+                    <td class="muted">DESIGNER</td>
+                    <td><span class="pill">EDITOR</span></td>
+                    <td class="right"><span class="pill pill-ghost">ACTIVE</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="who"><div class="avatar">OT</div><div class="n"><b>Omar T.</b><span class="tt-none">omar@velora.qa</span></div></div></td>
+                    <td class="muted">ARCHITECT</td>
+                    <td><span class="pill">EDITOR</span></td>
+                    <td class="right"><span class="pill pill-ghost">ACTIVE</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="who"><div class="avatar" style="opacity:.5">SN</div><div class="n"><b>Sara N.</b><span class="tt-none">sara@velora.qa</span></div></div></td>
+                    <td class="muted">COORDINATOR</td>
+                    <td><span class="pill pill-ghost">VIEWER</span></td>
+                    <td class="right"><span class="pill pill-amber">PENDING</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pipeline stages -->
+          <div class="panel">
+            <div class="panel-head"><h3>PIPELINE STAGES</h3><button class="btn btn-ghost btn-sm">+ ADD STAGE</button></div>
+            <div class="panel-pad">
+              <p class="dim tt-none mb-24" style="font-size:11px;letter-spacing:0.05em;">The stages a project moves through. These become your Projects board columns.</p>
+              <div class="stack gap-12">
+                <div class="between" style="border:1px solid var(--w06);padding:14px 18px;">
+                  <div class="flex items-center gap-16"><span class="dim tnum">01</span><span style="font-size:11px;letter-spacing:0.15em;">CONSULTATION</span></div>
+                  <span class="tag">ENTRY</span>
+                </div>
+                <div class="between" style="border:1px solid var(--w06);padding:14px 18px;">
+                  <div class="flex items-center gap-16"><span class="dim tnum">02</span><span style="font-size:11px;letter-spacing:0.15em;">DESIGN</span></div>
+                </div>
+                <div class="between" style="border:1px solid var(--w06);padding:14px 18px;">
+                  <div class="flex items-center gap-16"><span class="dim tnum">03</span><span style="font-size:11px;letter-spacing:0.15em;">BUILD</span></div>
+                </div>
+                <div class="between" style="border:1px solid var(--w06);padding:14px 18px;">
+                  <div class="flex items-center gap-16"><span class="dim tnum">04</span><span style="font-size:11px;letter-spacing:0.15em;">OPERATIONS</span></div>
+                  <span class="tag" style="border-color:var(--w20);color:var(--w50)">FINAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="stack gap-24">
+
+          <!-- Studio profile -->
+          <div class="panel panel-pad">
+            <div class="label mb-24">STUDIO PROFILE</div>
+            <div class="field"><label>Studio Name</label><input type="text" value="Velora" /></div>
+            <div class="field"><label>Enquiry Inbox</label><input type="email" class="tt-none" value="hello@velora.qa" /></div>
+            <div class="field" style="margin-bottom:0;"><label>Discovery Call Link</label><input type="text" class="tt-none" value="calendly.com/velora/discovery-call" /></div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="panel panel-pad">
+            <div class="label mb-24">NOTIFICATIONS</div>
+            <div class="stack gap-12">
+              <label class="choice sel w-full" onclick="toggleChoice(this)"><span class="box"></span>Email me on every new enquiry</label>
+              <label class="choice sel w-full" onclick="toggleChoice(this)"><span class="box"></span>Daily digest of due milestones</label>
+              <label class="choice w-full" onclick="toggleChoice(this)"><span class="box"></span>Weekly pipeline summary</label>
+            </div>
+          </div>
+
+          <!-- Danger / integrations -->
+          <div class="panel panel-pad">
+            <div class="label mb-24">INTEGRATIONS</div>
+            <div class="between mb-16" style="padding-bottom:16px;border-bottom:1px solid var(--w06);">
+              <div><b style="font-size:11px;letter-spacing:0.1em;">CALENDLY</b><br><span class="dim tt-none" style="font-size:9px;">Discovery call sync</span></div>
+              <span class="pill pill-olive">CONNECTED</span>
+            </div>
+            <div class="between">
+              <div><b style="font-size:11px;letter-spacing:0.1em;">VELORA.QA FORM</b><br><span class="dim tt-none" style="font-size:9px;">Live enquiry capture</span></div>
+              <span class="pill pill-olive">CONNECTED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Invite drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="inviteMember">
+  <div class="drawer-head">
+    <div><div class="eyebrow mb-16">TEAM</div><h2 style="font-size:20px;font-weight:300;letter-spacing:0.04em;">Invite a Member</h2></div>
+    <button class="icon-btn" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="field"><label>Full Name</label><input type="text" placeholder="Their name" /></div>
+    <div class="field"><label>Email <span class="req">*</span></label><input type="email" class="tt-none" placeholder="name@velora.qa" /></div>
+    <div class="field"><label>Role</label><select><option>Designer</option><option>Architect</option><option>Coordinator</option><option>Principal</option></select></div>
+    <div class="field" style="margin-bottom:0;">
+      <div class="label mb-16">ACCESS LEVEL</div>
+      <div class="choice-grid" style="grid-template-columns:repeat(3,1fr);">
+        <label class="choice" onclick="pickAccess(this)"><span class="box"></span>Admin</label>
+        <label class="choice sel" onclick="pickAccess(this)"><span class="box"></span>Editor</label>
+        <label class="choice" onclick="pickAccess(this)"><span class="box"></span>Viewer</label>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-primary w-full" style="justify-content:center;" onclick="closeDrawer()">SEND INVITE</button>
+  </div>
+</aside>
+
+<script src="assets/admin.js"></script>
+<script>
+  function pickAccess(el){ el.parentElement.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); }
+</script>
+</body>
+</html>

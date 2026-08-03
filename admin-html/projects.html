@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Projects</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="projects">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb">VELORA — WORKSPACE</div>
+        <h1>Projects</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="seg">
+          <button class="active" onclick="setProjectView('kanban', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><rect x="3" y="4" width="5" height="16"/><rect x="10" y="4" width="5" height="11"/><rect x="17" y="4" width="4" height="14"/></svg>
+            BOARD
+          </button>
+          <button onclick="setProjectView('table', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            LIST
+          </button>
+        </div>
+        <a href="enquiry-convert.html" class="btn btn-primary btn-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+          NEW
+        </a>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="toolbar">
+        <div class="filters">
+          <button class="chip on" onclick="toggleChip(this)">ALL TYPES</button>
+          <button class="chip" onclick="toggleChip(this)">GYMS &amp; FITNESS</button>
+          <button class="chip" onclick="toggleChip(this)">SPA &amp; WELLNESS</button>
+          <button class="chip" onclick="toggleChip(this)">HOSPITALITY</button>
+        </div>
+        <p class="dim" style="font-size:8px;letter-spacing:0.2em;">8 ACTIVE · 20.5M QAR PIPELINE</p>
+      </div>
+
+      <!-- ===== KANBAN VIEW ===== -->
+      <div data-view="kanban">
+        <div class="kanban">
+          <!-- Consultation -->
+          <div class="kan-col">
+            <div class="kan-col-head"><span class="t">CONSULTATION</span><span class="c">2</span></div>
+            <div class="kan-list">
+              <a class="kan-card" href="project-detail.html">
+                <div class="cat">GYMS &amp; FITNESS</div>
+                <div class="nm">Obsidian Performance Studio</div>
+                <div class="meta"><span class="loc">LUSAIL</span><span class="val">QAR 1.2M</span></div>
+                <div class="foot"><span class="due">Proposal sent</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">AD</div></div>
+              </a>
+              <a class="kan-card" href="project-detail.html">
+                <div class="cat">SPA &amp; WELLNESS</div>
+                <div class="nm">The Yoga Alcove</div>
+                <div class="meta"><span class="loc">AL WAAB</span><span class="val">QAR 420K</span></div>
+                <div class="foot"><span class="due">Brief review</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">LH</div></div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Design -->
+          <div class="kan-col">
+            <div class="kan-col-head"><span class="t">DESIGN</span><span class="c">2</span></div>
+            <div class="kan-list">
+              <a class="kan-card" href="project-detail.html">
+                <div class="cat">SPA &amp; WELLNESS</div>
+                <div class="nm">Nightfall Lap Pool</div>
+                <div class="meta"><span class="loc">LUSAIL</span><span class="val">QAR 4.2M</span></div>
+                <div class="foot"><span class="due soon">Render review · Jul 18</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">OT</div></div>
+              </a>
+              <a class="kan-card" href="project-detail.html">
+                <div class="cat">GYMS &amp; FITNESS</div>
+                <div class="nm">Villa Fitness Suite</div>
+                <div class="meta"><span class="loc">THE PEARL</span><span class="val">QAR 850K</span></div>
+                <div class="foot"><span class="due">Concept approved</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">LH</div></div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Build -->
+          <div class="kan-col">
+            <div class="kan-col-head"><span class="t">BUILD</span><span class="c">3</span></div>
+            <div class="kan-list">
+              <a class="kan-card flag" href="project-detail.html">
+                <div class="cat">HOSPITALITY</div>
+                <div class="nm">Aqua Training Pavilion</div>
+                <div class="meta"><span class="loc">THE PEARL</span><span class="val">QAR 5.5M</span></div>
+                <div class="foot"><span class="due soon">Sign-off · Jul 11</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">RK</div></div>
+              </a>
+              <a class="kan-card flag" href="project-detail.html">
+                <div class="cat">SPA &amp; WELLNESS</div>
+                <div class="nm">Cedar Recovery Spa</div>
+                <div class="meta"><span class="loc">MSHEIREB</span><span class="val">QAR 2.8M</span></div>
+                <div class="foot"><span class="due soon">Spec appr. · Jul 12</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">AD</div></div>
+              </a>
+              <a class="kan-card" href="project-detail.html">
+                <div class="cat">GYMS &amp; FITNESS</div>
+                <div class="nm">Grand Training Hall</div>
+                <div class="meta"><span class="loc">DOHA</span><span class="val">QAR 2.4M</span></div>
+                <div class="foot"><span class="due">Site visit today</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">RK</div></div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Operations -->
+          <div class="kan-col">
+            <div class="kan-col-head"><span class="t">OPERATIONS</span><span class="c">1</span></div>
+            <div class="kan-list">
+              <a class="kan-card" href="project-detail.html">
+                <div class="cat">GYMS &amp; FITNESS</div>
+                <div class="nm">Emerald Fitness Club</div>
+                <div class="meta"><span class="loc">WEST BAY</span><span class="val">QAR 3.1M</span></div>
+                <div class="foot"><span class="due">Handover complete</span><div class="avatar" style="width:22px;height:22px;font-size:7px;">AD</div></div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TABLE VIEW ===== -->
+      <div data-view="table" class="hide">
+        <div class="panel">
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead>
+                <tr><th>Project</th><th>Client</th><th>Type</th><th>Stage</th><th class="right">Budget</th><th>Lead</th><th class="right">Due</th></tr>
+              </thead>
+              <tbody>
+                <tr class="row-flag" onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Aqua Training Pavilion</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">THE PEARL</span></td>
+                  <td class="tt-none muted">Emadi Group</td>
+                  <td class="muted">HOSPITALITY</td>
+                  <td><span class="pill pill-olive"><span class="dot"></span>BUILD</span></td>
+                  <td class="num tt-none">5.5M</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">RK</div></td>
+                  <td class="right" style="color:var(--amber)">JUL 11</td>
+                </tr>
+                <tr class="row-flag" onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Cedar Recovery Spa</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">MSHEIREB</span></td>
+                  <td class="tt-none muted">Al Sada Family</td>
+                  <td class="muted">SPA &amp; WELLNESS</td>
+                  <td><span class="pill pill-olive"><span class="dot"></span>BUILD</span></td>
+                  <td class="num tt-none">2.8M</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">AD</div></td>
+                  <td class="right" style="color:var(--amber)">JUL 12</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Grand Training Hall</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">DOHA</span></td>
+                  <td class="tt-none muted">Al Thani Estates</td>
+                  <td class="muted">GYMS &amp; FITNESS</td>
+                  <td><span class="pill pill-olive"><span class="dot"></span>BUILD</span></td>
+                  <td class="num tt-none">2.4M</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">RK</div></td>
+                  <td class="right muted">JUL 22</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Nightfall Lap Pool</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">LUSAIL</span></td>
+                  <td class="tt-none muted">Al Mannai</td>
+                  <td class="muted">SPA &amp; WELLNESS</td>
+                  <td><span class="pill"><span class="dot"></span>DESIGN</span></td>
+                  <td class="num tt-none">4.2M</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">OT</div></td>
+                  <td class="right muted">JUL 18</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Villa Fitness Suite</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">THE PEARL</span></td>
+                  <td class="tt-none muted">Nasser bin Khaled</td>
+                  <td class="muted">GYMS &amp; FITNESS</td>
+                  <td><span class="pill"><span class="dot"></span>DESIGN</span></td>
+                  <td class="num tt-none">850K</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">LH</div></td>
+                  <td class="right muted">AUG 04</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Obsidian Performance Studio</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">LUSAIL</span></td>
+                  <td class="tt-none muted">Al Kuwari</td>
+                  <td class="muted">GYMS &amp; FITNESS</td>
+                  <td><span class="pill"><span class="dot"></span>CONSULT</span></td>
+                  <td class="num tt-none">1.2M</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">AD</div></td>
+                  <td class="right muted">JUL 15</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">The Yoga Alcove</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">AL WAAB</span></td>
+                  <td class="tt-none muted">Al Misnad</td>
+                  <td class="muted">SPA &amp; WELLNESS</td>
+                  <td><span class="pill"><span class="dot"></span>CONSULT</span></td>
+                  <td class="num tt-none">420K</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">LH</div></td>
+                  <td class="right muted">JUL 25</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Emerald Fitness Club</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">WEST BAY</span></td>
+                  <td class="tt-none muted">Al Emadi</td>
+                  <td class="muted">GYMS &amp; FITNESS</td>
+                  <td><span class="pill pill-ghost"><span class="dot"></span>OPERATE</span></td>
+                  <td class="num tt-none">3.1M</td>
+                  <td><div class="avatar" style="width:24px;height:24px;font-size:7px;">AD</div></td>
+                  <td class="right muted">LIVE</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="assets/admin.js"></script>
+</body>
+</html>

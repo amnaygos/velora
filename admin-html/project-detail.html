@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Aqua Training Pavilion</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="projects">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb"><a href="projects.html" style="color:var(--olive)">PROJECTS</a> — HOSPITALITY</div>
+        <h1>Aqua Training Pavilion</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-outline btn-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+          EDIT
+        </button>
+        <a href="portfolio.html" class="btn btn-primary btn-sm">PUBLISH TO PORTFOLIO</a>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Status bar -->
+      <div class="panel panel-pad mb-40">
+        <div class="between" style="flex-wrap:wrap;gap:20px;">
+          <div class="flex items-center gap-24" style="flex-wrap:wrap;">
+            <div><div class="label mb-16">STAGE</div><span class="pill pill-olive"><span class="dot"></span>BUILD</span></div>
+            <div style="width:1px;height:34px;background:var(--w06);"></div>
+            <div><div class="label mb-16">CLIENT</div><span style="font-size:12px;">Emadi Group Hospitality</span></div>
+            <div style="width:1px;height:34px;background:var(--w06);"></div>
+            <div><div class="label mb-16">LOCATION</div><span style="font-size:12px;">The Pearl, Qatar</span></div>
+            <div style="width:1px;height:34px;background:var(--w06);"></div>
+            <div><div class="label mb-16">VALUE</div><span style="font-size:12px;" class="tnum">QAR 5.5M</span></div>
+            <div style="width:1px;height:34px;background:var(--w06);"></div>
+            <div><div class="label mb-16">NEXT DUE</div><span style="font-size:12px;color:var(--amber)">Sign-off · Jul 11</span></div>
+          </div>
+        </div>
+
+        <!-- Stage progress -->
+        <div class="flex items-center gap-8 mt-40" style="gap:4px;">
+          <div style="flex:1;height:3px;background:var(--olive);"></div>
+          <div style="flex:1;height:3px;background:var(--olive);"></div>
+          <div style="flex:1;height:3px;background:var(--olive);"></div>
+          <div style="flex:1;height:3px;background:var(--w10);"></div>
+        </div>
+        <div class="flex between mt-16">
+          <span class="label" style="color:var(--olive)">CONSULTATION ✓</span>
+          <span class="label" style="color:var(--olive)">DESIGN ✓</span>
+          <span class="label" style="color:var(--olive)">BUILD ●</span>
+          <span class="label">OPERATIONS</span>
+        </div>
+      </div>
+
+      <div class="grid cols-main">
+        <!-- Left: timeline -->
+        <div class="panel">
+          <div class="panel-head"><h3>PROJECT TIMELINE</h3><button class="btn btn-ghost btn-sm">+ ADD MILESTONE</button></div>
+          <div class="panel-pad" style="padding-top:26px;">
+            <div class="timeline">
+              <div class="tl-item done">
+                <div class="d">12 MAR 2026 · DONE</div>
+                <div class="h tt-none">Discovery &amp; consultation</div>
+                <div class="p">Brief confirmed — full recovery floor, 900 m², dual sea view. Scope: design → operations.</div>
+              </div>
+              <div class="tl-item done">
+                <div class="d">28 APR 2026 · DONE</div>
+                <div class="h tt-none">Concept design approved</div>
+                <div class="p">Client signed off on spatial layout and material palette. Moodboard archived.</div>
+              </div>
+              <div class="tl-item done">
+                <div class="d">02 JUN 2026 · DONE</div>
+                <div class="h tt-none">Build commenced</div>
+                <div class="p">Main contractor mobilised. Pool shell and structural works underway.</div>
+              </div>
+              <div class="tl-item now">
+                <div class="d">11 JUL 2026 · DUE</div>
+                <div class="h tt-none" style="color:var(--amber)">Contractor sign-off — OVERDUE</div>
+                <div class="p">Awaiting structural sign-off before finishes phase. Chase contractor today.</div>
+              </div>
+              <div class="tl-item">
+                <div class="d">Q3 2027 · PLANNED</div>
+                <div class="h tt-none">Handover &amp; operations</div>
+                <div class="p">Staff training, quality governance, soft launch.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: details, team, files, activity -->
+        <div class="stack gap-24">
+          <div class="panel panel-pad">
+            <div class="label mb-24">DETAILS</div>
+            <div class="dl">
+              <dt>TYPE</dt><dd class="tt-none">Hotel Fitness Centre</dd>
+              <dt>AREA</dt><dd class="tt-none">~900 m²</dd>
+              <dt>STARTED</dt><dd class="tt-none">Mar 2026</dd>
+              <dt>TARGET</dt><dd class="tt-none">Q3 2027</dd>
+              <dt>CONTRACT</dt><dd class="tt-none">Design–Build–Operate</dd>
+            </div>
+          </div>
+
+          <div class="panel panel-pad">
+            <div class="label mb-24">TEAM</div>
+            <div class="stack gap-16">
+              <div class="who"><div class="avatar avatar-olive">RK</div><div class="n"><b>Rashid K.</b><span>LEAD PRINCIPAL</span></div></div>
+              <div class="who"><div class="avatar">OT</div><div class="n"><b>Omar T.</b><span>SITE ARCHITECT</span></div></div>
+              <div class="who"><div class="avatar">LH</div><div class="n"><b>Layla H.</b><span>DESIGNER</span></div></div>
+            </div>
+          </div>
+
+          <div class="panel panel-pad">
+            <div class="between mb-24"><span class="label" style="margin:0;">CLIENT</span><a href="#" class="label" style="color:var(--olive);margin:0;">ENQUIRY →</a></div>
+            <div class="who mb-16"><div class="avatar">KE</div><div class="n"><b>Khalid Al Emadi</b><span class="tt-none" style="text-transform:none;">khalid@emadi-group.qa</span></div></div>
+            <p class="dim tt-none" style="font-size:10px;letter-spacing:0.1em;">+974 5512 8890</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/admin.js"></script>
+</body>
+</html>

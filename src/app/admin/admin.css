@@ -1,0 +1,868 @@
+/* ============================================================
+   VELORA — Admin Design System
+   Dark editorial admin. Carbon / Shadow / Gunmetal / Olive.
+   Montserrat (inherited from next/font, set on <body> by the root
+   layout), wide tracking, uppercase, zero radius.
+
+   Every rule is scoped under .admin-shell so it can never collide
+   with the public site's index.css (which defines its own
+   .btn-primary / .btn-outline / html / body / * rules). The public
+   site's global reset (uppercase text-transform, carbon background,
+   zero border-radius) already matches these values, so html/body/
+   ::selection/scrollbar rules are intentionally NOT duplicated here.
+   ============================================================ */
+
+.admin-shell {
+  --carbon:   #1C1C1C;
+  --shadow:   #242426;
+  --shadow-2: #2A2A2C;
+  --gunmetal: #404140;
+  --olive:    #91928D;
+  --olive-dim:#6E6F6B;
+  --white:    #FFFFFF;
+
+  --w70: rgba(255,255,255,0.70);
+  --w50: rgba(255,255,255,0.50);
+  --w40: rgba(255,255,255,0.40);
+  --w30: rgba(255,255,255,0.30);
+  --w20: rgba(255,255,255,0.20);
+  --w10: rgba(255,255,255,0.10);
+  --w06: rgba(255,255,255,0.06);
+
+  --olive-06: rgba(145,146,141,0.06);
+  --olive-12: rgba(145,146,141,0.12);
+  --olive-30: rgba(145,146,141,0.30);
+  --olive-50: rgba(145,146,141,0.50);
+
+  --amber:    #C2A36B;
+  --amber-12: rgba(194,163,107,0.12);
+  --amber-40: rgba(194,163,107,0.40);
+
+  --sidebar-w: 236px;
+  --topbar-h:  74px;
+
+  background: var(--carbon);
+  color: var(--white);
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  min-height: 100vh;
+  /* The admin is uppercase by default (individual elements opt out with
+     .tt-none). Set here rather than relying on a global html rule, since the
+     public site's globals.css no longer uppercases globally. */
+  text-transform: uppercase;
+}
+
+.admin-shell *,
+.admin-shell *::before,
+.admin-shell *::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+.admin-shell .tt-none { text-transform: none; }
+.admin-shell a { color: inherit; text-decoration: none; }
+.admin-shell button { font-family: inherit; cursor: pointer; }
+
+.admin-shell ::-webkit-scrollbar { width: 6px; height: 6px; }
+.admin-shell ::-webkit-scrollbar-track { background: var(--carbon); }
+.admin-shell ::-webkit-scrollbar-thumb { background: var(--gunmetal); }
+.admin-shell ::-webkit-scrollbar-thumb:hover { background: var(--olive); }
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.admin-shell .app { display: flex; min-height: 100vh; }
+
+.admin-shell .sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--shadow);
+  border-right: 1px solid var(--gunmetal);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+}
+
+.admin-shell .side-logo {
+  padding: 28px 26px 26px;
+  border-bottom: 1px solid var(--w06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.admin-shell .side-logo b { font-size: 15px; font-weight: 600; letter-spacing: 0.5em; }
+.admin-shell .side-logo span { font-size: 7px; letter-spacing: 0.35em; color: var(--olive); }
+
+.admin-shell .side-scroll { flex: 1; overflow-y: auto; padding: 20px 0; }
+
+.admin-shell .side-group-label {
+  font-size: 7px;
+  letter-spacing: 0.4em;
+  color: var(--w20);
+  padding: 0 26px;
+  margin: 22px 0 12px;
+}
+.admin-shell .side-group-label:first-child { margin-top: 0; }
+
+.admin-shell .side-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 26px;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--w50);
+  border-left: 2px solid transparent;
+  transition: color .3s, background .3s, border-color .3s;
+}
+.admin-shell .side-link svg { width: 15px; height: 15px; stroke: currentColor; flex-shrink: 0; opacity: .8; }
+.admin-shell .side-link:hover { color: var(--w70); background: var(--w06); }
+.admin-shell .side-link.active {
+  color: var(--white);
+  border-left-color: var(--olive);
+  background: var(--olive-06);
+}
+.admin-shell .side-link.active svg { color: var(--olive); opacity: 1; }
+.admin-shell .side-link .badge {
+  margin-left: auto;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--carbon);
+  background: var(--olive);
+  padding: 2px 6px;
+  line-height: 1.4;
+}
+
+.admin-shell .side-foot {
+  border-top: 1px solid var(--w06);
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.admin-shell .side-foot .meta { flex: 1; min-width: 0; }
+.admin-shell .side-foot .meta b { display: block; font-size: 10px; letter-spacing: 0.15em; font-weight: 500; }
+.admin-shell .side-foot .meta span { font-size: 8px; letter-spacing: 0.2em; color: var(--w30); }
+.admin-shell .side-foot .signout {
+  font-size: 8px; letter-spacing: 0.25em; color: var(--w30);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 4px;
+}
+.admin-shell .side-foot .signout:hover { color: var(--olive); }
+
+.admin-shell .main { flex: 1; margin-left: var(--sidebar-w); min-width: 0; }
+
+.admin-shell .topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: rgba(28,28,28,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gunmetal);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 30;
+}
+.admin-shell .topbar .crumb { font-size: 8px; letter-spacing: 0.4em; color: var(--olive); margin-bottom: 7px; }
+.admin-shell .topbar h1 { font-size: 19px; font-weight: 300; letter-spacing: 0.06em; }
+.admin-shell .topbar-actions { display: flex; align-items: center; gap: 14px; }
+
+.admin-shell .content { padding: 40px; max-width: 1440px; }
+
+/* ============================================================
+   TYPOGRAPHY HELPERS
+   ============================================================ */
+.admin-shell .eyebrow { font-size: 8px; letter-spacing: 0.45em; color: var(--olive); }
+.admin-shell .label   { font-size: 9px; letter-spacing: 0.3em; color: var(--w40); }
+.admin-shell .muted   { color: var(--w40); }
+.admin-shell .dim     { color: var(--w30); }
+
+.admin-shell .section-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.admin-shell .section-head .eyebrow { white-space: nowrap; }
+.admin-shell .section-head::after { content: ''; flex: 1; height: 1px; background: var(--gunmetal); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.admin-shell .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  padding: 12px 24px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--white);
+  transition: all .3s;
+  white-space: nowrap;
+}
+.admin-shell .btn svg { width: 13px; height: 13px; stroke: currentColor; }
+.admin-shell .btn-primary { background: var(--olive); color: var(--carbon); }
+.admin-shell .btn-primary:hover { background: var(--white); }
+.admin-shell .btn-outline { border-color: var(--gunmetal); color: var(--w70); }
+.admin-shell .btn-outline:hover { border-color: var(--olive); color: var(--olive); }
+.admin-shell .btn-ghost { color: var(--w40); padding: 10px 0; }
+.admin-shell .btn-ghost:hover { color: var(--white); }
+.admin-shell .btn-sm { font-size: 9px; padding: 8px 16px; letter-spacing: 0.18em; }
+.admin-shell .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.admin-shell .icon-btn {
+  width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--gunmetal); color: var(--w50);
+  background: transparent;
+  transition: all .3s;
+}
+.admin-shell .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; }
+.admin-shell .icon-btn:hover { border-color: var(--olive); color: var(--olive); }
+
+/* ============================================================
+   PILLS / TAGS / STATUS
+   ============================================================ */
+.admin-shell .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  padding: 4px 10px;
+  border: 1px solid var(--w20);
+  color: var(--w50);
+  white-space: nowrap;
+}
+.admin-shell .pill .dot { width: 5px; height: 5px; background: currentColor; }
+.admin-shell .pill-olive { border-color: var(--olive-50); color: var(--olive); }
+.admin-shell .pill-amber { border-color: var(--amber-40); color: var(--amber); }
+.admin-shell .pill-solid { background: var(--olive); color: var(--carbon); border-color: var(--olive); }
+.admin-shell .pill-ghost { border-color: var(--w10); color: var(--w40); }
+
+.admin-shell .tag {
+  font-size: 8px;
+  letter-spacing: 0.35em;
+  color: var(--olive);
+  border: 1px solid var(--olive-30);
+  padding: 5px 11px;
+}
+
+/* ============================================================
+   PANELS / CARDS
+   ============================================================ */
+.admin-shell .panel { background: var(--shadow); border: 1px solid var(--w06); }
+.admin-shell .panel-pad { padding: 26px 28px; }
+.admin-shell .panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--w06);
+}
+.admin-shell .panel-head h3 { font-size: 11px; font-weight: 500; letter-spacing: 0.28em; }
+.admin-shell .panel-head .label { margin: 0; }
+
+.admin-shell .grid { display: grid; gap: 20px; }
+.admin-shell .grid-3 { grid-template-columns: repeat(3, 1fr); }
+.admin-shell .grid-4 { grid-template-columns: repeat(4, 1fr); }
+.admin-shell .grid-2 { grid-template-columns: repeat(2, 1fr); }
+.admin-shell .cols-main { grid-template-columns: 2fr 1fr; }
+.admin-shell .stack { display: flex; flex-direction: column; }
+
+.admin-shell .stat {
+  background: var(--shadow);
+  border: 1px solid var(--w06);
+  padding: 24px 26px 26px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+.admin-shell .stat .k { font-size: 8px; letter-spacing: 0.35em; color: var(--olive); margin-bottom: 20px; }
+.admin-shell .stat .v {
+  font-size: 42px; font-weight: 200; letter-spacing: 0.02em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.admin-shell .stat .v small { font-size: 15px; color: var(--w30); margin-left: 4px; letter-spacing: 0.05em; }
+.admin-shell .stat .sub { font-size: 8px; letter-spacing: 0.2em; color: var(--w30); margin-top: 12px; }
+.admin-shell .stat .sub .up { color: var(--olive); }
+.admin-shell .stat .sub .down { color: var(--amber); }
+.admin-shell .stat .accent-line { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--olive); }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.admin-shell .table-wrap { width: 100%; overflow-x: auto; }
+.admin-shell table.tbl { width: 100%; border-collapse: collapse; }
+.admin-shell table.tbl th {
+  text-align: left;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--w30);
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--gunmetal);
+  white-space: nowrap;
+}
+.admin-shell table.tbl td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--w06);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--w70);
+  vertical-align: middle;
+}
+.admin-shell table.tbl tr { transition: background .25s; }
+.admin-shell table.tbl tbody tr:hover { background: var(--w06); cursor: pointer; }
+.admin-shell table.tbl td .primary { color: var(--white); font-size: 12px; letter-spacing: 0.04em; }
+.admin-shell table.tbl td.num { font-variant-numeric: tabular-nums; text-align: right; }
+.admin-shell .row-flag { border-left: 2px solid var(--amber) !important; }
+
+.admin-shell .avatar {
+  width: 30px; height: 30px;
+  background: var(--gunmetal);
+  color: var(--white);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; letter-spacing: 0.1em; font-weight: 500;
+  flex-shrink: 0;
+}
+.admin-shell .avatar-lg { width: 44px; height: 44px; font-size: 12px; }
+.admin-shell .avatar-olive { background: var(--olive-12); color: var(--olive); border: 1px solid var(--olive-30); }
+.admin-shell .who { display: flex; align-items: center; gap: 12px; }
+.admin-shell .who .n { display: flex; flex-direction: column; }
+.admin-shell .who .n b { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--white); }
+.admin-shell .who .n span { font-size: 8px; letter-spacing: 0.15em; color: var(--w30); }
+
+/* ============================================================
+   KANBAN
+   ============================================================ */
+.admin-shell .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: start; }
+.admin-shell .kan-col-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px 14px;
+  border-bottom: 1px solid var(--gunmetal);
+  margin-bottom: 14px;
+}
+.admin-shell .kan-col-head .t { font-size: 9px; letter-spacing: 0.28em; color: var(--w70); }
+.admin-shell .kan-col-head .c { font-size: 9px; color: var(--olive); font-variant-numeric: tabular-nums; }
+.admin-shell .kan-list { display: flex; flex-direction: column; gap: 12px; }
+.admin-shell .kan-card {
+  display: block;
+  background: var(--shadow);
+  border: 1px solid var(--w06);
+  border-left: 2px solid var(--olive-30);
+  padding: 16px 16px 15px;
+  transition: border-color .3s, transform .2s;
+}
+.admin-shell .kan-card:hover { border-left-color: var(--olive); transform: translateY(-1px); cursor: pointer; }
+.admin-shell .kan-card.flag { border-left-color: var(--amber); }
+.admin-shell .kan-card .cat { font-size: 7px; letter-spacing: 0.35em; color: var(--olive); margin-bottom: 9px; }
+.admin-shell .kan-card .nm { font-size: 13px; font-weight: 300; letter-spacing: 0.02em; line-height: 1.2; margin-bottom: 12px; }
+.admin-shell .kan-card .meta { display: flex; align-items: center; justify-content: space-between; }
+.admin-shell .kan-card .meta .loc { font-size: 8px; letter-spacing: 0.15em; color: var(--w30); }
+.admin-shell .kan-card .meta .val { font-size: 8px; letter-spacing: 0.1em; color: var(--w50); font-variant-numeric: tabular-nums; }
+.admin-shell .kan-card .foot {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--w06);
+}
+.admin-shell .kan-card .foot .due { font-size: 8px; letter-spacing: 0.15em; color: var(--w40); }
+.admin-shell .kan-card .foot .due.soon { color: var(--amber); }
+
+/* ============================================================
+   VIEW TOGGLE (segmented)
+   ============================================================ */
+.admin-shell .seg { display: inline-flex; border: 1px solid var(--gunmetal); }
+.admin-shell .seg button {
+  background: transparent;
+  color: var(--w40);
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  padding: 9px 16px;
+  border: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: all .25s;
+}
+.admin-shell .seg button svg { width: 12px; height: 12px; stroke: currentColor; }
+.admin-shell .seg button.active { background: var(--olive); color: var(--carbon); }
+.admin-shell .seg button:not(.active):hover { color: var(--white); }
+
+.admin-shell .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.admin-shell .toolbar .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-shell .chip {
+  font-size: 8px; letter-spacing: 0.22em; color: var(--w40);
+  border: 1px solid var(--w10); padding: 8px 14px; transition: all .25s;
+  background: transparent;
+}
+.admin-shell .chip:hover { color: var(--w70); border-color: var(--w20); }
+.admin-shell .chip.on { color: var(--olive); border-color: var(--olive-50); background: var(--olive-06); }
+
+.admin-shell .search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--gunmetal); padding: 9px 14px; min-width: 220px; }
+.admin-shell .search svg { width: 13px; height: 13px; stroke: var(--w30); flex-shrink: 0; }
+.admin-shell .search input {
+  background: transparent; border: none; color: var(--white);
+  font-family: inherit; font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; width: 100%; outline: none;
+}
+.admin-shell .search input::placeholder { color: var(--w20); }
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.admin-shell .field { display: flex; flex-direction: column; gap: 9px; margin-bottom: 26px; }
+.admin-shell .field > label { font-size: 9px; letter-spacing: 0.22em; color: var(--w50); }
+.admin-shell .field > label .req { color: var(--olive); }
+.admin-shell .field input, .admin-shell .field select, .admin-shell .field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--w20);
+  padding: 10px 0;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  outline: none;
+  transition: border-color .3s;
+  text-transform: none;
+  width: 100%;
+}
+.admin-shell .field textarea { border: 1px solid var(--w10); padding: 14px; resize: vertical; min-height: 90px; }
+.admin-shell .field input:focus, .admin-shell .field select:focus, .admin-shell .field textarea:focus { border-color: var(--olive); }
+.admin-shell .field input::placeholder, .admin-shell .field textarea::placeholder { color: var(--w20); }
+.admin-shell .field select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2391928D' fill='none' stroke-width='1'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right center; }
+.admin-shell .field select option { background: var(--shadow); color: var(--white); }
+.admin-shell .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+.admin-shell .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.admin-shell .choice {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 14px; border: 1px solid var(--w10);
+  font-size: 10px; letter-spacing: 0.05em; color: var(--w50);
+  transition: all .3s; text-transform: none; cursor: pointer; background: transparent;
+}
+.admin-shell .choice .box { width: 12px; height: 12px; border: 1px solid var(--w30); flex-shrink: 0; transition: all .3s; }
+.admin-shell .choice:hover { border-color: var(--w20); }
+.admin-shell .choice.sel { border-color: var(--olive-50); background: var(--olive-06); color: var(--white); }
+.admin-shell .choice.sel .box { background: var(--olive); border-color: var(--olive); }
+
+/* ============================================================
+   DEFINITION LISTS (detail views)
+   ============================================================ */
+.admin-shell .dl { display: grid; grid-template-columns: 130px 1fr; row-gap: 18px; column-gap: 20px; }
+.admin-shell .dl dt { font-size: 8px; letter-spacing: 0.28em; color: var(--w30); padding-top: 3px; }
+.admin-shell .dl dd { font-size: 12px; letter-spacing: 0.05em; color: var(--white); }
+
+.admin-shell .timeline { position: relative; padding-left: 26px; }
+.admin-shell .timeline::before { content: ''; position: absolute; left: 5px; top: 4px; bottom: 4px; width: 1px; background: var(--gunmetal); }
+.admin-shell .tl-item { position: relative; padding-bottom: 26px; }
+.admin-shell .tl-item:last-child { padding-bottom: 0; }
+.admin-shell .tl-item::before {
+  content: ''; position: absolute; left: -24px; top: 4px;
+  width: 9px; height: 9px; background: var(--carbon); border: 1px solid var(--olive-50);
+}
+.admin-shell .tl-item.done::before { background: var(--olive); border-color: var(--olive); }
+.admin-shell .tl-item.now::before { border-color: var(--olive); box-shadow: 0 0 0 4px var(--olive-12); }
+.admin-shell .tl-item .d { font-size: 8px; letter-spacing: 0.25em; color: var(--olive); margin-bottom: 5px; }
+.admin-shell .tl-item .h { font-size: 12px; letter-spacing: 0.04em; color: var(--white); margin-bottom: 4px; }
+.admin-shell .tl-item .p { font-size: 10px; letter-spacing: 0.05em; color: var(--w40); text-transform: none; line-height: 1.7; }
+
+/* ============================================================
+   MINI BARS
+   ============================================================ */
+.admin-shell .barline { display: flex; flex-direction: column; gap: 16px; }
+.admin-shell .barrow { display: grid; grid-template-columns: 90px 1fr 32px; align-items: center; gap: 16px; }
+.admin-shell .barrow .bl { font-size: 8px; letter-spacing: 0.25em; color: var(--w50); }
+.admin-shell .barrow .track { height: 6px; background: var(--w06); }
+.admin-shell .barrow .fill { height: 100%; background: var(--olive); opacity: .7; }
+.admin-shell .barrow .bn { font-size: 10px; color: var(--w50); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   CALENDAR
+   ============================================================ */
+.admin-shell .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+.admin-shell .cal-nav { display: flex; align-items: center; gap: 18px; }
+.admin-shell .cal-nav .mo { font-size: 15px; font-weight: 300; letter-spacing: 0.1em; min-width: 190px; }
+.admin-shell .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--gunmetal); border-left: 1px solid var(--gunmetal); }
+.admin-shell .cal-dow {
+  font-size: 8px; letter-spacing: 0.3em; color: var(--w30);
+  padding: 12px 14px; border-right: 1px solid var(--gunmetal); border-bottom: 1px solid var(--gunmetal);
+  background: var(--shadow);
+}
+.admin-shell .cal-cell {
+  min-height: 118px;
+  border-right: 1px solid var(--w06);
+  border-bottom: 1px solid var(--w06);
+  padding: 10px 10px 8px;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: background .25s;
+}
+.admin-shell .cal-cell:hover { background: var(--w06); cursor: pointer; }
+.admin-shell .cal-cell.out { background: rgba(0,0,0,0.15); }
+.admin-shell .cal-cell.out .dn { color: var(--w10); }
+.admin-shell .cal-cell .dn { font-size: 10px; letter-spacing: 0.05em; color: var(--w40); font-variant-numeric: tabular-nums; }
+.admin-shell .cal-cell.today .dn {
+  color: var(--carbon); background: var(--olive);
+  width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;
+}
+.admin-shell .cal-ev {
+  font-size: 8px; letter-spacing: 0.08em; text-transform: none;
+  padding: 4px 7px; color: var(--white); line-height: 1.4;
+  border-left: 2px solid var(--olive); background: var(--olive-06);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.admin-shell .cal-ev.visit { border-left-color: var(--olive); }
+.admin-shell .cal-ev.call  { border-left-color: var(--w40); background: var(--w06); }
+.admin-shell .cal-ev.due   { border-left-color: var(--amber); background: var(--amber-12); color: var(--amber); }
+.admin-shell .cal-more { font-size: 8px; letter-spacing: 0.15em; color: var(--w30); }
+
+.admin-shell .legend { display: flex; gap: 22px; flex-wrap: wrap; }
+.admin-shell .legend .li { display: flex; align-items: center; gap: 8px; font-size: 8px; letter-spacing: 0.2em; color: var(--w40); }
+.admin-shell .legend .sw { width: 10px; height: 10px; }
+
+/* ============================================================
+   PORTFOLIO GRID
+   ============================================================ */
+.admin-shell .pf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.admin-shell .pf-card { background: var(--shadow); border: 1px solid var(--w06); transition: border-color .3s; cursor: pointer; }
+.admin-shell .pf-card:hover { border-color: var(--olive-30); }
+.admin-shell .pf-thumb { position: relative; aspect-ratio: 4/3; overflow: hidden; background: var(--gunmetal); }
+.admin-shell .pf-thumb img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%) brightness(.85); transition: filter .4s; }
+.admin-shell .pf-card:hover .pf-thumb img { filter: grayscale(0%) brightness(1); }
+.admin-shell .pf-thumb .status { position: absolute; top: 10px; left: 10px; }
+.admin-shell .pf-thumb .ba { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 6px; }
+.admin-shell .pf-body { padding: 16px 18px 18px; }
+.admin-shell .pf-body .cat { font-size: 7px; letter-spacing: 0.35em; color: var(--olive); margin-bottom: 8px; }
+.admin-shell .pf-body .nm { font-size: 14px; font-weight: 300; letter-spacing: 0.02em; margin-bottom: 10px; }
+.admin-shell .pf-body .meta { display: flex; align-items: center; justify-content: space-between; }
+.admin-shell .pf-body .meta span { font-size: 8px; letter-spacing: 0.15em; color: var(--w30); }
+.admin-shell .pf-add {
+  border: 1px dashed var(--w20); background: transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  min-height: 220px; color: var(--w30); transition: all .3s; width: 100%;
+}
+.admin-shell .pf-add:hover { border-color: var(--olive-50); color: var(--olive); }
+.admin-shell .pf-add svg { width: 26px; height: 26px; stroke: currentColor; }
+.admin-shell .pf-add span { font-size: 9px; letter-spacing: 0.25em; }
+
+/* ============================================================
+   MODAL / DRAWER
+   ============================================================ */
+.admin-shell .overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  z-index: 60; opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.admin-shell .overlay.open { opacity: 1; pointer-events: auto; }
+.admin-shell .drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: 90vw;
+  background: var(--shadow); border-left: 1px solid var(--gunmetal);
+  z-index: 61; transform: translateX(100%); transition: transform .4s cubic-bezier(0.22,1,0.36,1);
+  display: flex; flex-direction: column;
+}
+.admin-shell .drawer.open { transform: translateX(0); }
+.admin-shell .drawer-head { padding: 26px 30px; border-bottom: 1px solid var(--w06); display: flex; align-items: flex-start; justify-content: space-between; }
+.admin-shell .drawer-body { flex: 1; overflow-y: auto; padding: 30px; }
+.admin-shell .drawer-foot { padding: 20px 30px; border-top: 1px solid var(--w06); display: flex; gap: 12px; }
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+.admin-shell .login-wrap { min-height: 100vh; display: grid; grid-template-columns: 1.15fr 1fr; }
+.admin-shell .login-visual { position: relative; overflow: hidden; background: var(--shadow); }
+.admin-shell .login-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%) brightness(.55); }
+.admin-shell .login-visual .veil { position: absolute; inset: 0; background: linear-gradient(120deg, rgba(28,28,28,0.4), rgba(28,28,28,0.85)); }
+.admin-shell .login-visual .q { position: absolute; bottom: 60px; left: 60px; right: 60px; }
+.admin-shell .login-visual .q p { font-size: 22px; font-weight: 200; letter-spacing: 0.03em; line-height: 1.4; text-transform: none; }
+.admin-shell .login-visual .q span { font-size: 8px; letter-spacing: 0.4em; color: var(--olive); display: block; margin-top: 20px; }
+.admin-shell .login-form { display: flex; flex-direction: column; justify-content: center; padding: 60px 8%; }
+.admin-shell .login-form .brand { font-size: 22px; font-weight: 600; letter-spacing: 0.55em; margin-bottom: 6px; }
+.admin-shell .login-form .brand-sub { font-size: 7px; letter-spacing: 0.4em; color: var(--olive); margin-bottom: 60px; }
+.admin-shell .login-form h2 { font-size: 13px; font-weight: 400; letter-spacing: 0.2em; color: var(--w50); margin-bottom: 34px; }
+.admin-shell .login-error {
+  border: 1px solid var(--amber-40); background: var(--amber-12); color: var(--amber);
+  font-size: 10px; letter-spacing: 0.1em; padding: 12px 16px; margin-bottom: 24px; text-transform: none;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.admin-shell .flex { display: flex; }
+.admin-shell .between { display: flex; align-items: center; justify-content: space-between; }
+.admin-shell .items-center { align-items: center; }
+.admin-shell .gap-8 { gap: 8px; } .admin-shell .gap-12 { gap: 12px; } .admin-shell .gap-16 { gap: 16px; } .admin-shell .gap-24 { gap: 24px; }
+.admin-shell .mt-8 { margin-top: 8px; } .admin-shell .mt-16 { margin-top: 16px; } .admin-shell .mt-24 { margin-top: 24px; } .admin-shell .mt-40 { margin-top: 40px; }
+.admin-shell .mb-16 { margin-bottom: 16px; } .admin-shell .mb-24 { margin-bottom: 24px; } .admin-shell .mb-40 { margin-bottom: 40px; }
+.admin-shell .w-full { width: 100%; }
+.admin-shell .right { text-align: right; }
+.admin-shell .tnum { font-variant-numeric: tabular-nums; }
+.admin-shell .divider-h { height: 1px; background: var(--w06); margin: 26px 0; }
+.admin-shell .hide { display: none; }
+
+@media (max-width: 1100px) {
+  .admin-shell .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .admin-shell .kanban { grid-template-columns: repeat(2, 1fr); }
+  .admin-shell .cols-main { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .admin-shell { --sidebar-w: 0px; }
+  .admin-shell .sidebar { transform: translateX(-100%); }
+  .admin-shell .main { margin-left: 0; }
+  .admin-shell .grid-3, .admin-shell .grid-4, .admin-shell .grid-2, .admin-shell .choice-grid, .admin-shell .field-row { grid-template-columns: 1fr; }
+  .admin-shell .login-wrap { grid-template-columns: 1fr; }
+  .admin-shell .login-visual { display: none; }
+  .admin-shell .content, .admin-shell .topbar { padding-left: 24px; padding-right: 24px; }
+  .admin-shell .pf-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   PROJECT MEDIA — upload, gallery, lightbox
+   ============================================================ */
+.admin-shell .spin { animation: admin-spin 0.9s linear infinite; }
+@keyframes admin-spin { to { transform: rotate(360deg); } }
+
+.admin-shell .media-phase-select {
+  background: transparent;
+  border: 1px solid var(--gunmetal);
+  color: var(--w50);
+  font-family: inherit;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  padding: 9px 12px;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+}
+.admin-shell .media-phase-select:hover { color: var(--w70); border-color: var(--w20); }
+.admin-shell .media-phase-select option { background: var(--shadow); color: var(--white); }
+
+/* Dropzone */
+.admin-shell .media-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 22px;
+  margin-bottom: 22px;
+  border: 1px dashed var(--w20);
+  color: var(--w30);
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  cursor: pointer;
+  transition: all .25s;
+}
+.admin-shell .media-drop:hover { border-color: var(--olive-50); color: var(--olive); }
+.admin-shell .media-drop.over {
+  border-color: var(--olive);
+  color: var(--olive);
+  background: var(--olive-06);
+}
+.admin-shell .media-drop svg { stroke: currentColor; }
+
+.admin-shell .media-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 0;
+  color: var(--w20);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+}
+.admin-shell .media-empty svg { stroke: currentColor; }
+
+/* Grid */
+.admin-shell .media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.admin-shell .media-card {
+  background: var(--carbon);
+  border: 1px solid var(--w06);
+  transition: border-color .3s;
+}
+.admin-shell .media-card:hover { border-color: var(--olive-30); }
+
+.admin-shell .media-thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--gunmetal);
+  cursor: zoom-in;
+}
+.admin-shell .media-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(.9);
+  transition: transform .5s cubic-bezier(0.22,1,0.36,1), filter .3s;
+}
+.admin-shell .media-card:hover .media-thumb img { transform: scale(1.05); filter: brightness(1); }
+
+.admin-shell .media-tag {
+  position: absolute; top: 8px; left: 8px;
+  font-size: 7px; letter-spacing: 0.28em;
+  padding: 3px 7px;
+  border: 1px solid var(--w20);
+  color: var(--w70);
+  background: rgba(28,28,28,0.75);
+  backdrop-filter: blur(3px);
+}
+.admin-shell .media-tag.before   { border-color: var(--w20);    color: var(--w50); }
+.admin-shell .media-tag.progress { border-color: var(--amber-40); color: var(--amber); }
+.admin-shell .media-tag.after    { border-color: var(--olive-50); color: var(--olive); }
+
+.admin-shell .media-cover-badge {
+  position: absolute; top: 8px; right: 8px;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 7px; letter-spacing: 0.22em;
+  padding: 3px 7px;
+  background: var(--olive);
+  color: var(--carbon);
+}
+.admin-shell .media-cover-badge svg { stroke: currentColor; }
+
+.admin-shell .media-card figcaption { padding: 10px 10px 9px; }
+.admin-shell .media-caption {
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--w50);
+  text-transform: none;
+  margin-bottom: 8px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.admin-shell .media-actions { display: flex; gap: 2px; }
+.admin-shell .media-actions button {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 6px 0;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--w30);
+  transition: all .2s;
+}
+.admin-shell .media-actions button svg { stroke: currentColor; }
+.admin-shell .media-actions button:hover:not(:disabled) {
+  color: var(--olive); border-color: var(--olive-30);
+}
+.admin-shell .media-actions button.on { color: var(--olive); }
+.admin-shell .media-actions button.danger:hover:not(:disabled) {
+  color: var(--amber); border-color: var(--amber-40);
+}
+.admin-shell .media-actions button:disabled { opacity: .25; cursor: not-allowed; }
+
+/* Inline edit */
+.admin-shell .media-edit { display: flex; flex-direction: column; gap: 8px; }
+.admin-shell .media-edit input,
+.admin-shell .media-edit select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--w20);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 5px 0;
+  text-transform: none;
+  outline: none;
+  width: 100%;
+}
+.admin-shell .media-edit input:focus,
+.admin-shell .media-edit select:focus { border-color: var(--olive); }
+.admin-shell .media-edit select { cursor: pointer; text-transform: uppercase; letter-spacing: 0.2em; font-size: 8px; }
+.admin-shell .media-edit select option { background: var(--shadow); }
+
+/* Lightbox */
+.admin-shell .lightbox {
+  position: fixed; inset: 0; z-index: 70;
+  background: rgba(10,10,10,0.94);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 5vh 6vw;
+  cursor: zoom-out;
+}
+.admin-shell .lightbox figure {
+  max-width: 100%; max-height: 100%;
+  display: flex; flex-direction: column; gap: 14px;
+  cursor: default;
+}
+.admin-shell .lightbox img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border: 1px solid var(--w10);
+}
+.admin-shell .lightbox figcaption {
+  display: flex; align-items: center; gap: 16px;
+}
+.admin-shell .lightbox .lb-caption {
+  font-size: 11px; letter-spacing: 0.05em; color: var(--w70);
+  text-transform: none; flex: 1;
+}
+.admin-shell .lightbox .lb-count {
+  font-size: 9px; letter-spacing: 0.2em; color: var(--w30);
+  font-variant-numeric: tabular-nums;
+}
+.admin-shell .lb-close {
+  position: absolute; top: 24px; right: 28px;
+  width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--w20); color: var(--w50);
+  transition: all .25s;
+}
+.admin-shell .lb-close:hover { border-color: var(--olive); color: var(--olive); }
+.admin-shell .lb-close svg { stroke: currentColor; }
+.admin-shell .lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 64px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--w10); color: var(--w40);
+  transition: all .25s;
+}
+.admin-shell .lb-nav:hover { border-color: var(--olive); color: var(--olive); }
+.admin-shell .lb-nav svg { stroke: currentColor; }
+.admin-shell .lb-prev { left: 2vw; }
+.admin-shell .lb-next { right: 2vw; }
+
+/* Cover thumbnail on the projects board / list */
+.admin-shell .kan-cover {
+  position: relative;
+  width: calc(100% + 32px);
+  margin: -16px -16px 12px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--gunmetal);
+}
+.admin-shell .kan-cover img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(.75) grayscale(15%);
+  transition: filter .4s, transform .5s cubic-bezier(0.22,1,0.36,1);
+}
+.admin-shell .kan-card:hover .kan-cover img { filter: brightness(1) grayscale(0%); transform: scale(1.04); }
+
+.admin-shell .row-thumb {
+  width: 46px; height: 32px;
+  object-fit: cover;
+  background: var(--gunmetal);
+  filter: brightness(.8);
+  flex-shrink: 0;
+}
+
+/* Inline role dropdown in the settings team table */
+.admin-shell .role-select {
+  background: transparent;
+  border: 1px solid var(--gunmetal);
+  color: var(--olive);
+  font-family: inherit;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  padding: 6px 10px;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  transition: border-color .25s;
+}
+.admin-shell .role-select:hover:not(:disabled) { border-color: var(--olive-50); }
+.admin-shell .role-select:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-shell .role-select option { background: var(--shadow); color: var(--white); }

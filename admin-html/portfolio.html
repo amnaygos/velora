@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Portfolio</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="portfolio">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb">VELORA — CONTENT</div>
+        <h1>Portfolio</h1>
+      </div>
+      <div class="topbar-actions">
+        <a href="/portfolio" target="_blank" class="btn btn-outline btn-sm">VIEW LIVE SITE ↗</a>
+        <button class="btn btn-primary btn-sm" onclick="openDrawer('pfEdit')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+          ADD PROJECT
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="toolbar">
+        <div class="filters">
+          <button class="chip on" onclick="toggleChip(this)">PUBLISHED · 7</button>
+          <button class="chip" onclick="toggleChip(this)">DRAFT · 1</button>
+          <button class="chip" onclick="toggleChip(this)">GYMS &amp; FITNESS</button>
+          <button class="chip" onclick="toggleChip(this)">SPA &amp; WELLNESS</button>
+        </div>
+        <p class="dim" style="font-size:8px;letter-spacing:0.2em;">DRAG TO REORDER · CHANGES SYNC TO VELORA.QA</p>
+      </div>
+
+      <div class="pf-grid">
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/BigroomGym-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-solid">PUBLISHED</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">GYMS &amp; FITNESS</div>
+            <div class="nm">Grand Training Hall</div>
+            <div class="meta"><span>DOHA, QATAR</span><span>2025</span></div>
+          </div>
+        </div>
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/Gym1-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-solid">PUBLISHED</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">GYMS &amp; FITNESS</div>
+            <div class="nm">Villa Fitness Suite</div>
+            <div class="meta"><span>DOHA, QATAR</span><span>2024</span></div>
+          </div>
+        </div>
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/dark-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-solid">PUBLISHED</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">GYMS &amp; FITNESS</div>
+            <div class="nm">Obsidian Performance Studio</div>
+            <div class="meta"><span>LUSAIL, QATAR</span><span>2025</span></div>
+          </div>
+        </div>
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/Gym2-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-solid">PUBLISHED</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">GYMS &amp; FITNESS</div>
+            <div class="nm">Aqua Training Pavilion</div>
+            <div class="meta"><span>THE PEARL, QATAR</span><span>2024</span></div>
+          </div>
+        </div>
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/gym3-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-solid">PUBLISHED</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">GYMS &amp; FITNESS</div>
+            <div class="nm">Emerald Fitness Club</div>
+            <div class="meta"><span>WEST BAY, QATAR</span><span>2023</span></div>
+          </div>
+        </div>
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/pool-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-solid">PUBLISHED</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">SPA &amp; WELLNESS</div>
+            <div class="nm">Nightfall Lap Pool</div>
+            <div class="meta"><span>LUSAIL, QATAR</span><span>2024</span></div>
+          </div>
+        </div>
+
+        <div class="pf-card" onclick="openDrawer('pfEdit')">
+          <div class="pf-thumb">
+            <img src="../public/Portfolio/small yoga room-A.png" alt="" onerror="this.style.opacity=0" />
+            <span class="status"><span class="pill pill-amber">DRAFT</span></span>
+            <div class="ba"><span class="tag" style="border-color:var(--w20);color:var(--w50)">B/A</span></div>
+          </div>
+          <div class="pf-body">
+            <div class="cat">SPA &amp; WELLNESS</div>
+            <div class="nm">The Yoga Alcove</div>
+            <div class="meta"><span>AL WAAB, QATAR</span><span>2023</span></div>
+          </div>
+        </div>
+
+        <!-- Add tile -->
+        <button class="pf-add" onclick="openDrawer('pfEdit')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.1" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+          <span>ADD PROJECT</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="pfEdit">
+  <div class="drawer-head">
+    <div><div class="eyebrow mb-16">PORTFOLIO ENTRY</div><h2 style="font-size:20px;font-weight:300;letter-spacing:0.04em;">Grand Training Hall</h2></div>
+    <button class="icon-btn" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <!-- Before / After uploads -->
+    <div class="field-row mb-40" style="margin-bottom:32px;">
+      <div>
+        <div class="label mb-16">BEFORE</div>
+        <div class="pf-thumb" style="aspect-ratio:4/3;border:1px solid var(--w10)">
+          <img src="../public/Portfolio/BigroomGym-B.png" alt="" onerror="this.style.opacity=0" />
+        </div>
+      </div>
+      <div>
+        <div class="label mb-16">AFTER</div>
+        <div class="pf-thumb" style="aspect-ratio:4/3;border:1px solid var(--w10)">
+          <img src="../public/Portfolio/BigroomGym-A.png" alt="" onerror="this.style.opacity=0" />
+        </div>
+      </div>
+    </div>
+
+    <div class="field"><label>Project Name <span class="req">*</span></label><input type="text" value="Grand Training Hall" /></div>
+    <div class="field"><label>Category</label>
+      <select><option>Gyms &amp; Fitness</option><option>Spa &amp; Wellness</option><option>Hospitality</option></select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Location</label><input type="text" value="Doha, Qatar" /></div>
+      <div class="field"><label>Year</label><input type="text" value="2025" /></div>
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <div class="label mb-16">VISIBILITY</div>
+      <div class="choice-grid">
+        <label class="choice sel" onclick="pickVis(this)"><span class="box"></span>Published</label>
+        <label class="choice" onclick="pickVis(this)"><span class="box"></span>Draft</label>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-primary w-full" style="justify-content:center;" onclick="closeDrawer()">SAVE &amp; PUBLISH</button>
+    <button class="btn btn-outline" onclick="closeDrawer()">REMOVE</button>
+  </div>
+</aside>
+
+<script src="assets/admin.js"></script>
+<script>
+  function pickVis(el){ document.querySelectorAll('#pfEdit .choice').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); }
+</script>
+</body>
+</html>

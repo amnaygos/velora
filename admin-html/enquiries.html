@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Enquiries</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="enquiries">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb">VELORA — WORKSPACE</div>
+        <h1>Enquiries</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <input type="text" placeholder="Search enquiries…" />
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="filters">
+          <button class="chip on" onclick="toggleChip(this)">ALL · 12</button>
+          <button class="chip" onclick="toggleChip(this)">NEW · 4</button>
+          <button class="chip" onclick="toggleChip(this)">CONTACTED · 3</button>
+          <button class="chip" onclick="toggleChip(this)">QUALIFIED · 2</button>
+          <button class="chip" onclick="toggleChip(this)">CONVERTED · 2</button>
+          <button class="chip" onclick="toggleChip(this)">ARCHIVED · 1</button>
+        </div>
+        <p class="dim" style="font-size:8px;letter-spacing:0.2em;">FROM VELORA.QA CONTACT FORM · LIVE</p>
+      </div>
+
+      <div class="panel">
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Contact</th><th>Project Type</th><th>Budget</th><th>Source</th><th>Received</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-flag" onclick="openDrawer('enq1')">
+                <td>
+                  <div class="who"><div class="avatar">KE</div><div class="n"><b>Khalid Al Emadi</b><span class="tt-none">khalid@emadi-group.qa</span></div></div>
+                </td>
+                <td class="tt-none muted">Hotel Fitness Centre</td>
+                <td class="tt-none">QAR 5M +</td>
+                <td class="muted">REFERRAL</td>
+                <td class="muted">2H AGO</td>
+                <td><span class="pill pill-solid">NEW</span></td>
+              </tr>
+              <tr class="row-flag" onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">SM</div><div class="n"><b>Sara Al Mannai</b><span class="tt-none">sara.mannai@icloud.com</span></div></div></td>
+                <td class="tt-none muted">Residential Wellness Suite</td>
+                <td class="tt-none">QAR 500K – 2M</td>
+                <td class="muted">INSTAGRAM</td>
+                <td class="muted">5H AGO</td>
+                <td><span class="pill pill-solid">NEW</span></td>
+              </tr>
+              <tr class="row-flag" onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">FA</div><div class="n"><b>Fatima Al Attiyah</b><span class="tt-none">f.attiyah@qatarwellness.qa</span></div></div></td>
+                <td class="tt-none muted">Spa &amp; Recovery Centre</td>
+                <td class="tt-none">QAR 2M – 5M</td>
+                <td class="muted">LINKEDIN</td>
+                <td class="muted">YESTERDAY</td>
+                <td><span class="pill pill-solid">NEW</span></td>
+              </tr>
+              <tr class="row-flag" onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">MJ</div><div class="n"><b>Mohammed Al Jaber</b><span class="tt-none">mj@jaberholdings.com</span></div></div></td>
+                <td class="tt-none muted">Commercial Gym / Health Club</td>
+                <td class="tt-none">Not yet defined</td>
+                <td class="muted">DIRECT</td>
+                <td class="muted">YESTERDAY</td>
+                <td><span class="pill pill-solid">NEW</span></td>
+              </tr>
+              <tr onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">NK</div><div class="n"><b>Noor Al Kuwari</b><span class="tt-none">noor@alkuwari.qa</span></div></div></td>
+                <td class="tt-none muted">Private Gym / Fitness Studio</td>
+                <td class="tt-none">QAR 500K – 2M</td>
+                <td class="muted">REFERRAL</td>
+                <td class="muted">3 DAYS</td>
+                <td><span class="pill pill-olive">CONTACTED</span></td>
+              </tr>
+              <tr onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">HS</div><div class="n"><b>Hamad Al Sada</b><span class="tt-none">hamad.sada@gmail.com</span></div></div></td>
+                <td class="tt-none muted">Corporate Wellness Facility</td>
+                <td class="tt-none">QAR 2M – 5M</td>
+                <td class="muted">LINKEDIN</td>
+                <td class="muted">4 DAYS</td>
+                <td><span class="pill pill-olive">CONTACTED</span></td>
+              </tr>
+              <tr onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">AT</div><div class="n"><b>Aisha Al Thani</b><span class="tt-none">a.thani@royalestates.qa</span></div></div></td>
+                <td class="tt-none muted">Hotel Fitness Centre</td>
+                <td class="tt-none">QAR 5M +</td>
+                <td class="muted">REFERRAL</td>
+                <td class="muted">1 WEEK</td>
+                <td><span class="pill pill-olive">QUALIFIED</span></td>
+              </tr>
+              <tr onclick="openDrawer('enq1')">
+                <td><div class="who"><div class="avatar">YM</div><div class="n"><b>Yousef Al Misnad</b><span class="tt-none">yousef@misnad.qa</span></div></div></td>
+                <td class="tt-none muted">Residential Wellness Suite</td>
+                <td class="tt-none">QAR 500K – 2M</td>
+                <td class="muted">INSTAGRAM</td>
+                <td class="muted">2 WEEKS</td>
+                <td><span class="pill pill-ghost">CONVERTED</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="dim mt-24" style="font-size:8px;letter-spacing:0.2em;">SHOWING 8 OF 12 · CLICK ANY ROW TO OPEN THE FULL ENQUIRY</p>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay + Drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="enq1">
+  <div class="drawer-head">
+    <div>
+      <div class="eyebrow mb-16">NEW ENQUIRY · 2H AGO</div>
+      <h2 style="font-size:20px;font-weight:300;letter-spacing:0.04em;">Khalid Al Emadi</h2>
+    </div>
+    <button class="icon-btn" onclick="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="dl mb-40">
+      <dt>EMAIL</dt><dd class="tt-none" style="color:var(--olive)">khalid@emadi-group.qa</dd>
+      <dt>PHONE</dt><dd class="tt-none">+974 5512 8890</dd>
+      <dt>COMPANY</dt><dd class="tt-none">Emadi Group Hospitality</dd>
+      <dt>PROJECT</dt><dd class="tt-none">Hotel Fitness Centre</dd>
+      <dt>BUDGET</dt><dd class="tt-none">QAR 5,000,000 +</dd>
+      <dt>SOURCE</dt><dd>Referral</dd>
+    </div>
+
+    <div class="section-head"><span class="eyebrow">THEIR VISION</span></div>
+    <p class="tt-none" style="font-size:12px;line-height:2;color:var(--w70);letter-spacing:0.03em;">
+      We're opening a five-star tower in Lusail Marina next year and want a signature fitness &amp; recovery
+      floor that competes with anything in the region. Full floor, roughly 900 m², sea views on two sides.
+      Looking for a partner who can handle design through operations — not just supply equipment.
+    </p>
+
+    <div class="divider-h"></div>
+
+    <div class="section-head"><span class="eyebrow">INTERNAL NOTE</span></div>
+    <div class="field" style="margin-bottom:0;">
+      <textarea class="tt-none" placeholder="Add a note for the team…">Referred by A. Al Thani (Royal Estates). High intent — wants a call this week. Assign to principals.</textarea>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <a href="enquiry-convert.html" class="btn btn-primary w-full" style="justify-content:center;">
+      CONVERT TO PROJECT
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <button class="btn btn-outline" onclick="closeDrawer()">ARCHIVE</button>
+  </div>
+</aside>
+
+<script src="assets/admin.js"></script>
+</body>
+</html>

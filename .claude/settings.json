@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat tailwind.config.ts)",
+      "Bash(cat tailwind.config.js)",
+      "Bash(cd \"c:\\\\Users\\\\User\\\\Documents\\\\Apps\\\\VELORA\" && mkdir -p admin-html/assets && echo \"created\" && ls -la admin-html)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"let d=JSON.parse\\(require\\('fs'\\).readFileSync\\(0\\)\\);console.log\\('next:',d.dependencies.next\\);console.log\\(Object.keys\\(d.dependencies\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const d=require\\('./package.json'\\);console.log\\('@supabase/supabase-js', d.dependencies['@supabase/supabase-js']\\);console.log\\('@supabase/ssr', d.dependencies['@supabase/ssr']\\)\")",
+      "Bash(ls src/lib)",
+      "Bash(node -e \"let d=JSON.parse\\(require\\('fs'\\).readFileSync\\(0\\)\\);console.log\\(JSON.stringify\\(d.compilerOptions.paths\\)\\)\")",
+      "Bash(git mv *)",
+      "Bash(node -e \"const d=require\\('./package.json'\\);console.log\\('react:',d.dependencies.react\\)\")",
+      "Bash(grep -rn \"from \\\\\"\\\\./\\\\|from '\\\\.\\\\./\" \"src/app/\\(site\\)\")",
+      "Bash(node -e \"const d=require\\('./package.json'\\);console.log\\('date-fns:',d.dependencies['date-fns']\\)\")",
+      "Bash(git check-ignore *)",
+      "Bash(powershell -NoProfile -Command \"Get-ChildItem -Recurse 'C:\\\\Users\\\\User\\\\Documents\\\\Apps\\\\VELORA\\\\src\\\\app\\\\admin' | Select-Object FullName\")",
+      "Bash(powershell -NoProfile -Command \"Select-String -Path 'C:\\\\Users\\\\User\\\\Documents\\\\Apps\\\\VELORA\\\\src\\\\index.css' -Pattern 'text-transform' | Select-Object -First 20\")",
+      "Bash(node -e \"const i=require\\('C:/Users/User/Documents/Apps/VELORA/node_modules/lucide-react/dist/cjs/lucide-react.js'\\); console.log\\(Object.keys\\(i\\).filter\\(k=>/kanban|columns|list|grid|layout/i.test\\(k\\)\\).join\\(', '\\)\\)\")",
+      "Bash(npx eslint *)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\User\\\\Documents\\\\Apps\\\\VELORA\\\\src\\\\app\\\\admin\\\\\\(dashboard\\)\\\\enquiries\\\\[id]\\\\convert\")",
+      "Bash(curl -s -o /dev/null -w \"admin: %{http_code}\\\\n\" http://localhost:3005/admin)",
+      "Bash(curl -s -o /dev/null -w \"admin-login: %{http_code}\\\\n\" http://localhost:3005/admin/login)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(curl -s -o /dev/null -w \"home: %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(grep -rn \"Amna\\\\|amna@\" admin-html/)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(docker version *)",
+      "Bash(docker info *)",
+      "Bash(powershell -Command \"Start-Process 'C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe'\")",
+      "Bash(npx supabase *)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\User\\\\Documents\\\\Apps\\\\VELORA\\\\supabase\\\\migrations\")",
+      "Bash(curl -s -X POST http://127.0.0.1:55321/auth/v1/admin/users -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Content-Type: application/json' -d '{\"email\":\"admin@velora.qa\",\"password\":\"admin12345\",\"email_confirm\":true}')",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{try{const j=JSON.parse\\(d\\);console.log\\('id:',j.id,'email:',j.email\\);}catch\\(e\\){console.log\\('raw:',d\\);}}\\)\")",
+      "Bash(curl -s -o /dev/null -w \"admin-login: %{http_code}\\\\n\" http://localhost:3000/admin/login)",
+      "Bash(curl -s http://127.0.0.1:55321/rest/v1/enquiries?select=id,name,status -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU')",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>console.log\\(JSON.parse\\(d\\).length, 'rows'\\)\\)\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(Array.isArray\\(j\\) ? j.length+' rows' : JSON.stringify\\(j\\)\\);}\\)\")",
+      "Bash(curl -s -o /dev/null -w \"app home: %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"app admin login: %{http_code}\\\\n\" http://localhost:3000/admin/login)",
+      "Bash(curl -s -o /dev/null -w \"supabase studio: %{http_code}\\\\n\" http://127.0.0.1:55323)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}  time %{time_total}s  size %{size_download}b\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}  size %{size_download}b\\\\n\" http://localhost:3000/)",
+      "PowerShell(Get-NetTCPConnection -State Listen -LocalPort 3000,3001 -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{ Port=$_.LocalPort; PID=$_.OwningProcess; Proc=$p.ProcessName } } | Format-Table -AutoSize)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\User\\Documents\\Apps\\VELORA\\admin-html",
+      "C:\\Users\\User\\Documents\\Apps\\VELORA\\src\\app\\admin\\(dashboard)\\enquiries\\[id]",
+      "c:\\Users\\User\\Documents\\Apps\\VELORA\\supabase"
+    ]
+  }
+}

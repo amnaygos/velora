@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@theme {
+  --color-carbon: #1c1c1c;
+  --color-shadow: #242426;
+  --color-gunmetal: #404140;
+  --color-olive: #91928d;
+  --font-sans: var(--font-montserrat), sans-serif;
+  --ease-velora: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  --carbon: #1c1c1c;
+  --shadow: #242426;
+  --gunmetal: #404140;
+  --olive: #91928d;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+/* VELORA shape language: every corner is sharp. */
+* {
+  border-radius: 0 !important;
+}
+
+html {
+  background-color: var(--carbon);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--carbon);
+  color: var(--white);
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--olive);
+  color: var(--carbon);
+}
+
+:focus-visible {
+  outline: 1px solid var(--olive);
+  outline-offset: 3px;
+}
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Fine film grain over the whole experience */
+.velora-grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 300;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .velora-grain {
+    animation: velora-grain-shift 1.4s steps(4) infinite;
+  }
+}
+
+@keyframes velora-grain-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-2%, 1%, 0);
+  }
+  50% {
+    transform: translate3d(1%, -2%, 0);
+  }
+  75% {
+    transform: translate3d(-1%, 2%, 0);
+  }
+  100% {
+    transform: translate3d(2%, -1%, 0);
+  }
+}
+
+/* Custom cursor hides the native cursor on fine pointers only */
+@media (pointer: fine) {
+  body[data-velora-cursor="true"],
+  body[data-velora-cursor="true"] a,
+  body[data-velora-cursor="true"] button,
+  body[data-velora-cursor="true"] [role="button"],
+  body[data-velora-cursor="true"] label,
+  body[data-velora-cursor="true"] input,
+  body[data-velora-cursor="true"] select,
+  body[data-velora-cursor="true"] textarea {
+    cursor: none;
+  }
+}
+
+/* Thin architectural scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--carbon);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gunmetal);
+}
+
+/* Skip link */
+.velora-skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 500;
+  transform: translateY(-110%);
+  background: var(--white);
+  color: var(--carbon);
+  padding: 0.9rem 1.5rem;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: transform 0.3s var(--ease-velora);
+}
+
+.velora-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Reduced motion: strip long animations, keep every word readable */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+    scroll-behavior: auto !important;
+  }
+}

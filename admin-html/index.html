@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Overview</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="overview">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div>
+        <div class="crumb">VELORA — WORKSPACE</div>
+        <h1>Overview</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <input type="text" placeholder="Search projects, clients…" />
+        </div>
+        <a href="enquiries.html" class="icon-btn" title="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke="currentColor"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        </a>
+        <a href="enquiry-convert.html" class="btn btn-primary btn-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+          NEW PROJECT
+        </a>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Greeting -->
+      <div class="between mb-24">
+        <div>
+          <p class="eyebrow mb-16">THURSDAY — 09 JULY 2026</p>
+          <h2 style="font-size:24px;font-weight:200;letter-spacing:0.04em;">Good afternoon, Admin.</h2>
+          <p class="muted tt-none mt-8" style="font-size:12px;">You have <b style="color:var(--olive)">4 new enquiries</b> and <b style="color:var(--amber)">2 milestones due this week</b>.</p>
+        </div>
+      </div>
+
+      <!-- Stat tiles -->
+      <div class="grid grid-4 mb-40">
+        <a class="stat" href="enquiries.html">
+          <div class="k">NEW ENQUIRIES</div>
+          <div class="v">4</div>
+          <div class="sub"><span class="up">↑ 2</span> VS LAST WEEK</div>
+          <div class="accent-line" style="width:40%"></div>
+        </a>
+        <a class="stat" href="projects.html">
+          <div class="k">ACTIVE PROJECTS</div>
+          <div class="v">8</div>
+          <div class="sub">ACROSS 4 STAGES</div>
+          <div class="accent-line" style="width:70%"></div>
+        </a>
+        <a class="stat" href="calendar.html">
+          <div class="k">THIS WEEK</div>
+          <div class="v">6 <small>events</small></div>
+          <div class="sub"><span class="down">2 DUE</span> · 3 VISITS · 1 CALL</div>
+          <div class="accent-line" style="width:55%"></div>
+        </a>
+        <div class="stat">
+          <div class="k">PIPELINE VALUE</div>
+          <div class="v tnum">20.5<small>M QAR</small></div>
+          <div class="sub"><span class="up">↑ 4.2M</span> IN PROPOSAL</div>
+          <div class="accent-line" style="width:85%"></div>
+        </div>
+      </div>
+
+      <!-- Main split -->
+      <div class="grid cols-main">
+
+        <!-- Left: needs attention -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>NEEDS ATTENTION</h3>
+            <a href="projects.html" class="label" style="color:var(--olive);letter-spacing:0.2em;">ALL PROJECTS →</a>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead>
+                <tr><th>Project</th><th>Stage</th><th>What's needed</th><th class="right">Due</th></tr>
+              </thead>
+              <tbody>
+                <tr class="row-flag" onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Aqua Training Pavilion</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">THE PEARL</span></td>
+                  <td><span class="pill pill-olive"><span class="dot"></span>BUILD</span></td>
+                  <td class="tt-none muted">Contractor sign-off overdue</td>
+                  <td class="right" style="color:var(--amber)">JUL 11</td>
+                </tr>
+                <tr class="row-flag" onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Cedar Recovery Spa</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">MSHEIREB</span></td>
+                  <td><span class="pill pill-olive"><span class="dot"></span>BUILD</span></td>
+                  <td class="tt-none muted">Material spec approval</td>
+                  <td class="right" style="color:var(--amber)">JUL 12</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Obsidian Performance Studio</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">LUSAIL</span></td>
+                  <td><span class="pill"><span class="dot"></span>CONSULT</span></td>
+                  <td class="tt-none muted">Proposal awaiting client reply</td>
+                  <td class="right muted">JUL 15</td>
+                </tr>
+                <tr onclick="location.href='project-detail.html'">
+                  <td><span class="primary">Nightfall Lap Pool</span><br><span class="dim" style="font-size:8px;letter-spacing:0.15em;">LUSAIL</span></td>
+                  <td><span class="pill pill-olive"><span class="dot"></span>DESIGN</span></td>
+                  <td class="tt-none muted">Render review with principals</td>
+                  <td class="right muted">JUL 18</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: pipeline distribution + upcoming -->
+        <div class="stack gap-24">
+          <div class="panel panel-pad">
+            <div class="label mb-24">JOBS BY STAGE</div>
+            <div class="barline">
+              <div class="barrow"><span class="bl">CONSULT</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="bn">2</span></div>
+              <div class="barrow"><span class="bl">DESIGN</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="bn">2</span></div>
+              <div class="barrow"><span class="bl">BUILD</span><div class="track"><div class="fill" style="width:37%"></div></div><span class="bn">3</span></div>
+              <div class="barrow"><span class="bl">OPERATE</span><div class="track"><div class="fill" style="width:13%"></div></div><span class="bn">1</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h3>NEXT UP</h3><a href="calendar.html" class="label" style="color:var(--olive)">CALENDAR →</a></div>
+            <div class="panel-pad" style="padding-top:20px;">
+              <div class="timeline">
+                <div class="tl-item now">
+                  <div class="d">TODAY · 15:00</div>
+                  <div class="h tt-none" style="letter-spacing:0.04em;">Site visit — Grand Training Hall</div>
+                  <div class="p">Doha · with contractor &amp; client</div>
+                </div>
+                <div class="tl-item">
+                  <div class="d">TOMORROW · 11:00</div>
+                  <div class="h tt-none" style="letter-spacing:0.04em;">Discovery call — K. Al Emadi</div>
+                  <div class="p">Hotel fitness centre, Lusail</div>
+                </div>
+                <div class="tl-item">
+                  <div class="d">JUL 12</div>
+                  <div class="h tt-none" style="letter-spacing:0.04em;">Milestone — Cedar Spa spec</div>
+                  <div class="p">Material approval deadline</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/admin.js"></script>
+</body>
+</html>

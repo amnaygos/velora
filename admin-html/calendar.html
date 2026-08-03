@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora Admin — Calendar</title>
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body data-page="calendar">
+<div class="app">
+  <div id="sidebar-root"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb">VELORA — WORKSPACE</div>
+        <h1>Calendar</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="seg">
+          <button class="active">MONTH</button>
+          <button>WEEK</button>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openDrawer('newEvent')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+          SCHEDULE
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Calendar head -->
+      <div class="cal-head">
+        <div class="cal-nav">
+          <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <span class="mo">JULY 2026</span>
+          <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="btn btn-ghost btn-sm" style="margin-left:8px;">TODAY</button>
+        </div>
+        <div class="legend">
+          <div class="li"><span class="sw" style="background:var(--olive)"></span>SITE VISIT</div>
+          <div class="li"><span class="sw" style="background:var(--w40)"></span>CALL</div>
+          <div class="li"><span class="sw" style="background:var(--amber)"></span>MILESTONE / DUE</div>
+        </div>
+      </div>
+
+      <!-- Month grid -->
+      <div class="cal-grid">
+        <div class="cal-dow">MON</div><div class="cal-dow">TUE</div><div class="cal-dow">WED</div>
+        <div class="cal-dow">THU</div><div class="cal-dow">FRI</div><div class="cal-dow">SAT</div><div class="cal-dow">SUN</div>
+
+        <!-- Week 1 (Jun 29 – Jul 5) -->
+        <div class="cal-cell out"><span class="dn">29</span></div>
+        <div class="cal-cell out"><span class="dn">30</span></div>
+        <div class="cal-cell"><span class="dn">1</span></div>
+        <div class="cal-cell"><span class="dn">2</span>
+          <div class="cal-ev call" onclick="openDrawer('ev1')">10:00 Call — N. Al Kuwari</div>
+        </div>
+        <div class="cal-cell"><span class="dn">3</span></div>
+        <div class="cal-cell out"><span class="dn">4</span></div>
+        <div class="cal-cell out"><span class="dn">5</span></div>
+
+        <!-- Week 2 (Jul 6 – 12) -->
+        <div class="cal-cell"><span class="dn">6</span>
+          <div class="cal-ev visit" onclick="openDrawer('ev1')">14:00 Visit — Cedar Spa</div>
+        </div>
+        <div class="cal-cell"><span class="dn">7</span></div>
+        <div class="cal-cell"><span class="dn">8</span>
+          <div class="cal-ev visit" onclick="openDrawer('ev1')">11:00 Visit — Villa Fitness</div>
+        </div>
+        <div class="cal-cell today"><span class="dn">9</span>
+          <div class="cal-ev visit" onclick="openDrawer('ev1')">15:00 Visit — Grand Hall</div>
+        </div>
+        <div class="cal-cell"><span class="dn">10</span>
+          <div class="cal-ev call" onclick="openDrawer('ev1')">11:00 Call — K. Al Emadi</div>
+        </div>
+        <div class="cal-cell"><span class="dn">11</span>
+          <div class="cal-ev due" onclick="openDrawer('ev1')">Sign-off — Aqua Pavilion</div>
+        </div>
+        <div class="cal-cell out"><span class="dn">12</span>
+          <div class="cal-ev due" onclick="openDrawer('ev1')">Spec appr. — Cedar Spa</div>
+        </div>
+
+        <!-- Week 3 (Jul 13 – 19) -->
+        <div class="cal-cell"><span class="dn">13</span></div>
+        <div class="cal-cell"><span class="dn">14</span>
+          <div class="cal-ev visit" onclick="openDrawer('ev1')">09:30 Visit — Aqua Pavilion</div>
+        </div>
+        <div class="cal-cell"><span class="dn">15</span>
+          <div class="cal-ev due" onclick="openDrawer('ev1')">Proposal — Obsidian</div>
+        </div>
+        <div class="cal-cell"><span class="dn">16</span></div>
+        <div class="cal-cell"><span class="dn">17</span></div>
+        <div class="cal-cell out"><span class="dn">18</span>
+          <div class="cal-ev call" onclick="openDrawer('ev1')">Render review — Nightfall</div>
+        </div>
+        <div class="cal-cell out"><span class="dn">19</span></div>
+
+        <!-- Week 4 (Jul 20 – 26) -->
+        <div class="cal-cell"><span class="dn">20</span></div>
+        <div class="cal-cell"><span class="dn">21</span>
+          <div class="cal-ev visit" onclick="openDrawer('ev1')">13:00 Visit — Grand Hall</div>
+        </div>
+        <div class="cal-cell"><span class="dn">22</span>
+          <div class="cal-ev due" onclick="openDrawer('ev1')">Milestone — Grand Hall</div>
+        </div>
+        <div class="cal-cell"><span class="dn">23</span></div>
+        <div class="cal-cell"><span class="dn">24</span>
+          <div class="cal-ev call" onclick="openDrawer('ev1')">16:00 Call — Al Misnad</div>
+        </div>
+        <div class="cal-cell out"><span class="dn">25</span></div>
+        <div class="cal-cell out"><span class="dn">26</span></div>
+
+        <!-- Week 5 (Jul 27 – 31) -->
+        <div class="cal-cell"><span class="dn">27</span></div>
+        <div class="cal-cell"><span class="dn">28</span></div>
+        <div class="cal-cell"><span class="dn">29</span>
+          <div class="cal-ev visit" onclick="openDrawer('ev1')">10:00 Visit — Cedar Spa</div>
+        </div>
+        <div class="cal-cell"><span class="dn">30</span></div>
+        <div class="cal-cell"><span class="dn">31</span></div>
+        <div class="cal-cell out"><span class="dn">1</span></div>
+        <div class="cal-cell out"><span class="dn">2</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Event drawer (view/edit) -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="ev1">
+  <div class="drawer-head">
+    <div>
+      <div class="eyebrow mb-16">SITE VISIT · EDITABLE</div>
+      <h2 style="font-size:20px;font-weight:300;letter-spacing:0.04em;">Grand Training Hall</h2>
+    </div>
+    <button class="icon-btn" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="field"><label>Title</label><input type="text" value="Site visit — Grand Training Hall" /></div>
+    <div class="field-row">
+      <div class="field"><label>Date</label><input type="text" value="Thu 09 Jul 2026" /></div>
+      <div class="field"><label>Time</label><input type="text" value="15:00 – 16:30" /></div>
+    </div>
+    <div class="field">
+      <label>Type</label>
+      <select><option>Site Visit</option><option>Discovery Call</option><option>Milestone / Due Date</option><option>Internal Review</option></select>
+    </div>
+    <div class="field">
+      <label>Linked Project</label>
+      <select><option>Grand Training Hall</option><option>Aqua Training Pavilion</option><option>Cedar Recovery Spa</option></select>
+    </div>
+    <div class="field"><label>Attendees</label><input type="text" class="tt-none" value="Rashid K., contractor, client" /></div>
+    <div class="field" style="margin-bottom:0;"><label>Notes</label><textarea class="tt-none">Walk the fit-out progress with the contractor. Confirm flooring delivery date.</textarea></div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-primary w-full" style="justify-content:center;" onclick="closeDrawer()">SAVE CHANGES</button>
+    <button class="btn btn-outline" onclick="closeDrawer()">DELETE</button>
+  </div>
+</aside>
+
+<!-- New event drawer -->
+<aside class="drawer" id="newEvent">
+  <div class="drawer-head">
+    <div><div class="eyebrow mb-16">NEW</div><h2 style="font-size:20px;font-weight:300;letter-spacing:0.04em;">Schedule Event</h2></div>
+    <button class="icon-btn" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="field"><label>Title <span class="req">*</span></label><input type="text" placeholder="e.g. Site visit — …" /></div>
+    <div class="field-row">
+      <div class="field"><label>Date</label><input type="text" placeholder="Select date" /></div>
+      <div class="field"><label>Time</label><input type="text" placeholder="00:00" /></div>
+    </div>
+    <div class="field"><label>Type</label>
+      <select><option>Site Visit</option><option>Discovery Call</option><option>Milestone / Due Date</option><option>Internal Review</option></select>
+    </div>
+    <div class="field" style="margin-bottom:0;"><label>Linked Project</label>
+      <select><option>— None —</option><option>Grand Training Hall</option><option>Aqua Training Pavilion</option></select>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-primary w-full" style="justify-content:center;" onclick="closeDrawer()">ADD TO CALENDAR</button>
+  </div>
+</aside>
+
+<script src="assets/admin.js"></script>
+</body>
+</html>
