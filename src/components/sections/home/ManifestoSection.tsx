@@ -92,13 +92,13 @@ export function ManifestoSection() {
         statements.length - 0.25,
       );
     },
-    { scope: sectionRef, dependencies: [reducedMotion] },
+    { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true },
   );
 
   if (reducedMotion) {
     // Same narrative, no pinning: statements as a readable sequence.
     return (
-      <section className="relative bg-carbon px-5 py-28 sm:px-8 lg:px-12">
+      <section ref={sectionRef} className="relative bg-carbon px-5 py-28 sm:px-8 lg:px-12">
         <SectionEyebrow>VELORA — MANIFESTO</SectionEyebrow>
         <div className="mt-16 space-y-16">
           {manifestoStatements.map((lines, i) => (

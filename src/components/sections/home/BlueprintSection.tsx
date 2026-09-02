@@ -7,7 +7,7 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
  */
 export function BlueprintSection() {
   return (
-    <section className="bg-carbon px-5 py-28 sm:px-8 lg:px-12 lg:py-40">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <ArchitecturalRule />
       <div className="mt-16 grid gap-16 lg:grid-cols-2 lg:gap-24">
         <div>

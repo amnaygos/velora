@@ -5,12 +5,12 @@ import { ResponsiveVideo } from "@/components/media/ResponsiveVideo";
 import { VeloraWordmark } from "@/components/brand/VeloraWordmark";
 import { TransitionLink } from "@/components/layout/RouteTransitionProvider";
 import { PRELOADER_DONE_EVENT } from "@/components/sections/home/Preloader";
-import { pillarLead, pillarsSecondary } from "@/content/pillars";
+import { pillarLead } from "@/content/pillars";
+import { HeroStatement } from "@/components/sections/home/HeroStatement";
 import { site } from "@/content/site";
 import { getMedia } from "@/lib/media";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { cn } from "@/lib/utils";
 
 /**
  * Chapter 01 — the hero. Begins nearly black; a vertical slit reveals
@@ -27,7 +27,13 @@ export function HomeHero() {
       const section = sectionRef.current;
       if (!section) return;
 
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        // No motion: paint the highlight underlines in their finished state
+        // so the phrases still read as highlighted.
+        gsap.set("[data-statement-hl]", { "--rule": "100%" } as gsap.TweenVars);
+        gsap.set("[data-statement-rule]", { scaleX: 1 });
+        return;
+      }
 
       // — Entrance choreography (plays once the preloader releases)
       const entrance = gsap.timeline({ paused: true });
@@ -49,11 +55,53 @@ export function HomeHero() {
           { yPercent: 0, opacity: 1, duration: 1, ease: EASE, stagger: 0.14 },
           "-=0.6",
         )
+        // hairline opens outward, announcing the statement
+        .fromTo(
+          "[data-statement-rule]",
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.9, ease: EASE },
+          "-=0.5",
+        )
+        // statement rises word by word, each clearing a soft blur as it lands
+        .fromTo(
+          "[data-statement-word]",
+          { yPercent: 110, opacity: 0, filter: "blur(6px)" },
+          {
+            yPercent: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.9,
+            ease: EASE,
+            stagger: { each: 0.028, from: "start" },
+          },
+          "-=0.55",
+        )
+        // the two offering phrases ignite: underline draws, wash sweeps through
+        .to(
+          "[data-statement-hl]",
+          {
+            "--rule": "100%",
+            duration: 0.85,
+            ease: "power3.inOut",
+            stagger: 0.16,
+          } as gsap.TweenVars,
+          "-=0.25",
+        )
+        .to(
+          "[data-statement-hl]",
+          {
+            "--sweep": "340%",
+            duration: 1.15,
+            ease: "power2.inOut",
+            stagger: 0.16,
+          } as gsap.TweenVars,
+          "<0.1",
+        )
         .fromTo(
           "[data-hero-label]",
           { opacity: 0, y: 12 },
           { opacity: 1, y: 0, duration: 0.8, ease: EASE, stagger: 0.1 },
-          "-=0.4",
+          "-=0.9",
         );
 
       if (document.documentElement.dataset.veloraReady === "true") {
@@ -144,7 +192,7 @@ export function HomeHero() {
           </div>
         </div>
 
-        {/* offering pillars — the lead set large, the other two flanking */}
+        {/* the lead offering, then the studio statement */}
         <div
           data-hero-tagline
           className="mt-7 flex w-full max-w-3xl flex-col items-center sm:mt-9"
@@ -160,31 +208,23 @@ export function HomeHero() {
             </TransitionLink>
           </span>
 
-          <div className="mt-5 flex w-full items-start justify-center gap-8 sm:mt-7 sm:justify-between sm:gap-16">
-            {pillarsSecondary.map((pillar, index) => (
-              <span key={pillar.href + index} className="block overflow-hidden">
-                <TransitionLink
-                  href={pillar.href}
-                  transitionLabel={pillar.transitionLabel}
-                  data-reveal
-                  className={cn(
-                    "block text-[11px] font-light uppercase leading-[1.4] tracking-[0.22em] text-white/70 transition-colors duration-500 hover:text-white sm:text-sm lg:text-base",
-                    index === 1 ? "text-right" : "text-left",
-                  )}
-                >
-                  {pillar.title.join(" ")}
-                </TransitionLink>
-              </span>
-            ))}
-          </div>
+          {/* hairline that opens outward before the statement lands */}
+          <span
+            data-statement-rule
+            aria-hidden="true"
+            className="mt-6 block h-px w-16 origin-center scale-x-0 bg-olive/50 sm:mt-7"
+          />
+
+          <HeroStatement className="mt-6 sm:mt-7" />
         </div>
       </div>
 
-      {/* 8 — corner labels */}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between px-5 pb-8 sm:px-8 lg:px-12">
+      {/* 8 — corner labels. On phones the two labels would fight for one
+          line, so only the scroll cue stays, centred. */}
+      <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-center px-5 pb-8 sm:justify-between sm:px-8 lg:px-12">
         <p
           data-hero-label
-          className="text-[10px] uppercase tracking-[0.28em] text-white/50"
+          className="hidden text-[10px] uppercase tracking-[0.28em] text-white/50 sm:block"
         >
           {site.lifecycle}
         </p>

@@ -6,7 +6,7 @@ import { credentials } from "@/content/site";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-const DISTRICTS = ["DOHA", "LUSAIL", "THE PEARL", "LONDON"];
+const DISTRICTS = ["DOHA", "LONDON"];
 
 /**
  * Chapter 05 — proof before persuasion. Numbers begin as thin outlines,
@@ -65,13 +65,13 @@ export function CredentialsSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-carbon px-5 py-32 sm:px-8 lg:px-12 lg:py-44"
+      className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28"
       aria-label="Credentials"
     >
       <div data-credentials-frame>
       <SectionEyebrow>PROOF BEFORE PERSUASION</SectionEyebrow>
 
-      <div className="mt-20 grid gap-16 sm:grid-cols-3 sm:gap-8">
+      <div className="mt-14 grid gap-12 sm:grid-cols-3 sm:gap-8 lg:mt-20">
         {credentials.map((stat) => (
           <div
             key={stat.label}
@@ -116,7 +116,7 @@ export function CredentialsSection() {
       </div>
 
       {/* one line drawn through the districts VELORA has built in */}
-      <div className="mt-24 flex items-center gap-4 sm:gap-6">
+      <div className="mt-20 flex items-center gap-4 sm:gap-6 lg:mt-24">
         <span aria-hidden="true" className="h-px flex-1 bg-white/15" />
         {DISTRICTS.map((district, index) => (
           <span key={district} className="flex items-center gap-4 sm:gap-6">

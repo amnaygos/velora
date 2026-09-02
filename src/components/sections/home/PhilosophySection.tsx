@@ -86,12 +86,14 @@ export function PhilosophySection() {
           1.9,
         );
     },
-    { scope: sectionRef, dependencies: [pinned] },
+    // Same hydration story as ProcessFilm: tear the pin down if `pinned`
+    // flips after the first paint.
+    { scope: sectionRef, dependencies: [pinned], revertOnUpdate: true },
   );
 
   if (!pinned) {
     return (
-      <section className="bg-carbon">
+      <section ref={sectionRef} className="bg-carbon">
         {STATEMENTS.map((statement) => (
           <div
             key={statement.id}

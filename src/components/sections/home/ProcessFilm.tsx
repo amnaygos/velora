@@ -169,12 +169,16 @@ export function ProcessFilm() {
         STAGES.length,
       );
     },
-    { scope: sectionRef, dependencies: [pinned] },
+    // `pinned` resolves after hydration (the touch media query is unknown on
+    // the server). Reverting on that change tears the pin down again; without
+    // it the pin-spacer survived and touch visitors scrolled three empty
+    // screens through a frozen first frame.
+    { scope: sectionRef, dependencies: [pinned], revertOnUpdate: true },
   );
 
   if (!pinned) {
     return (
-      <section className="bg-carbon">
+      <section ref={sectionRef} className="bg-carbon">
         {STAGES.map((stage) => (
           <div key={stage.id} className="relative">
             <div className="relative h-[70vh] overflow-hidden">

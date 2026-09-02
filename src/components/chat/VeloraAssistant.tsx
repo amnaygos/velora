@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X, ArrowUp } from "lucide-react";
+import { useScrollDirection } from "@/hooks/useScrollDirection";
+import { cn } from "@/lib/utils";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -10,6 +12,32 @@ const GREETING =
 
 const SUGGESTIONS = ["What does VELORA design?", "I'm planning a project", "Tell me about your standard"];
 
+/** Width of the desktop drawer; the edge tab slides out by the same amount. */
+const DRAWER_WIDTH = "420px";
+
+const ease = "cubic-bezier(0.22,1,0.36,1)";
+
+function Pulse() {
+  return (
+    <span className="relative flex h-2 w-2">
+      <span className="absolute inline-flex h-full w-full animate-ping bg-olive opacity-60" />
+      <span className="relative inline-flex h-2 w-2 bg-olive" />
+    </span>
+  );
+}
+
+/**
+ * The studio's AI front desk.
+ *
+ * Launcher: on large screens a vertical tab docked to the right edge of the
+ * viewport. It lives inside the page gutter (content stops 48px short of the
+ * edge), so it never covers a line of text. Below lg the gutter is too narrow
+ * for that, so it becomes a compact corner square that tucks away while the
+ * visitor scrolls down — the same rule the header follows.
+ *
+ * Panel: a full-height drawer from the right edge on large screens, a
+ * full-screen sheet on small ones.
+ */
 export function VeloraAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{ role: "assistant", content: GREETING }]);
@@ -19,8 +47,10 @@ export function VeloraAssistant() {
   const leadIdRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { direction, atTop } = useScrollDirection();
 
   const started = messages.length > 1;
+  const tucked = direction === "down" && !atTop && !open;
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -28,6 +58,15 @@ export function VeloraAssistant() {
 
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 250);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
   async function send(text: string) {
@@ -75,59 +114,95 @@ export function VeloraAssistant() {
     }
   }
 
-  const ease = "cubic-bezier(0.22,1,0.36,1)";
+  const launcherLabel = open ? "Close the VELORA chat" : "Open the VELORA chat — let's talk";
 
   return (
     <>
-      {/* ── Launcher ── */}
+      {/* ── Launcher · lg+: edge tab in the right-hand gutter ── */}
       <button
         type="button"
-        aria-label={open ? "Close the VELORA concierge" : "Open the VELORA concierge"}
+        aria-label={launcherLabel}
+        aria-expanded={open}
+        aria-controls="velora-chat"
         onClick={() => setOpen((v) => !v)}
-        className="group fixed bottom-6 right-6 z-[80] flex items-center gap-3 border border-white/15 bg-carbon/85 px-5 py-3.5 backdrop-blur-md transition-all duration-500 hover:border-olive/70"
-        style={{ transitionTimingFunction: ease }}
+        className="group fixed top-1/2 z-[270] hidden -translate-y-1/2 flex-col items-center gap-4 border border-r-0 border-white/15 bg-carbon/85 px-3 py-5 backdrop-blur-md transition-[right,border-color] duration-500 hover:border-olive/70 lg:flex"
+        style={{ right: open ? DRAWER_WIDTH : 0, transitionTimingFunction: ease }}
       >
-        {open ? (
-          <X size={16} strokeWidth={1.4} className="text-white/80" />
-        ) : (
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping bg-olive opacity-60" />
-            <span className="relative inline-flex h-2 w-2 bg-olive" />
-          </span>
-        )}
-        <span className="text-[9px] font-medium uppercase tracking-[0.32em] text-white/80 transition-colors group-hover:text-olive">
-          {open ? "Close" : "Concierge"}
+        {open ? <X size={14} strokeWidth={1.4} className="text-white/80" /> : <Pulse />}
+        <span
+          className="text-[9px] font-medium uppercase tracking-[0.32em] text-white/80 transition-colors group-hover:text-olive"
+          style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+        >
+          {open ? "Close" : "Let's talk"}
         </span>
       </button>
 
-      {/* ── Panel ── */}
+      {/* ── Launcher · below lg: compact corner square that tucks away on scroll ── */}
+      <button
+        type="button"
+        aria-label={launcherLabel}
+        aria-expanded={open}
+        aria-controls="velora-chat"
+        tabIndex={tucked || open ? -1 : undefined}
+        onClick={() => setOpen(true)}
+        className={cn(
+          "fixed bottom-4 right-4 z-[270] flex h-12 w-12 flex-col items-center justify-center gap-1.5 border border-white/15 bg-carbon/85 backdrop-blur-md transition-all duration-500 lg:hidden",
+          (tucked || open) && "pointer-events-none translate-y-20 opacity-0",
+        )}
+        style={{ transitionTimingFunction: ease }}
+      >
+        <Pulse />
+        <span className="text-[7px] font-medium uppercase tracking-[0.22em] text-white/80">Talk</span>
+      </button>
+
+      {/* ── Panel · sheet on small screens, right-hand drawer on large ── */}
       <div
+        id="velora-chat"
         role="dialog"
-        aria-label="VELORA concierge"
-        className={`fixed bottom-24 right-6 z-[80] flex w-[calc(100vw-3rem)] max-w-[400px] flex-col border border-white/12 bg-carbon shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ${
-          open ? "pointer-events-auto translate-y-0 scale-100 opacity-100" : "pointer-events-none translate-y-6 scale-[0.98] opacity-0"
-        }`}
-        style={{ height: "min(600px, calc(100vh - 8rem))", transition: `all 500ms ${ease}` }}
+        aria-label="VELORA — let's talk"
+        inert={!open}
+        className={cn(
+          "fixed inset-0 z-[270] flex flex-col bg-carbon transition-transform duration-500",
+          "lg:left-auto lg:w-[var(--drawer)] lg:border-l lg:border-white/12 lg:shadow-[-30px_0_80px_-20px_rgba(0,0,0,0.8)]",
+          open ? "translate-x-0" : "pointer-events-none translate-x-full",
+        )}
+        style={{ transitionTimingFunction: ease, ["--drawer" as string]: DRAWER_WIDTH }}
       >
         {/* olive hairline */}
-        <div className="h-px w-full bg-gradient-to-r from-olive/60 via-olive/20 to-transparent" />
+        <div className="h-px w-full shrink-0 bg-gradient-to-r from-olive/60 via-olive/20 to-transparent" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5">
+        <div className="flex shrink-0 items-center justify-between px-6 py-5">
           <div>
             <p className="text-[8px] uppercase tracking-[0.45em] text-olive">VELORA</p>
-            <p className="mt-2 text-[15px] font-light uppercase tracking-[0.14em] text-white">Concierge</p>
+            <p className="mt-2 text-[15px] font-light uppercase tracking-[0.14em] text-white">
+              Let&apos;s talk
+            </p>
           </div>
-          <span className="flex items-center gap-2 text-[8px] uppercase tracking-[0.28em] text-white/40">
-            <span className="h-1.5 w-1.5 bg-olive" />
-            Online
-          </span>
+          <div className="flex items-center gap-5">
+            <span className="flex items-center gap-2 text-[8px] uppercase tracking-[0.28em] text-white/40">
+              <span className="h-1.5 w-1.5 bg-olive" />
+              Online
+            </span>
+            <button
+              type="button"
+              aria-label="Close the VELORA chat"
+              onClick={() => setOpen(false)}
+              className="flex h-9 w-9 items-center justify-center border border-white/12 text-white/70 transition-colors duration-300 hover:border-olive/60 hover:text-white"
+            >
+              <X size={14} strokeWidth={1.4} />
+            </button>
+          </div>
         </div>
 
-        <div className="mx-6 h-px bg-white/8" />
+        <div className="mx-6 h-px shrink-0 bg-white/8" />
 
-        {/* Messages */}
-        <div ref={scrollRef} className="flex-1 space-y-5 overflow-y-auto px-6 py-6">
+        {/* Messages — its own scroll region, kept out of Lenis's hands */}
+        <div
+          ref={scrollRef}
+          data-lenis-prevent
+          className="flex-1 space-y-5 overflow-y-auto overscroll-contain px-6 py-6"
+        >
           {messages.map((m, i) =>
             m.role === "assistant" ? (
               <div key={i} className="max-w-[92%] border-l border-olive/40 pl-4">
@@ -178,7 +253,7 @@ export function VeloraAssistant() {
         </div>
 
         {/* Composer */}
-        <div className="px-4 pb-4 pt-1">
+        <div className="shrink-0 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-1">
           <div className="flex items-end gap-3 border border-white/12 bg-white/[0.02] px-4 py-3 transition-colors duration-300 focus-within:border-olive/60">
             <textarea
               ref={inputRef}
@@ -200,7 +275,7 @@ export function VeloraAssistant() {
             </button>
           </div>
           <p className="mt-3 text-center text-[8px] uppercase tracking-[0.24em] text-white/25">
-            AI concierge · your enquiry reaches our principals
+            AI assistant · your enquiry reaches our principals
           </p>
         </div>
       </div>

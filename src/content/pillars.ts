@@ -35,3 +35,17 @@ export const pillarsSecondary: Pillar[] = [
 ];
 
 export const pillars: Pillar[] = [pillarLead, ...pillarsSecondary];
+
+/**
+ * The hero statement, split into segments so the two offering phrases can be
+ * highlighted and animated independently of the surrounding prose.
+ */
+export type StatementSegment = { text: string; highlight?: boolean };
+
+export const heroStatement: StatementSegment[] = [
+  { text: "We design, build and operate exceptional spaces — from " },
+  { text: "private residences and hospitality", highlight: true },
+  { text: " to " },
+  { text: "commercial ventures", highlight: true },
+  { text: " — supported by strategic business consultancy." },
+];

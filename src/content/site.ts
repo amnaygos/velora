@@ -9,7 +9,7 @@ export const site = {
   email: "hello@velora.qa",
   cities: "DOHA · LONDON",
   region: "QATAR & THE UNITED KINGDOM",
-  districts: "DOHA · LUSAIL · THE PEARL · LONDON",
+  districts: "DOHA · LONDON",
   lifecycle: "DESIGN · BUILD · OPERATE",
   scrollLabel: "SCROLL TO ENTER",
   address: [

@@ -71,12 +71,8 @@ export function ClosingCTA() {
           </TextLink>
         </div>
       </div>
-
-      {/* the film's final line of light hands over to the footer divider */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-5 bottom-0 h-px bg-olive/50 sm:inset-x-8 lg:inset-x-12"
-      />
+      {/* No closing rule here: the footer's own divider is the single line
+          the darkened film hands over to. */}
     </section>
   );
 }

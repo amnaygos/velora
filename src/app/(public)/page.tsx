@@ -1,8 +1,6 @@
 import { Preloader } from "@/components/sections/home/Preloader";
 import { HomeHero } from "@/components/sections/home/HomeHero";
 import { ManifestoSection } from "@/components/sections/home/ManifestoSection";
-import { EnvironmentSection } from "@/components/sections/home/EnvironmentSection";
-import { ServicesLifecycle } from "@/components/sections/home/ServicesLifecycle";
 import { CredentialsSection } from "@/components/sections/home/CredentialsSection";
 import { SelectedWork } from "@/components/sections/home/SelectedWork";
 import { TransformationSection } from "@/components/sections/home/TransformationSection";
@@ -18,8 +16,6 @@ export default function HomePage() {
       <Preloader />
       <HomeHero />
       <ManifestoSection />
-      <EnvironmentSection />
-      <ServicesLifecycle />
       <CredentialsSection />
       <SelectedWork />
       <TransformationSection />

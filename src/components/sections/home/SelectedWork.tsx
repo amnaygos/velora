@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { GeneratedMedia } from "@/components/media/GeneratedMedia";
+import { BeforeAfter } from "@/components/media/BeforeAfter";
 import { TransitionLink } from "@/components/layout/RouteTransitionProvider";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { TextLink } from "@/components/ui/TextLink";
@@ -9,10 +10,12 @@ import { featuredProjects } from "@/content/projects";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
+/** Shown here as an interactive before/after instead of a still frame. */
+const BEFORE_AFTER_SLUG = "the-yoga-alcove";
+
 /**
- * Chapter 06 — selected work. Each featured project holds roughly one
- * viewport: media arrives slightly desaturated and returns to full color
- * and scale as it becomes the active frame.
+ * Chapter 06 — selected work. Media arrives slightly desaturated and
+ * returns to full color and scale as each frame comes into view.
  */
 export function SelectedWork() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -47,7 +50,7 @@ export function SelectedWork() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-carbon px-5 py-28 sm:px-8 lg:px-12">
+    <section ref={sectionRef} className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <SectionEyebrow>SELECTED WORK</SectionEyebrow>
       <h2 className="mt-8 max-w-4xl text-xl font-extralight uppercase leading-[1.12] tracking-[0.09em] text-white lg:text-[1.75rem]">
         CLARITY OF VISION.
@@ -55,11 +58,13 @@ export function SelectedWork() {
         CERTAINTY OF EXECUTION.
       </h2>
 
-      <div className="mt-24 space-y-36 lg:space-y-48">
+      {/* Each project is as tall as its own content — no fixed viewport
+          height, so the frames sit close enough to read as one sequence. */}
+      <div className="mt-16 space-y-28 lg:mt-20 lg:space-y-40">
         {featuredProjects.map((project, index) => (
           <article
             key={project.slug}
-            className="grid gap-10 lg:min-h-[88vh] lg:grid-cols-12 lg:items-center lg:gap-16"
+            className="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-16"
           >
             <div
               className={
@@ -68,20 +73,35 @@ export function SelectedWork() {
                   : "lg:col-span-7"
               }
             >
-              <TransitionLink
-                href={`/portfolio/${project.slug}`}
-                transitionLabel={`VELORA — ${project.title}`}
-                aria-label={`View project: ${project.title}`}
-                data-cursor-label="VIEW"
-                className="group block overflow-hidden"
-              >
+              {project.slug === BEFORE_AFTER_SLUG && project.transformation ? (
+                // Shown as a draggable before/after rather than a still, so
+                // the transformation reads here. Deliberately not wrapped in
+                // the project link — dragging the handle would navigate away.
                 <div data-work-media className="will-change-transform">
-                  <GeneratedMedia
-                    id={project.heroMedia}
+                  <BeforeAfter
+                    beforeId={project.transformation.before}
+                    afterId={project.transformation.after}
                     sizes="(min-width: 1024px) 58vw, 100vw"
+                    restPosition={50}
+                    maxHeightVh={72}
                   />
                 </div>
-              </TransitionLink>
+              ) : (
+                <TransitionLink
+                  href={`/portfolio/${project.slug}`}
+                  transitionLabel={`VELORA — ${project.title}`}
+                  aria-label={`View project: ${project.title}`}
+                  data-cursor-label="VIEW"
+                  className="group block overflow-hidden"
+                >
+                  <div data-work-media className="will-change-transform">
+                    <GeneratedMedia
+                      id={project.heroMedia}
+                      sizes="(min-width: 1024px) 58vw, 100vw"
+                    />
+                  </div>
+                </TransitionLink>
+              )}
             </div>
 
             <div
@@ -159,7 +179,7 @@ export function SelectedWork() {
         ))}
       </div>
 
-      <div className="mt-32 border-t border-white/10 pt-10">
+      <div className="mt-20 border-t border-white/10 pt-8 lg:mt-24">
         <TextLink href="/portfolio" transitionLabel="VELORA — PORTFOLIO">
           VIEW THE COMPLETE PORTFOLIO
         </TextLink>
