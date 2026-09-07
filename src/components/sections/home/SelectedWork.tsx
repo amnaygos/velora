@@ -10,12 +10,11 @@ import { featuredProjects } from "@/content/projects";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-/** Shown here as an interactive before/after instead of a still frame. */
-const BEFORE_AFTER_SLUG = "the-yoga-alcove";
-
 /**
- * Chapter 06 — selected work. Media arrives slightly desaturated and
- * returns to full color and scale as each frame comes into view.
+ * Chapter 06 — selected work. Every featured project is shown as a
+ * draggable before/after, so the room as found and the room as delivered
+ * sit in one frame. Media arrives slightly desaturated and returns to full
+ * color and scale as each frame comes into view.
  */
 export function SelectedWork() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -73,10 +72,10 @@ export function SelectedWork() {
                   : "lg:col-span-7"
               }
             >
-              {project.slug === BEFORE_AFTER_SLUG && project.transformation ? (
-                // Shown as a draggable before/after rather than a still, so
-                // the transformation reads here. Deliberately not wrapped in
-                // the project link — dragging the handle would navigate away.
+              {project.transformation ? (
+                // Deliberately not wrapped in the project link — dragging the
+                // handle would navigate away. VIEW PROJECT beside it carries
+                // the navigation instead.
                 <div data-work-media className="will-change-transform">
                   <BeforeAfter
                     beforeId={project.transformation.before}

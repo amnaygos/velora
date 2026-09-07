@@ -5,15 +5,16 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { TextLink } from "@/components/ui/TextLink";
 import { getProject } from "@/content/projects";
 
-const LEAD = "grand-training-hall";
-// the-yoga-alcove is intentionally absent: it already appears as a
-// before/after in Selected Work above, and showing it twice repeated the
-// same frames on one page.
+// Every featured project is now a before/after in Selected Work above, so
+// this chapter draws only on work that does not appear there — otherwise the
+// same frames would run twice on one page.
+const LEAD = "al-rayyan-garden-room";
 const HOMES = ["al-waab-villa-gym"];
 
 /**
  * Proof of execution: the same room, before and after, from one camera
- * position — at tower scale, and at the scale of an ordinary family home.
+ * position — at the scale of a family compound, and at the scale of a
+ * single spare room.
  *
  * Two mirrored rows: the argument sits beside its proof, and the proof
  * swaps sides between rows so the chapter reads as a zig-zag rather than
@@ -31,7 +32,7 @@ export function TransformationSection() {
 
   return (
     <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
-      {/* Row 1 — thesis on the left, tower-scale proof on the right */}
+      {/* Row 1 — thesis on the left, compound-scale proof on the right */}
       <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
         <div className="lg:col-span-5">
           <SectionEyebrow>BEFORE VELORA · AFTER VELORA</SectionEyebrow>
@@ -79,8 +80,8 @@ export function TransformationSection() {
             APPLIES AT {home.area}.
           </p>
           <p className="mt-6 max-w-md text-base font-light leading-[1.7] text-white/60 sm:text-lg">
-            Most of our work is not a tower. It is a family villa in Al Waab, a
-            spare room that had been waiting years for a decision.
+            Most of our work is smaller still. It is a family villa in Al Waab,
+            a spare room that had been waiting years for a decision.
           </p>
         </div>
 
