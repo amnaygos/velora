@@ -8,23 +8,20 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { SelectField } from "@/components/ui/SelectField";
 import { site } from "@/content/site";
-import {
-  buildMailtoHref,
-  FORM_ENDPOINTS,
-  resolveFormMode,
-  submitForm,
-} from "@/lib/formSubmission";
+import { useStudio } from "@/components/providers/StudioProvider";
+import { requestBlueprint } from "@/app/(public)/actions";
+import { buildMailtoHref } from "@/lib/formSubmission";
 import { blueprintSchema, BLUEPRINT_ROLES } from "@/lib/validation";
 import type { BlueprintFormValues, FormStatus } from "@/types/forms";
 
 /**
- * Wellness Blueprint lead form. Without an external endpoint it runs in
- * demo mode: validated, animated, and stateless — nothing is stored.
+ * Wellness Blueprint lead form. The request is saved as a lead in the admin
+ * inbox, then the download is handed over.
  */
 export function BlueprintForm() {
+  const studio = useStudio();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const mode = resolveFormMode(FORM_ENDPOINTS.blueprint);
 
   const {
     register,
@@ -37,7 +34,7 @@ export function BlueprintForm() {
   const onSubmit = handleSubmit(async (values) => {
     setStatus("submitting");
     setErrorMessage(null);
-    const result = await submitForm(values, FORM_ENDPOINTS.blueprint);
+    const result = await requestBlueprint(values);
     if (result.ok) {
       setStatus("success");
     } else {
@@ -60,9 +57,7 @@ export function BlueprintForm() {
           YOUR COPY IS READY.
         </p>
         <p className="mt-4 text-sm font-light leading-[1.7] text-white/60">
-          {mode === "demo"
-            ? "This site runs in presentation mode — your details were validated locally and were not stored or sent anywhere."
-            : "Your request has been submitted."}
+          Thank you. A member of the studio may be in touch about your project.
         </p>
         <a
           href={site.blueprintPdf}
@@ -100,11 +95,16 @@ export function BlueprintForm() {
 
       {status === "error" && errorMessage ? (
         <p role="alert" className="text-[11px] tracking-[0.08em] text-olive">
-          {errorMessage} You can also write to us directly at{" "}
-          <a className="underline" href={buildMailtoHref("The VELORA Wellness Blueprint")}>
-            {site.email}
-          </a>
-          .
+          {errorMessage}
+          {studio.email ? (
+            <>
+              {" "}You can also write to us directly at{" "}
+              <a className="underline" href={buildMailtoHref(studio.email, "The VELORA Wellness Blueprint")}>
+                {studio.email}
+              </a>
+              .
+            </>
+          ) : null}
         </p>
       ) : null}
 

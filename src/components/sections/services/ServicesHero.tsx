@@ -3,7 +3,7 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
 export function ServicesHero() {
   return (
-    <section className="flex min-h-[70dvh] items-end bg-carbon px-5 pb-20 pt-40 sm:px-8 lg:px-12">
+    <section className="bg-carbon px-5 pb-10 pt-28 sm:px-8 lg:px-12 lg:pb-12 lg:pt-32">
       <div>
         <SectionEyebrow>VELORA — SERVICES</SectionEyebrow>
         <SplitTextReveal

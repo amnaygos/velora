@@ -111,6 +111,7 @@ export function Preloader() {
   return (
     <div
       ref={rootRef}
+      data-preloader
       role="status"
       aria-label="Loading VELORA"
       className="fixed inset-0 z-[350] flex flex-col items-center justify-center bg-carbon"

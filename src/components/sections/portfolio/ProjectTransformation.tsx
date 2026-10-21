@@ -13,7 +13,7 @@ export function ProjectTransformation({ project }: { project: Project }) {
 
   return (
     <section
-      className="bg-carbon px-5 pb-28 sm:px-8 lg:px-12"
+      className="bg-carbon px-5 pb-20 sm:px-8 lg:px-12 lg:pb-28"
       aria-label={`${project.title} — the transformation`}
     >
       <ArchitecturalRule />

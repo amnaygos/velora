@@ -205,8 +205,8 @@ export default function SettingsClient({
               <div>
                 <b style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--olive)" }}>MANAGER</b>
                 <p className="dim tt-none mt-8" style={{ fontSize: 11, lineHeight: 1.8 }}>
-                  Full workspace — overview, enquiries, projects, calendar, portfolio, and user
-                  management.
+                  Full workspace — overview, enquiries, projects, calendar, portfolio, the
+                  website&apos;s content, and user management.
                 </p>
               </div>
               <div className="divider-h" style={{ margin: "4px 0" }} />
@@ -214,35 +214,9 @@ export default function SettingsClient({
                 <b style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--olive)" }}>SALES</b>
                 <p className="dim tt-none mt-8" style={{ fontSize: 11, lineHeight: 1.8 }}>
                   Enquiries only. Can work, assign, and progress leads — but cannot see projects,
-                  the calendar, the portfolio, or settings.
+                  the calendar, the portfolio, the website, or settings.
                 </p>
               </div>
-            </div>
-          </div>
-
-          {/* Studio profile */}
-          <div className="panel panel-pad">
-            <div className="label mb-24">STUDIO PROFILE</div>
-            <dl className="dl">
-              <dt>STUDIO NAME</dt>
-              <dd>Velora</dd>
-              <dt>ENQUIRY INBOX</dt>
-              <dd className="tt-none">hello@velora.qa</dd>
-            </dl>
-          </div>
-
-          {/* System */}
-          <div className="panel panel-pad">
-            <div className="label mb-24">SYSTEM</div>
-            <div className="between">
-              <div>
-                <b style={{ fontSize: 11, letterSpacing: "0.1em" }}>SUPABASE</b>
-                <br />
-                <span className="dim tt-none" style={{ fontSize: 9 }}>
-                  Database, Auth &amp; Storage
-                </span>
-              </div>
-              <span className="pill pill-olive">CONNECTED</span>
             </div>
           </div>
         </div>

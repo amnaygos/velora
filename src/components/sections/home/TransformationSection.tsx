@@ -3,13 +3,7 @@ import { ArchitecturalRule } from "@/components/motion/ArchitecturalRule";
 import { SplitTextReveal } from "@/components/motion/SplitTextReveal";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { TextLink } from "@/components/ui/TextLink";
-import { getProject } from "@/content/projects";
-
-// Every featured project is now a before/after in Selected Work above, so
-// this chapter draws only on work that does not appear there — otherwise the
-// same frames would run twice on one page.
-const LEAD = "al-rayyan-garden-room";
-const HOMES = ["al-waab-villa-gym"];
+import type { Project } from "@/types/project";
 
 /**
  * Proof of execution: the same room, before and after, from one camera
@@ -20,15 +14,13 @@ const HOMES = ["al-waab-villa-gym"];
  * swaps sides between rows so the chapter reads as a zig-zag rather than
  * one long column down the left margin.
  */
-export function TransformationSection() {
-  const lead = getProject(LEAD);
-  const homes = HOMES.map(getProject).filter(
-    (project): project is NonNullable<typeof project> =>
-      Boolean(project?.transformation),
-  );
-  const home = homes[0];
-
+export function TransformationSection({ projects }: { projects: Project[] }) {
+  // Featured work already runs as before/afters in Selected Work above, so
+  // this chapter takes the next two transformations in portfolio order —
+  // otherwise the same frames would run twice on one page.
+  const [lead, home] = projects.filter((project) => !project.featured && project.transformation);
   if (!lead?.transformation || !home) return null;
+  const homes = [home];
 
   return (
     <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
@@ -80,8 +72,8 @@ export function TransformationSection() {
             APPLIES AT {home.area}.
           </p>
           <p className="mt-6 max-w-md text-base font-light leading-[1.7] text-white/60 sm:text-lg">
-            Most of our work is smaller still. It is a family villa in Al Waab,
-            a spare room that had been waiting years for a decision.
+            Most of our work is smaller still. It is a family villa, a spare
+            room that had been waiting years for a decision.
           </p>
         </div>
 

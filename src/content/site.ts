@@ -1,39 +1,21 @@
-import type { CredentialStat, SocialLink } from "@/types/content";
-
+/**
+ * Fixed brand copy. The studio's email, address, social links and headline
+ * figures live in the database and are edited in /admin/website.
+ */
 export const site = {
   name: "VELORA",
   tagline: "WHERE WELLNESS MEETS WONDER",
   taglineLines: ["WHERE WELLNESS", "MEETS WONDER"],
   positioning:
     "VELORA is a refined wellness and leisure concept designed to elevate everyday living through thoughtful spaces, premium experiences, and a holistic approach to wellbeing. Designed and built in Qatar and the United Kingdom.",
-  email: "hello@velora.qa",
   cities: "DOHA · LONDON",
   region: "QATAR & THE UNITED KINGDOM",
   districts: "DOHA · LONDON",
   lifecycle: "DESIGN · BUILD · OPERATE",
   scrollLabel: "SCROLL TO ENTER",
-  address: [
-    "SAFWA BUILDING",
-    "GATE 20",
-    "SECOND FLOOR",
-    "BARWA COMMERCIAL AVENUE",
-    "DOHA, QATAR",
-  ],
   copyrightYear: "2026",
   blueprintPdf: "/downloads/velora-wellness-blueprint.pdf",
 } as const;
-
-export const socials: SocialLink[] = [
-  { label: "INSTAGRAM", href: "https://www.instagram.com" },
-  { label: "LINKEDIN", href: "https://www.linkedin.com" },
-  { label: "WHATSAPP", href: "https://www.whatsapp.com" },
-];
-
-export const credentials: CredentialStat[] = [
-  { value: 50000, suffix: "+", label: "SQM COMPLETED" },
-  { value: 100, suffix: "+", label: "PROJECTS DELIVERED" },
-  { value: 20, suffix: "+", label: "YEARS OF EXPERIENCE" },
-];
 
 export const manifestoStatements: string[][] = [
   ["MOST WELLNESS SPACES", "ARE TREATED AS AFTERTHOUGHTS."],

@@ -39,7 +39,7 @@ export function ServicesTimeline() {
   const poolFilm = getMedia("video-lap-pool");
 
   return (
-    <section ref={sectionRef} className="bg-carbon px-5 pb-24 sm:px-8 lg:px-12">
+    <section ref={sectionRef} className="bg-carbon px-5 sm:px-8 lg:px-12">
       <div className="relative grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
         {/* Sticky index (desktop) */}
         <div className="hidden lg:block">

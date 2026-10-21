@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { AboutHero } from "@/components/sections/about/AboutHero";
-import { WhoWeAre } from "@/components/sections/about/WhoWeAre";
 import { VeloraApproach } from "@/components/sections/about/VeloraApproach";
-import { AboutCredentials } from "@/components/sections/about/AboutCredentials";
 import { AboutPhilosophy } from "@/components/sections/about/AboutPhilosophy";
 import { AboutCTA } from "@/components/sections/about/AboutCTA";
 import { pageMetadata } from "@/lib/metadata";
@@ -18,9 +16,7 @@ export default function AboutPage() {
   return (
     <>
       <AboutHero />
-      <WhoWeAre />
       <VeloraApproach />
-      <AboutCredentials />
       <AboutPhilosophy />
       <AboutCTA />
     </>

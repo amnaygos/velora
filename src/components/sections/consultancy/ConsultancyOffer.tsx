@@ -4,7 +4,7 @@ import { consultancy } from "@/content/consultancy";
 
 export function ConsultancyOffer() {
   return (
-    <section className="bg-carbon px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <ArchitecturalRule />
       <div className="mt-12">
         <SectionEyebrow>{consultancy.offerEyebrow}</SectionEyebrow>

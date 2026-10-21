@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { TransitionLink } from "@/components/layout/RouteTransitionProvider";
 import { mobileNav } from "@/content/navigation";
-import { site, socials } from "@/content/site";
+import { site } from "@/content/site";
+import { useStudio } from "@/components/providers/StudioProvider";
 import { VELORA_EASE } from "@/lib/gsap";
 
 const overlayVariants = {
@@ -18,6 +19,7 @@ export function MobileMenu({
   open: boolean;
   onClose: () => void;
 }) {
+  const studio = useStudio();
   return (
     <AnimatePresence>
       {open ? (
@@ -73,14 +75,16 @@ export function MobileMenu({
             <p className="text-[10px] uppercase tracking-[0.28em] text-white/50">
               {site.cities}
             </p>
-            <a
-              href={`mailto:${site.email}`}
-              className="block text-[11px] uppercase tracking-[0.18em] text-white/70 transition-colors hover:text-white"
-            >
-              {site.email.toUpperCase()}
-            </a>
+            {studio.email ? (
+              <a
+                href={`mailto:${studio.email}`}
+                className="block text-[11px] uppercase tracking-[0.18em] text-white/70 transition-colors hover:text-white"
+              >
+                {studio.email.toUpperCase()}
+              </a>
+            ) : null}
             <ul className="flex gap-6">
-              {socials.map((social) => (
+              {studio.socials.map((social) => (
                 <li key={social.label}>
                   <a
                     href={social.href}

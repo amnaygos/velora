@@ -4,7 +4,7 @@ import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
 export function SpaceAssessment() {
   return (
-    <section className="bg-carbon px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <ArchitecturalRule />
       <div className="mt-14 grid gap-14 lg:grid-cols-2 lg:gap-24">
         <div>

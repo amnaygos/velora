@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getSiteSettings } from "@/lib/siteSettings";
+import { getStudioDetails } from "@/lib/website";
+import type { StudioDetails } from "@/types/database";
 import { BUDGET_RANGES, PROJECT_TYPES } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -8,10 +11,25 @@ export const dynamic = "force-dynamic";
 
 const MODEL = "gpt-4o-mini";
 
+/** The studio's own words for its figures and whereabouts, as set in /admin/website. */
+function systemPrompt(studio: StudioDetails): string {
+  const figures = studio.figures.length
+    ? ` It is proud of: ${studio.figures.map((f) => `${f.value.toLocaleString("en-US")}${f.suffix} ${f.label.toLowerCase()}`).join(", ")}.`
+    : "";
+  const whereabouts = [
+    studio.studio_address.length ? `Studio: ${studio.studio_address.join(", ")}.` : "",
+    studio.contact_email ? `Email: ${studio.contact_email}.` : "",
+  ].filter(Boolean).join(" ");
+  return SYSTEM_PROMPT.replace("{{FIGURES}}", figures).replace("{{STUDIO}}", whereabouts);
+}
+
+/** Where to point a visitor when the assistant can't help. */
+const emailHint = (studio: StudioDetails) => (studio.contact_email ? ` Please email ${studio.contact_email}.` : "");
+
 const SYSTEM_PROMPT = `You are the VELORA concierge — a refined, knowledgeable AI assistant on the website of VELORA, a design-build studio for luxury wellness and fitness environments based in Doha, Qatar (with a London presence).
 
 WHAT VELORA DOES
-VELORA designs, builds, and operates: private gyms and residential wellness suites, commercial gyms and health clubs, hotel and hospitality fitness centres, spa and recovery spaces, and corporate wellness facilities. It also supplies bespoke equipment and manages facilities long-term. Its lifecycle is: Consultation → Design → Build → Operations. It is proud of: 50,000+ sqm delivered, 100+ projects, 20+ years.
+VELORA designs, builds, and operates: private gyms and residential wellness suites, commercial gyms and health clubs, hotel and hospitality fitness centres, spa and recovery spaces, and corporate wellness facilities. It also supplies bespoke equipment and manages facilities long-term. Its lifecycle is: Consultation → Design → Build → Operations.{{FIGURES}}
 
 TONE
 Confident, warm, and concise. 1–3 sentences per reply, prose (never bullet lists). Never invent specifics (prices, timelines, named clients) you were not given — invite the visitor to enquire instead. No emoji. Ask for at most one or two things at a time; never interrogate.
@@ -21,7 +39,7 @@ Save the lead progressively so nothing is ever lost. The moment you learn ANY us
 
 Naturally work toward a name, an email, a project type, and a short description of their vision — but save whatever you have along the way. Only claim an enquiry is "with the team" after you have actually called save_enquiry. Once you have name + email + project type + vision, warmly confirm a member of the principals team will respond within one business day.
 
-Studio: Safwa Building, Gate 20, Second Floor, Barwa Commercial Avenue, Doha, Qatar. Email: hello@velora.qa.`;
+{{STUDIO}}`;
 
 const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   {
@@ -99,6 +117,16 @@ async function saveEnquiry(
 }
 
 export async function POST(req: NextRequest) {
+  // Switched off in /admin/settings: the launcher is gone, and the endpoint
+  // refuses too, so a direct call can't spend OpenAI credits.
+  const [{ chatbot_enabled }, studio] = await Promise.all([getSiteSettings(), getStudioDetails()]);
+  if (!chatbot_enabled) {
+    return NextResponse.json(
+      { error: `The assistant is offline.${emailHint(studio)}` },
+      { status: 503 }
+    );
+  }
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "The assistant is not configured." }, { status: 500 });
@@ -120,7 +148,7 @@ export async function POST(req: NextRequest) {
 
   const openai = new OpenAI({ apiKey });
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    { role: "system", content: SYSTEM_PROMPT },
+    { role: "system", content: systemPrompt(studio) },
     ...history.map((m) => ({ role: m.role, content: m.content })),
   ];
 
@@ -162,7 +190,7 @@ export async function POST(req: NextRequest) {
             content: JSON.stringify(
               ok
                 ? { status: "saved" }
-                : { status: "failed", note: "Ask them to email hello@velora.qa instead." }
+                : { status: "failed", note: studio.contact_email ? `Ask them to email ${studio.contact_email} instead.` : "Ask them to use the enquiry form instead." }
             ),
           });
         }
@@ -180,11 +208,11 @@ export async function POST(req: NextRequest) {
     }
 
     const content =
-      choice?.content ?? "Apologies — could you rephrase that? You can also reach us at hello@velora.qa.";
+      choice?.content ?? "Apologies — could you rephrase that?";
     return NextResponse.json({ content, leadId, leadSaved });
   } catch {
     return NextResponse.json(
-      { error: "The assistant is briefly unavailable. Please try again, or email hello@velora.qa." },
+      { error: `The assistant is briefly unavailable. Please try again.${emailHint(studio)}` },
       { status: 502 }
     );
   }

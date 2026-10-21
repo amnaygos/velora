@@ -9,19 +9,21 @@ import { PhilosophySection } from "@/components/sections/home/PhilosophySection"
 import { TestimonialSection } from "@/components/sections/home/TestimonialSection";
 import { BlueprintSection } from "@/components/sections/home/BlueprintSection";
 import { ClosingCTA } from "@/components/sections/home/ClosingCTA";
+import { getProjects, getTestimonials } from "@/lib/website";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [projects, testimonials] = await Promise.all([getProjects(), getTestimonials()]);
   return (
     <>
       <Preloader />
       <HomeHero />
       <ManifestoSection />
       <CredentialsSection />
-      <SelectedWork />
-      <TransformationSection />
+      <SelectedWork projects={projects.filter((project) => project.featured)} />
+      <TransformationSection projects={projects} />
       <ProcessFilm />
       <PhilosophySection />
-      <TestimonialSection />
+      {testimonials[0] ? <TestimonialSection testimonial={testimonials[0]} /> : null}
       <BlueprintSection />
       <ClosingCTA />
     </>

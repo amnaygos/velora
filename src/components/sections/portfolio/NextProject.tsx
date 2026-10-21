@@ -4,7 +4,6 @@ import { ArchitecturalReveal } from "@/components/motion/ArchitecturalReveal";
 import { ArchitecturalRule } from "@/components/motion/ArchitecturalRule";
 import { SplitTextReveal } from "@/components/motion/SplitTextReveal";
 import { TransitionLink } from "@/components/layout/RouteTransitionProvider";
-import { projects } from "@/content/projects";
 import { getMedia } from "@/lib/media";
 import type { Project } from "@/types/project";
 
@@ -14,7 +13,7 @@ import type { Project } from "@/types/project";
  * architectural arrow plate — its media rising into view before the
  * current page ends.
  */
-export function NextProject({ project }: { project: Project }) {
+export function NextProject({ project, projects }: { project: Project; projects: Project[] }) {
   const index = projects.findIndex((p) => p.slug === project.slug);
   const position = String(index + 1).padStart(2, "0");
   const total = String(projects.length).padStart(2, "0");
@@ -22,7 +21,7 @@ export function NextProject({ project }: { project: Project }) {
 
   return (
     <section
-      className="bg-carbon px-5 pb-28 pt-16 sm:px-8 lg:px-12"
+      className="bg-carbon px-5 pb-20 pt-16 sm:px-8 lg:px-12 lg:pb-28"
       aria-label="Next project"
     >
       {/* index rule */}

@@ -1,20 +1,26 @@
-import { site, socials } from "@/content/site";
+"use client";
+
+import { site } from "@/content/site";
+import { useStudio } from "@/components/providers/StudioProvider";
 
 export function StudioDetails() {
+  const studio = useStudio();
   return (
     <div>
       <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
         STUDIO
       </p>
-      <a
-        href={`mailto:${site.email}`}
-        className="mt-6 block text-base font-light uppercase tracking-[0.14em] text-white transition-colors hover:text-olive"
-      >
-        {site.email.toUpperCase()}
-      </a>
+      {studio.email ? (
+        <a
+          href={`mailto:${studio.email}`}
+          className="mt-6 block text-base font-light uppercase tracking-[0.14em] text-white transition-colors hover:text-olive"
+        >
+          {studio.email.toUpperCase()}
+        </a>
+      ) : null}
 
       <address className="mt-10 space-y-1 not-italic">
-        {site.address.map((line) => (
+        {studio.address.map((line) => (
           <p
             key={line}
             className="text-[11px] uppercase leading-relaxed tracking-[0.22em] text-white/55"
@@ -34,7 +40,7 @@ export function StudioDetails() {
       </p>
 
       <ul className="mt-10 flex gap-6">
-        {socials.map((social) => (
+        {studio.socials.map((social) => (
           <li key={social.label}>
             <a
               href={social.href}

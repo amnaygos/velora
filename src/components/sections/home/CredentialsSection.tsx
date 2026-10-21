@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
-import { credentials } from "@/content/site";
+import { useStudio } from "@/components/providers/StudioProvider";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
@@ -13,6 +13,7 @@ const DISTRICTS = ["DOHA", "LONDON"];
  * fill as they enter, and count exactly once over ~1.8s.
  */
 export function CredentialsSection() {
+  const { figures: credentials } = useStudio();
   const sectionRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 

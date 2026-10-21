@@ -53,7 +53,7 @@ export function ConsultancyProcess() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-carbon px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <section ref={sectionRef} className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <SectionEyebrow>{consultancy.processEyebrow}</SectionEyebrow>
 
       <div data-consult-list className="relative mt-16 lg:mt-20">

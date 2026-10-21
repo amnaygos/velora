@@ -3,20 +3,9 @@
 import { useState } from "react";
 import { ResponsiveImage } from "@/components/media/ResponsiveImage";
 import { ExternalTextLink } from "@/components/ui/TextLink";
-import { site } from "@/content/site";
+import { useStudio } from "@/components/providers/StudioProvider";
 import { getMedia } from "@/lib/media";
 import { cn } from "@/lib/utils";
-
-const MAP_QUERY = "Safwa Building, Barwa Commercial Avenue, Doha, Qatar";
-
-/** Keyless Google Maps embed centred on the studio address. */
-const EMBED_SRC = `https://maps.google.com/maps?q=${encodeURIComponent(
-  MAP_QUERY,
-)}&z=15&output=embed`;
-
-const MAPS_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  MAP_QUERY,
-)}`;
 
 /**
  * Live Google map of the studio, restyled into the VELORA palette with a
@@ -28,10 +17,17 @@ const MAPS_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURICo
 export function StudioMap() {
   const [interactive, setInteractive] = useState(false);
   const backdrop = getMedia("still-contact-location");
+  const { address } = useStudio();
+  if (!address.length) return null;
+
+  // Keyless Google Maps embed centred on the studio address.
+  const query = address.join(", ");
+  const EMBED_SRC = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=15&output=embed`;
+  const MAPS_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
   return (
     <section
-      className="relative bg-carbon px-5 pb-32 sm:px-8 lg:px-12"
+      className="relative bg-carbon px-5 pb-20 sm:px-8 lg:px-12 lg:pb-28"
       aria-label="Studio location"
     >
       <div className="relative h-[52vh] overflow-hidden border border-white/10 sm:h-[62vh]">
@@ -45,7 +41,7 @@ export function StudioMap() {
 
         <iframe
           src={EMBED_SRC}
-          title={`Map — ${MAP_QUERY}`}
+          title={`Map — ${query}`}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           aria-hidden={!interactive}
@@ -91,9 +87,13 @@ export function StudioMap() {
               DOHA STUDIO
             </p>
             <p className="mt-3 text-[11px] uppercase leading-relaxed tracking-[0.2em] text-white/75">
-              {site.address.slice(0, 2).join(" · ")}
-              <br />
-              {site.address[3]}
+              {address.slice(0, 2).join(" · ")}
+              {address.length > 2 ? (
+                <>
+                  <br />
+                  {address.slice(-2).join(", ")}
+                </>
+              ) : null}
             </p>
           </div>
         </div>

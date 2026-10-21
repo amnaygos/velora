@@ -13,9 +13,12 @@ export const PORTFOLIO_FILTERS: PortfolioFilter[] = [
 export function PortfolioFilters({
   value,
   onChange,
+  available,
 }: {
   value: PortfolioFilter;
   onChange: (filter: PortfolioFilter) => void;
+  /** Categories that have published work; the others are not offered. */
+  available: Set<string>;
 }) {
   return (
     <div
@@ -23,7 +26,7 @@ export function PortfolioFilters({
       aria-label="Filter projects by category"
       className="flex flex-wrap gap-x-8 gap-y-3 border-y border-white/10 py-5"
     >
-      {PORTFOLIO_FILTERS.map((filter) => {
+      {PORTFOLIO_FILTERS.filter((filter) => filter === "All" || available.has(filter)).map((filter) => {
         const active = value === filter;
         return (
           <button

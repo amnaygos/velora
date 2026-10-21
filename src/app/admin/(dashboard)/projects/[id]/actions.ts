@@ -3,8 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { CATEGORY_LABEL } from "@/lib/admin/format";
 import type { MilestoneStatus, ProjectStage } from "@/types/database";
+import type { ProjectCategory as ProjectCategoryLabel } from "@/types/project";
 
 export async function updateProjectFields(id: string, formData: FormData) {
   const stage = String(formData.get("stage") || "") as ProjectStage;
@@ -57,6 +57,13 @@ export async function addMilestone(projectId: string, formData: FormData) {
   revalidatePath(`/admin/projects/${projectId}`);
 }
 
+/** Project categories → the categories the public portfolio filters by. */
+const PORTFOLIO_CATEGORY: Record<string, ProjectCategoryLabel> = {
+  gyms_fitness: "Gyms & Fitness",
+  spa_wellness: "Spa & Wellness",
+  hospitality: "Hospitality",
+};
+
 export async function publishToPortfolio(
   projectId: string,
   projectName: string,
@@ -70,16 +77,32 @@ export async function publishToPortfolio(
     .replace(/(^-|-$)/g, "");
 
   const supabase = await createClient();
-  await supabase.from("portfolio_items").insert({
-    name: projectName,
-    slug,
-    category: CATEGORY_LABEL[category] ?? category,
-    location,
-    year: String(new Date().getFullYear()),
-    status: "draft",
-    project_id: projectId,
-  });
+  // A project already published to the portfolio opens its case study instead of duplicating it.
+  const { data: existing } = await supabase.from("portfolio_items").select("id").eq("project_id", projectId).maybeSingle();
+  if (existing) redirect(`/admin/portfolio/${existing.id}`);
+
+  const { data: taken } = await supabase.from("portfolio_items").select("slug").like("slug", `${slug}%`);
+  const slugs = new Set((taken ?? []).map((t) => t.slug));
+  let free = slug || "project";
+  for (let n = 2; slugs.has(free); n++) free = `${slug}-${n}`;
+  const { data: last } = await supabase.from("portfolio_items").select("sort_order").order("sort_order", { ascending: false }).limit(1);
+
+  const { data: created } = await supabase
+    .from("portfolio_items")
+    .insert({
+      name: projectName,
+      slug: free,
+      category: PORTFOLIO_CATEGORY[category] ?? "Gyms & Fitness",
+      location,
+      year: String(new Date().getFullYear()),
+      status: "draft",
+      project_id: projectId,
+      sort_order: (last?.[0]?.sort_order ?? 0) + 1,
+    })
+    .select("id")
+    .single();
 
   revalidatePath("/admin/portfolio");
-  redirect("/admin/portfolio");
+  // Straight into the editor to add the photos and the story.
+  redirect(created ? `/admin/portfolio/${created.id}` : "/admin/portfolio");
 }

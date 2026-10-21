@@ -7,15 +7,17 @@ import {
   PortfolioFilters,
   type PortfolioFilter,
 } from "@/components/sections/portfolio/PortfolioFilters";
-import { projects } from "@/content/projects";
+import type { Project } from "@/types/project";
 
 /**
  * Asymmetric editorial grid with smooth category filtering. Layout
  * animations are handled by framer-motion; ratios are preserved by the
  * media assets themselves.
  */
-export function PortfolioGrid() {
+export function PortfolioGrid({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<PortfolioFilter>("All");
+  // Only offer the categories that have published work.
+  const available = new Set(projects.map((project) => project.category));
 
   const visible =
     filter === "All"
@@ -23,8 +25,8 @@ export function PortfolioGrid() {
       : projects.filter((project) => project.category === filter);
 
   return (
-    <section className="bg-carbon px-5 pb-32 sm:px-8 lg:px-12">
-      <PortfolioFilters value={filter} onChange={setFilter} />
+    <section className="bg-carbon px-5 pb-20 sm:px-8 lg:px-12 lg:pb-28">
+      <PortfolioFilters value={filter} onChange={setFilter} available={available} />
 
       <motion.div layout className="mt-14 columns-1 gap-10 sm:columns-2 lg:gap-14 xl:columns-2">
         <AnimatePresence mode="popLayout">

@@ -74,7 +74,7 @@ export function VeloraApproach() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-carbon px-5 py-28 sm:px-8 lg:px-12">
+    <section ref={sectionRef} className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <SectionEyebrow>THE VELORA APPROACH</SectionEyebrow>
 
       <div data-approach-list className="relative mt-16 lg:mt-24">

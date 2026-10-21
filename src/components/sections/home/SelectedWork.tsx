@@ -6,7 +6,7 @@ import { BeforeAfter } from "@/components/media/BeforeAfter";
 import { TransitionLink } from "@/components/layout/RouteTransitionProvider";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 import { TextLink } from "@/components/ui/TextLink";
-import { featuredProjects } from "@/content/projects";
+import type { Project } from "@/types/project";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
@@ -16,7 +16,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
  * sit in one frame. Media arrives slightly desaturated and returns to full
  * color and scale as each frame comes into view.
  */
-export function SelectedWork() {
+export function SelectedWork({ projects: featuredProjects }: { projects: Project[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 

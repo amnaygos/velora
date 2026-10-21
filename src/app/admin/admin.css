@@ -866,3 +866,195 @@
 .admin-shell .role-select:hover:not(:disabled) { border-color: var(--olive-50); }
 .admin-shell .role-select:disabled { opacity: 0.5; cursor: not-allowed; }
 .admin-shell .role-select option { background: var(--shadow); color: var(--white); }
+
+/* ============================================================
+   SWITCH
+   ============================================================ */
+.admin-shell .switch {
+  position: relative;
+  width: 38px; height: 20px;
+  flex-shrink: 0;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--gunmetal);
+  transition: border-color .3s, background .3s;
+}
+.admin-shell .switch::after {
+  content: '';
+  position: absolute; top: 3px; left: 3px;
+  width: 12px; height: 12px;
+  background: var(--w30);
+  transition: transform .35s cubic-bezier(0.22,1,0.36,1), background .3s;
+}
+.admin-shell .switch[aria-checked="true"] { border-color: var(--olive-50); background: var(--olive-12); }
+.admin-shell .switch[aria-checked="true"]::after { transform: translateX(18px); background: var(--olive); }
+.admin-shell .switch:hover:not(:disabled) { border-color: var(--olive); }
+.admin-shell .switch:focus-visible { outline: 1px solid var(--olive); outline-offset: 3px; }
+.admin-shell .switch:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ============================================================
+   CONTACT CHANNELS (settings)
+   ============================================================ */
+.admin-shell .channel {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  column-gap: 18px;
+  padding: 24px 28px;
+}
+.admin-shell .channel + .channel { border-top: 1px solid var(--w06); }
+.admin-shell .channel-icon {
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--w10);
+  color: var(--w40);
+  transition: color .3s, border-color .3s, background .3s;
+}
+.admin-shell .channel.live .channel-icon { color: var(--olive); border-color: var(--olive-30); background: var(--olive-06); }
+.admin-shell .channel-name { font-size: 11px; font-weight: 500; letter-spacing: 0.22em; padding-top: 1px; }
+.admin-shell .channel-desc {
+  font-size: 11px; letter-spacing: 0.03em; line-height: 1.7;
+  color: var(--w40); text-transform: none;
+  margin-top: 4px; max-width: 62ch;
+}
+.admin-shell .channel-warn {
+  font-size: 10px; letter-spacing: 0.04em; line-height: 1.7;
+  color: var(--amber); text-transform: none;
+  margin-top: 10px;
+}
+.admin-shell .channel-toggle { display: flex; align-items: center; gap: 12px; align-self: start; }
+.admin-shell .channel-state { font-size: 8px; letter-spacing: 0.3em; color: var(--w30); min-width: 32px; text-align: right; transition: color .3s; }
+.admin-shell .channel.live .channel-state { color: var(--olive); }
+.admin-shell .channel-body { grid-column: 2 / -1; margin-top: 24px; }
+.admin-shell .channel-body .field { margin-bottom: 18px; }
+.admin-shell .field-hint { font-size: 9px; letter-spacing: 0.04em; color: var(--w30); text-transform: none; }
+.admin-shell .field-hint.warn { color: var(--amber); }
+.admin-shell .channel-link {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: 10px; letter-spacing: 0.06em; color: var(--w40);
+  transition: color .3s;
+}
+.admin-shell .channel-link span { display: inline-flex; align-items: center; gap: 4px; font-size: 8px; letter-spacing: 0.25em; color: var(--olive); }
+.admin-shell .channel-link:hover { color: var(--white); }
+.admin-shell .channel-saved { font-size: 8px; letter-spacing: 0.3em; color: var(--olive); animation: channel-saved 2.2s ease forwards; }
+@keyframes channel-saved { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ============================================================
+   Website content — case-study editor, photo library, website page
+   ============================================================ */
+.admin-shell .editor-state { font-size: 10px; letter-spacing: 0.06em; color: var(--w40); text-transform: none; }
+.admin-shell .seg.w-full { display: flex; }
+.admin-shell .seg.w-full button { justify-content: center; }
+.admin-shell .empty-state { text-align: center; padding: 56px 28px; color: var(--w50); }
+
+/* Portfolio list */
+.admin-shell .pf-card.dragging { opacity: 0.35; border-color: var(--olive-50); }
+.admin-shell .pf-card[draggable="true"] { cursor: grab; }
+.admin-shell .pf-order {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 9px; letter-spacing: 0.2em; color: var(--w70);
+  background: rgba(28,28,28,0.75); padding: 3px 7px;
+}
+.admin-shell .pf-tool { width: 30px; height: 30px; background: rgba(28,28,28,0.78); }
+.admin-shell .pf-thumb .ba { opacity: 0; transition: opacity .25s; }
+.admin-shell .pf-card:hover .pf-thumb .ba,
+.admin-shell .pf-card:focus-within .pf-thumb .ba { opacity: 1; }
+.admin-shell .pf-grip { display: inline-block; vertical-align: -1px; margin-right: 6px; color: var(--w30); }
+.admin-shell a.pf-add { text-decoration: none; }
+
+/* A photo slot */
+.admin-shell .mf-frame {
+  position: relative; overflow: hidden;
+  background: var(--carbon); border: 1px solid var(--w10);
+  transition: border-color .25s;
+}
+.admin-shell .mf-frame.drag { border-color: var(--olive); }
+.admin-shell .mf-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.admin-shell .mf-empty {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  color: var(--w30); background: none; border: 0; cursor: pointer;
+  font-size: 9px; letter-spacing: 0.25em; transition: color .25s;
+}
+.admin-shell .mf-empty:hover { color: var(--olive); }
+.admin-shell .mf-busy { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(28,28,28,0.6); color: var(--white); }
+.admin-shell .mf-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.admin-shell .mf-alt { margin: 14px 0 0; }
+.admin-shell .mf-note { margin-top: 10px; line-height: 1.6; }
+
+/* Photo library */
+.admin-shell .lib-backdrop {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(10,10,10,0.72); backdrop-filter: blur(4px);
+  display: grid; place-items: center; padding: 32px;
+}
+.admin-shell .lib-modal {
+  width: min(1100px, 100%); max-height: calc(100vh - 64px);
+  display: flex; flex-direction: column;
+  background: var(--shadow); border: 1px solid var(--w10);
+  text-transform: uppercase;
+}
+.admin-shell .lib-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 26px 28px 18px; }
+.admin-shell .lib-tabs { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 28px 18px; border-bottom: 1px solid var(--w06); }
+.admin-shell .lib-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;
+  padding: 20px 28px 28px; overflow-y: auto;
+}
+.admin-shell .lib-item {
+  position: relative; aspect-ratio: 4 / 3; padding: 0; overflow: hidden;
+  background: var(--carbon); border: 1px solid var(--w06); cursor: pointer;
+  transition: border-color .2s, transform .2s;
+}
+.admin-shell .lib-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.admin-shell .lib-item:hover { border-color: var(--olive); transform: translateY(-1px); }
+.admin-shell .lib-badge { position: absolute; left: 6px; bottom: 6px; font-size: 8px; letter-spacing: 0.25em; padding: 2px 6px; background: rgba(28,28,28,0.8); color: var(--w70); }
+
+/* Gallery */
+.admin-shell .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.admin-shell .gallery-tile { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--carbon); border: 1px solid var(--w06); }
+.admin-shell .gallery-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.admin-shell .gallery-tools { position: absolute; right: 6px; bottom: 6px; display: flex; gap: 4px; opacity: 0; transition: opacity .2s; }
+.admin-shell .gallery-tile:hover .gallery-tools, .admin-shell .gallery-tile:focus-within .gallery-tools { opacity: 1; }
+.admin-shell .gallery-tools .icon-btn { width: 26px; height: 26px; background: rgba(28,28,28,0.8); }
+.admin-shell .gallery-add {
+  aspect-ratio: 4 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border: 1px dashed var(--w20); background: none; color: var(--w40); cursor: pointer;
+  font-size: 9px; letter-spacing: 0.25em; transition: color .25s, border-color .25s;
+}
+.admin-shell .gallery-add:hover { color: var(--olive); border-color: var(--olive-50); }
+
+/* Rows of small inputs: key figures, headline figures, quotes */
+.admin-shell .metric-row, .admin-shell .figure-row { display: grid; gap: 8px; align-items: center; margin-bottom: 10px; }
+.admin-shell .metric-row { grid-template-columns: 1fr 1fr 30px; }
+.admin-shell .figure-row { grid-template-columns: 1fr 64px; margin-bottom: 18px; }
+.admin-shell .figure-row input:last-child { grid-column: 1 / -1; }
+.admin-shell .metric-row input, .admin-shell .figure-row input {
+  background: var(--carbon); border: 1px solid var(--w10); color: var(--white);
+  padding: 10px 12px; font: inherit; font-size: 11px; letter-spacing: 0.1em; outline: none; width: 100%;
+}
+.admin-shell .metric-row input:focus, .admin-shell .figure-row input:focus { border-color: var(--olive); }
+.admin-shell .toggle-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; cursor: pointer; }
+.admin-shell .toggle-row b { display: block; font-weight: 500; font-size: 10px; letter-spacing: 0.2em; }
+.admin-shell .toggle-row small { display: block; margin-top: 6px; font-size: 11px; letter-spacing: 0.02em; line-height: 1.6; color: var(--w40); }
+.admin-shell .quote-row { border: 1px solid var(--w06); padding: 16px 18px 18px; transition: border-color .25s; }
+.admin-shell .quote-row.home { border-color: var(--olive-30); }
+.admin-shell .quote-row textarea { font-size: 12px; letter-spacing: 0.08em; line-height: 1.6; min-height: 0; }
+.admin-shell .quote-tools { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+.admin-shell .quote-tools .icon-btn { width: 28px; height: 28px; }
+.admin-shell .quote-foot { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.admin-shell .toggle-inline { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--w50); cursor: pointer; }
+
+@media (max-width: 1100px) {
+  .admin-shell .pf-thumb .ba { opacity: 1; }
+  .admin-shell .gallery-tools { opacity: 1; }
+}
+
+.admin-shell .pf-thumb .status .pill { background: rgba(28,28,28,0.82); }
+.admin-shell .pf-thumb .status .pill-solid { background: var(--olive); }
+.admin-shell .field-hint .slug { color: var(--w70); }
+.admin-shell .lib-tabs .chip { text-transform: uppercase; }
+.admin-shell .sub-list { list-style: none; margin: 0; padding: 6px 0; max-height: 420px; overflow-y: auto; }
+.admin-shell .sub-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 28px; border-bottom: 1px solid var(--w06); }
+.admin-shell .sub-list li:last-child { border-bottom: 0; }
+.admin-shell .sub-list b { display: block; font-weight: 400; font-size: 12px; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+.admin-shell .sub-list small { display: block; margin-top: 3px; font-size: 9px; letter-spacing: 0.2em; color: var(--w40); }
+.admin-shell .sub-list .icon-btn { width: 28px; height: 28px; flex-shrink: 0; }

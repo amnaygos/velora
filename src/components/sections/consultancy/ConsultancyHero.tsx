@@ -8,7 +8,7 @@ import { getMedia } from "@/lib/media";
 export function ConsultancyHero() {
   const media = getMedia("portfolio-city-performance-floor");
   return (
-    <section className="bg-carbon px-5 pb-20 pt-40 sm:px-8 lg:px-12">
+    <section className="bg-carbon px-5 pb-10 pt-28 sm:px-8 lg:px-12 lg:pb-12 lg:pt-32">
       <SectionEyebrow>{consultancy.eyebrow}</SectionEyebrow>
       <SplitTextReveal
         as="h1"

@@ -1,11 +1,14 @@
 import { ArchitecturalRule } from "@/components/motion/ArchitecturalRule";
 import { SplitTextReveal } from "@/components/motion/SplitTextReveal";
 import { buildMailtoHref } from "@/lib/formSubmission";
+import { getStudioDetails } from "@/lib/website";
 import { ArrowRight } from "lucide-react";
 
-export function DiscoveryCall() {
+export async function DiscoveryCall() {
+  const { contact_email: email } = await getStudioDetails();
+  if (!email) return null;
   return (
-    <section className="bg-carbon px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <ArchitecturalRule />
       <SplitTextReveal
         as="h2"
@@ -14,6 +17,7 @@ export function DiscoveryCall() {
       />
       <a
         href={buildMailtoHref(
+          email,
           "Discovery call — VELORA",
           "I would like to book a complimentary 30-minute discovery call.\n\nPreferred days and times:\n",
         )}

@@ -8,6 +8,7 @@ import {
   Layers,
   CalendarDays,
   GalleryHorizontal,
+  Globe,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -26,7 +27,10 @@ const NAV = [
   },
   {
     group: "Content",
-    items: [{ id: "portfolio", label: "Portfolio", href: "/admin/portfolio", icon: GalleryHorizontal, roles: ["manager"] }],
+    items: [
+      { id: "portfolio", label: "Portfolio", href: "/admin/portfolio", icon: GalleryHorizontal, roles: ["manager"] },
+      { id: "website", label: "Website", href: "/admin/website", icon: Globe, roles: ["manager"] },
+    ],
   },
   {
     group: "System",

@@ -12,7 +12,7 @@ import { getMedia } from "@/lib/media";
 export function ConsultancyStatement() {
   const media = getMedia("still-environment");
   return (
-    <section className="bg-carbon px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <div className="grid gap-16 lg:grid-cols-2 lg:items-center lg:gap-24">
         <div>
           <SectionEyebrow>{consultancy.audienceEyebrow}</SectionEyebrow>

@@ -29,7 +29,10 @@ export default async function SettingsPage() {
       </header>
 
       <div className="content">
-        <SettingsClient teamMembers={teamMembers} currentEmail={currentEmail} />
+        <SettingsClient
+          teamMembers={teamMembers}
+          currentEmail={currentEmail}
+        />
       </div>
     </>
   );

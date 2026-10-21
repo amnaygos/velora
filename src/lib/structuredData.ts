@@ -1,21 +1,26 @@
 import type { Project } from "@/types/project";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/metadata";
 
-export function organizationJsonLd() {
+export function organizationJsonLd(studio: { email: string | null; address: string[]; socials: { href: string }[] }) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
     url: SITE_URL,
     description: SITE_DESCRIPTION,
-    email: "hello@velora.qa",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress:
-        "Safwa Building, Gate 20, Second Floor, Barwa Commercial Avenue",
-      addressLocality: "Doha",
-      addressCountry: "QA",
-    },
+    ...(studio.email ? { email: studio.email } : {}),
+    ...(studio.address.length
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            // The last line is the city and country; everything above it is the street.
+            streetAddress: studio.address.slice(0, -1).join(", "),
+            addressLocality: "Doha",
+            addressCountry: "QA",
+          },
+        }
+      : {}),
+    ...(studio.socials.length ? { sameAs: studio.socials.map((s) => s.href) } : {}),
     areaServed: [
       { "@type": "Country", name: "Qatar" },
       { "@type": "Country", name: "United Kingdom" },

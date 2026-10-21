@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/ui/Button";
 
 export function AboutCTA() {
   return (
-    <section className="bg-carbon px-5 py-32 sm:px-8 lg:px-12 lg:py-44">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <ArchitecturalRule />
       <SplitTextReveal
         as="h2"

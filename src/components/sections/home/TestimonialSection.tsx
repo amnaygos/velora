@@ -1,13 +1,13 @@
 import { ResponsiveImage } from "@/components/media/ResponsiveImage";
 import { SplitTextReveal } from "@/components/motion/SplitTextReveal";
-import { homeTestimonial } from "@/content/testimonials";
+import type { Testimonial } from "@/types/content";
 import { getMedia } from "@/lib/media";
 
 /**
  * Chapter 09 — one client sentence in a nearly empty carbon room.
  * The background is almost imperceptible; a long pause follows.
  */
-export function TestimonialSection() {
+export function TestimonialSection({ testimonial: homeTestimonial }: { testimonial: Testimonial }) {
   const bg = getMedia("still-quote-bg");
 
   return (

@@ -1,148 +1,99 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, X, Pencil } from "lucide-react";
-import type { PortfolioItem, PortfolioStatus } from "@/types/database";
-import { createPortfolioItem, updatePortfolioItem, deletePortfolioItem } from "./actions";
+import { useRef, useState, useTransition } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight, Eye, EyeOff, GripVertical, Plus } from "lucide-react";
+import { mediaThumb } from "@/components/admin/media/MediaField";
+import type { PortfolioItem } from "@/types/database";
+import { reorderPortfolio, setPortfolioStatus } from "./actions";
 
-const CATEGORY_OPTIONS = ["Gyms & Fitness", "Spa & Wellness", "Hospitality"];
+type Filter = "all" | "published" | "draft" | "featured";
 
-interface FormState {
-  name: string;
-  category: string;
-  location: string;
-  year: string;
-  beforeImageUrl: string;
-  afterImageUrl: string;
-  status: PortfolioStatus;
-}
-
-const emptyForm: FormState = {
-  name: "",
-  category: CATEGORY_OPTIONS[0],
-  location: "",
-  year: "",
-  beforeImageUrl: "",
-  afterImageUrl: "",
-  status: "published",
-};
-
-function itemToForm(item: PortfolioItem): FormState {
-  return {
-    name: item.name,
-    category: item.category,
-    location: item.location ?? "",
-    year: item.year ?? "",
-    beforeImageUrl: item.before_image_url ?? "",
-    afterImageUrl: item.after_image_url ?? "",
-    status: item.status,
-  };
-}
-
-export default function PortfolioClient({ items }: { items: PortfolioItem[] }) {
+/**
+ * The portfolio exactly as the site shows it: same order, same covers.
+ * Drag a card (or use its arrows) to change the order on the site; open a
+ * card to edit the case study.
+ */
+export default function PortfolioClient({ items: initial }: { items: PortfolioItem[] }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [items, setItems] = useState(initial);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const orderAtDragStart = useRef<string[]>([]);
 
-  const [activeStatuses, setActiveStatuses] = useState<Set<string>>(new Set());
-  const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
+  // Fresh server data (after a save elsewhere) replaces the local order.
+  const [lastInitial, setLastInitial] = useState(initial);
+  if (initial !== lastInitial) {
+    setLastInitial(initial);
+    setItems(initial);
+  }
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [mode, setMode] = useState<"create" | "edit">("create");
-  const [editing, setEditing] = useState<PortfolioItem | null>(null);
-  const [form, setForm] = useState<FormState>(emptyForm);
-  const [saving, setSaving] = useState(false);
-
-  const publishedCount = items.filter((i) => i.status === "published").length;
-  const draftCount = items.filter((i) => i.status === "draft").length;
-  const categories = Array.from(new Set(items.map((i) => i.category).filter(Boolean))).sort();
-
-  const filtered = items.filter(
-    (i) =>
-      (activeStatuses.size === 0 || activeStatuses.has(i.status)) &&
-      (activeCategories.size === 0 || activeCategories.has(i.category))
+  const counts = {
+    all: items.length,
+    published: items.filter((i) => i.status === "published").length,
+    draft: items.filter((i) => i.status === "draft").length,
+    featured: items.filter((i) => i.featured).length,
+  };
+  const visible = items.filter((i) =>
+    filter === "all" ? true : filter === "featured" ? i.featured : i.status === filter
   );
+  const canReorder = filter === "all";
 
-  function toggleStatus(status: string) {
-    setActiveStatuses((prev) => {
-      const next = new Set(prev);
-      if (next.has(status)) next.delete(status);
-      else next.add(status);
+  function persistOrder(next: PortfolioItem[], before: string[]) {
+    const ids = next.map((i) => i.id);
+    if (ids.join() === before.join()) return;
+    startTransition(async () => {
+      const result = await reorderPortfolio(ids);
+      if (!result.ok) {
+        setError(result.error ?? "Couldn't save the new order.");
+        setItems((current) => before.map((id) => current.find((i) => i.id === id)!));
+      } else router.refresh();
+    });
+  }
+
+  function move(id: string, delta: number) {
+    const before = items.map((i) => i.id);
+    const from = items.findIndex((i) => i.id === id);
+    const to = from + delta;
+    if (to < 0 || to >= items.length) return;
+    const next = [...items];
+    next.splice(to, 0, next.splice(from, 1)[0]);
+    setItems(next);
+    persistOrder(next, before);
+  }
+
+  function dragOver(targetId: string) {
+    if (!dragId || dragId === targetId) return;
+    setItems((current) => {
+      const next = [...current];
+      const from = next.findIndex((i) => i.id === dragId);
+      const to = next.findIndex((i) => i.id === targetId);
+      next.splice(to, 0, next.splice(from, 1)[0]);
       return next;
     });
   }
 
-  function toggleCategory(category: string) {
-    setActiveCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(category)) next.delete(category);
-      else next.add(category);
-      return next;
+  function toggleStatus(item: PortfolioItem) {
+    const status = item.status === "published" ? "draft" : "published";
+    setError(null);
+    startTransition(async () => {
+      const result = await setPortfolioStatus(item.id, status);
+      if (!result.ok) setError(result.error ?? "Couldn't change that.");
+      else {
+        setItems((current) => current.map((i) => (i.id === item.id ? { ...i, status } : i)));
+        router.refresh();
+      }
     });
   }
 
-  function openCreate() {
-    setMode("create");
-    setEditing(null);
-    setForm(emptyForm);
-    setDrawerOpen(true);
-  }
-
-  function openEdit(item: PortfolioItem) {
-    setMode("edit");
-    setEditing(item);
-    setForm(itemToForm(item));
-    setDrawerOpen(true);
-  }
-
-  // Deep-link: the detail page's EDIT button lands here with ?edit=<id>,
-  // which opens that item's editor directly.
-  useEffect(() => {
-    const editId = searchParams.get("edit");
-    if (!editId) return;
-    const item = items.find((i) => i.id === editId);
-    if (item) openEdit(item);
-    // Strip the param so a refresh doesn't reopen it.
-    router.replace("/admin/portfolio");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
-
-  function closeDrawer() {
-    setDrawerOpen(false);
-  }
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!form.name.trim()) return;
-
-    const fd = new FormData();
-    fd.set("name", form.name);
-    fd.set("category", form.category);
-    fd.set("location", form.location);
-    fd.set("year", form.year);
-    fd.set("before_image_url", form.beforeImageUrl);
-    fd.set("after_image_url", form.afterImageUrl);
-    fd.set("status", form.status);
-
-    setSaving(true);
-    if (mode === "edit" && editing) {
-      await updatePortfolioItem(editing.id, fd);
-    } else {
-      await createPortfolioItem(fd);
-    }
-    setSaving(false);
-    setDrawerOpen(false);
-    router.refresh();
-  }
-
-  async function handleRemove() {
-    if (!editing) return;
-    setSaving(true);
-    await deletePortfolioItem(editing.id);
-    setSaving(false);
-    setDrawerOpen(false);
-    router.refresh();
-  }
+  const chip = (id: Filter, label: string) => (
+    <button type="button" className={`chip${filter === id ? " on" : ""}`} onClick={() => setFilter(id)}>
+      {label} · {counts[id]}
+    </button>
+  );
 
   return (
     <>
@@ -152,226 +103,117 @@ export default function PortfolioClient({ items }: { items: PortfolioItem[] }) {
           <h1>Portfolio</h1>
         </div>
         <div className="topbar-actions">
-          <button type="button" className="btn btn-primary btn-sm" onClick={openCreate}>
+          <a className="btn btn-outline btn-sm" href="/portfolio" target="_blank" rel="noreferrer">
+            VIEW ON SITE
+          </a>
+          <Link href="/admin/portfolio/new" className="btn btn-primary btn-sm">
             <Plus size={13} strokeWidth={1.3} />
-            ADD PROJECT
-          </button>
+            NEW CASE STUDY
+          </Link>
         </div>
       </header>
 
       <div className="content">
         <div className="toolbar">
           <div className="filters">
-            <button
-              type="button"
-              className={`chip${activeStatuses.has("published") ? " on" : ""}`}
-              onClick={() => toggleStatus("published")}
-            >
-              PUBLISHED · {publishedCount}
-            </button>
-            <button
-              type="button"
-              className={`chip${activeStatuses.has("draft") ? " on" : ""}`}
-              onClick={() => toggleStatus("draft")}
-            >
-              DRAFT · {draftCount}
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`chip${activeCategories.has(cat) ? " on" : ""}`}
-                onClick={() => toggleCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
+            {chip("all", "ALL")}
+            {chip("published", "PUBLISHED")}
+            {chip("draft", "DRAFT")}
+            {chip("featured", "ON THE HOME PAGE")}
           </div>
-          <p className="dim" style={{ fontSize: 8, letterSpacing: "0.2em" }}>
-            {filtered.length} OF {items.length} · CLICK A CARD TO VIEW
+          <p className="dim tt-none" style={{ fontSize: 11 }}>
+            {pending ? "Saving…" : canReorder ? "Drag to set the order on the site." : "Show all to change the order."}
           </p>
         </div>
+        {error && <div className="login-error mb-24">{error}</div>}
 
-        <div className="pf-grid">
-          {filtered.map((item) => (
-            <div
-              key={item.id}
-              className="pf-card"
-              onClick={() => router.push(`/admin/portfolio/${item.id}`)}
-            >
-              <div className="pf-thumb">
-                {item.after_image_url && <img src={item.after_image_url} alt="" />}
-                <span className="status">
-                  <span className={`pill ${item.status === "published" ? "pill-solid" : "pill-amber"}`}>
-                    {item.status === "published" ? "PUBLISHED" : "DRAFT"}
-                  </span>
-                </span>
-                <div className="ba">
-                  <button
-                    type="button"
-                    className="icon-btn"
-                    style={{ width: 30, height: 30, background: "rgba(28,28,28,0.75)" }}
-                    title="Edit"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openEdit(item);
-                    }}
-                  >
-                    <Pencil size={13} strokeWidth={1.4} />
-                  </button>
+        {items.length === 0 ? (
+          <div className="panel panel-pad empty-state">
+            <p className="tt-none">No case studies yet. Published ones appear on the site&apos;s portfolio and home page.</p>
+            <Link href="/admin/portfolio/new" className="btn btn-primary btn-sm mt-16">
+              <Plus size={13} strokeWidth={1.3} /> NEW CASE STUDY
+            </Link>
+          </div>
+        ) : (
+          <div className="pf-grid">
+            {visible.map((item) => {
+              const index = items.findIndex((i) => i.id === item.id);
+              const cover = mediaThumb(item.hero_media || item.after_media);
+              return (
+                <div
+                  key={item.id}
+                  className={`pf-card${dragId === item.id ? " dragging" : ""}`}
+                  draggable={canReorder}
+                  onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = "move";
+                    orderAtDragStart.current = items.map((i) => i.id);
+                    setDragId(item.id);
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    dragOver(item.id);
+                  }}
+                  onDragEnd={() => {
+                    setDragId(null);
+                    persistOrder(items, orderAtDragStart.current);
+                  }}
+                  onClick={() => router.push(`/admin/portfolio/${item.id}`)}
+                >
+                  <div className="pf-thumb">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {cover ? <img src={cover} alt="" draggable={false} /> : <div className="media-empty" style={{ height: "100%" }}><span>No cover photo</span></div>}
+                    <span className="status flex gap-8">
+                      <span className={`pill ${item.status === "published" ? "pill-solid" : "pill-amber"}`}>
+                        {item.status === "published" ? "PUBLISHED" : "DRAFT"}
+                      </span>
+                      {item.featured && <span className="pill pill-olive">HOME PAGE</span>}
+                    </span>
+                    <span className="pf-order tnum">{String(index + 1).padStart(2, "0")}</span>
+                    <div className="ba" onClick={(e) => e.stopPropagation()}>
+                      {canReorder && (
+                        <>
+                          <button type="button" className="icon-btn pf-tool" title="Move earlier" aria-label={`Move ${item.name} earlier`} disabled={index === 0 || pending} onClick={() => move(item.id, -1)}>
+                            <ArrowLeft size={13} strokeWidth={1.4} />
+                          </button>
+                          <button type="button" className="icon-btn pf-tool" title="Move later" aria-label={`Move ${item.name} later`} disabled={index === items.length - 1 || pending} onClick={() => move(item.id, 1)}>
+                            <ArrowRight size={13} strokeWidth={1.4} />
+                          </button>
+                        </>
+                      )}
+                      <button
+                        type="button"
+                        className="icon-btn pf-tool"
+                        title={item.status === "published" ? "Hide from the site" : "Publish"}
+                        aria-label={item.status === "published" ? `Hide ${item.name} from the site` : `Publish ${item.name}`}
+                        disabled={pending}
+                        onClick={() => toggleStatus(item)}
+                      >
+                        {item.status === "published" ? <EyeOff size={13} strokeWidth={1.4} /> : <Eye size={13} strokeWidth={1.4} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="pf-body">
+                    <div className="cat">{item.category}</div>
+                    <div className="nm">
+                      {canReorder && <GripVertical size={12} strokeWidth={1.4} className="pf-grip" aria-hidden="true" />}
+                      {item.name}
+                    </div>
+                    <div className="meta">
+                      <span>{item.location ?? ""}</span>
+                      <span>{item.year ?? ""}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="pf-body">
-                <div className="cat">{item.category}</div>
-                <div className="nm">{item.name}</div>
-                <div className="meta">
-                  <span>{item.location ?? ""}</span>
-                  <span>{item.year ?? ""}</span>
-                </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
 
-          <button type="button" className="pf-add" onClick={openCreate}>
-            <Plus size={26} strokeWidth={1.1} />
-            <span>ADD PROJECT</span>
-          </button>
-        </div>
+            <Link href="/admin/portfolio/new" className="pf-add">
+              <Plus size={26} strokeWidth={1.1} />
+              <span>NEW CASE STUDY</span>
+            </Link>
+          </div>
+        )}
       </div>
-
-      <div className={`overlay${drawerOpen ? " open" : ""}`} onClick={closeDrawer} />
-      <aside className={`drawer${drawerOpen ? " open" : ""}`}>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-          <div className="drawer-head">
-            <div>
-              <div className="eyebrow mb-16">PORTFOLIO ENTRY</div>
-              <h2 style={{ fontSize: 20, fontWeight: 300, letterSpacing: "0.04em" }}>
-                {form.name || "New Portfolio Entry"}
-              </h2>
-            </div>
-            <button type="button" className="icon-btn" onClick={closeDrawer}>
-              <X size={15} strokeWidth={1.3} />
-            </button>
-          </div>
-
-          <div className="drawer-body">
-            <div className="field-row" style={{ marginBottom: 32 }}>
-              <div>
-                <div className="label mb-16">BEFORE</div>
-                <div className="pf-thumb" style={{ aspectRatio: "4/3", border: "1px solid var(--w10)", marginBottom: 10 }}>
-                  {form.beforeImageUrl && <img src={form.beforeImageUrl} alt="" />}
-                </div>
-                <div className="field" style={{ marginBottom: 0 }}>
-                  <input
-                    type="text"
-                    value={form.beforeImageUrl}
-                    onChange={(e) => setForm((f) => ({ ...f, beforeImageUrl: e.target.value }))}
-                    placeholder="/Portfolio/example-B.png"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="label mb-16">AFTER</div>
-                <div className="pf-thumb" style={{ aspectRatio: "4/3", border: "1px solid var(--w10)", marginBottom: 10 }}>
-                  {form.afterImageUrl && <img src={form.afterImageUrl} alt="" />}
-                </div>
-                <div className="field" style={{ marginBottom: 0 }}>
-                  <input
-                    type="text"
-                    value={form.afterImageUrl}
-                    onChange={(e) => setForm((f) => ({ ...f, afterImageUrl: e.target.value }))}
-                    placeholder="/Portfolio/example-A.png"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="field">
-              <label>
-                Project Name <span className="req">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                placeholder="Project name"
-              />
-            </div>
-
-            <div className="field">
-              <label>Category</label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-              >
-                {CATEGORY_OPTIONS.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-                {form.category && !CATEGORY_OPTIONS.includes(form.category) && (
-                  <option value={form.category}>{form.category}</option>
-                )}
-              </select>
-            </div>
-
-            <div className="field-row">
-              <div className="field">
-                <label>Location</label>
-                <input
-                  type="text"
-                  value={form.location}
-                  onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-                  placeholder="Doha, Qatar"
-                />
-              </div>
-              <div className="field">
-                <label>Year</label>
-                <input
-                  type="text"
-                  value={form.year}
-                  onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-                  placeholder="2025"
-                />
-              </div>
-            </div>
-
-            <div className="field" style={{ marginBottom: 0 }}>
-              <div className="label mb-16">VISIBILITY</div>
-              <div className="choice-grid">
-                <button
-                  type="button"
-                  className={`choice${form.status === "published" ? " sel" : ""}`}
-                  onClick={() => setForm((f) => ({ ...f, status: "published" }))}
-                >
-                  <span className="box" />
-                  Published
-                </button>
-                <button
-                  type="button"
-                  className={`choice${form.status === "draft" ? " sel" : ""}`}
-                  onClick={() => setForm((f) => ({ ...f, status: "draft" }))}
-                >
-                  <span className="box" />
-                  Draft
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="drawer-foot">
-            <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: "center" }} disabled={saving}>
-              {saving ? "SAVING…" : form.status === "published" ? "SAVE & PUBLISH" : "SAVE AS DRAFT"}
-            </button>
-            {mode === "edit" && (
-              <button type="button" className="btn btn-outline" onClick={handleRemove} disabled={saving}>
-                REMOVE
-              </button>
-            )}
-          </div>
-        </form>
-      </aside>
     </>
   );
 }

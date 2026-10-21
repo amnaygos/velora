@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Field, TextAreaField } from "@/components/ui/Field";
 import { SelectField } from "@/components/ui/SelectField";
-import { site } from "@/content/site";
+import { useStudio } from "@/components/providers/StudioProvider";
 import {
   BUDGET_RANGES,
   DISCOVERY_SOURCES,
@@ -23,6 +23,7 @@ import { submitPublicEnquiry } from "@/app/(public)/actions";
  * explicit presentation (demo) mode or after a genuine endpoint success.
  */
 export function EnquiryForm() {
+  const studio = useStudio();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // Enquiries now persist to the studio's database (Supabase), so the success
@@ -125,11 +126,16 @@ export function EnquiryForm() {
 
       {status === "error" && errorMessage ? (
         <p role="alert" className="text-[11px] tracking-[0.08em] text-olive">
-          {errorMessage} You can always reach us at{" "}
-          <a className="underline" href={`mailto:${site.email}`}>
-            {site.email}
-          </a>
-          .
+          {errorMessage}
+          {studio.email ? (
+            <>
+              {" "}You can always reach us at{" "}
+              <a className="underline" href={`mailto:${studio.email}`}>
+                {studio.email}
+              </a>
+              .
+            </>
+          ) : null}
         </p>
       ) : null}
 
@@ -137,12 +143,14 @@ export function EnquiryForm() {
         <Button type="submit" disabled={status === "submitting"}>
           {status === "submitting" ? "ONE MOMENT" : "BEGIN THE CONVERSATION"}
         </Button>
-        <a
-          href={`mailto:${site.email}`}
-          className="text-[10px] uppercase tracking-[0.22em] text-white/45 transition-colors hover:text-white"
-        >
-          OR EMAIL {site.email.toUpperCase()}
-        </a>
+        {studio.email ? (
+          <a
+            href={`mailto:${studio.email}`}
+            className="text-[10px] uppercase tracking-[0.22em] text-white/45 transition-colors hover:text-white"
+          >
+            OR EMAIL {studio.email.toUpperCase()}
+          </a>
+        ) : null}
       </div>
     </form>
   );

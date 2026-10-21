@@ -14,7 +14,7 @@ export function ProjectGallery({ project }: { project: Project }) {
 
   return (
     <section
-      className="bg-carbon px-5 pb-24 sm:px-8 lg:px-12"
+      className="bg-carbon px-5 pb-20 sm:px-8 lg:px-12 lg:pb-28"
       aria-label={`${project.title} — image sequence`}
     >
       <div className="space-y-16 lg:space-y-24">

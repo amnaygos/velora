@@ -8,7 +8,7 @@ import { SplitTextReveal } from "@/components/motion/SplitTextReveal";
  */
 export function AboutPhilosophy() {
   return (
-    <section className="bg-carbon px-5 py-28 sm:px-8 lg:px-12">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <div className="grid gap-16 lg:grid-cols-2 lg:items-center lg:gap-24">
         <ArchitecturalReveal>
           <GeneratedMedia id="still-yoga" sizes="(min-width: 1024px) 45vw, 100vw" />
@@ -20,7 +20,7 @@ export function AboutPhilosophy() {
         />
       </div>
 
-      <div className="mt-32 grid gap-16 lg:grid-cols-2 lg:items-center lg:gap-24">
+      <div className="mt-20 grid gap-16 lg:mt-32 lg:grid-cols-2 lg:items-center lg:gap-24">
         <SplitTextReveal
           as="h2"
           lines={["LUXURY WITHOUT", "ANNOUNCEMENT."]}
@@ -35,7 +35,7 @@ export function AboutPhilosophy() {
       </div>
 
       {/* where we work */}
-      <div className="mt-32 grid gap-8 sm:grid-cols-2">
+      <div className="mt-20 grid gap-8 sm:grid-cols-2 lg:mt-32">
         <figure>
           <ArchitecturalReveal>
             <GeneratedMedia id="still-doha" sizes="(min-width: 640px) 50vw, 100vw" />

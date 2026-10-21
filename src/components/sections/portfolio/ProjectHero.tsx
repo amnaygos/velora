@@ -42,7 +42,7 @@ export function ProjectHero({ project }: { project: Project }) {
   );
 
   return (
-    <section ref={sectionRef} className="bg-carbon pt-36 lg:pt-44">
+    <section ref={sectionRef} className="bg-carbon pt-28 lg:pt-32">
       <div className="px-5 sm:px-8 lg:px-12">
         <SectionEyebrow>
           {project.category.toUpperCase()} — {project.location}

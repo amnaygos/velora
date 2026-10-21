@@ -12,7 +12,7 @@ const CHAPTERS: Array<{
 
 export function ProjectNarrative({ project }: { project: Project }) {
   return (
-    <section className="bg-carbon px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <section className="bg-carbon px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
       <div className="space-y-20">
         {CHAPTERS.map((chapter) => (
           <div

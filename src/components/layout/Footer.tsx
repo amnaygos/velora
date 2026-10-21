@@ -4,11 +4,13 @@ import { useRef } from "react";
 import { TransitionLink } from "@/components/layout/RouteTransitionProvider";
 import { VeloraWordmark } from "@/components/brand/VeloraWordmark";
 import { footerNav } from "@/content/navigation";
-import { site, socials } from "@/content/site";
+import { site } from "@/content/site";
+import { useStudio } from "@/components/providers/StudioProvider";
 import { gsap, useGSAP, EASE } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 export function Footer() {
+  const studio = useStudio();
   const ref = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -80,20 +82,23 @@ export function Footer() {
           <p className="text-[11px] uppercase leading-loose tracking-[0.2em] text-white/55">
             {site.cities}
           </p>
-          <a
-            href={`mailto:${site.email}`}
-            className="block text-[11px] uppercase tracking-[0.2em] text-white/70 transition-colors duration-500 hover:text-white"
-          >
-            {site.email.toUpperCase()}
-          </a>
+          {studio.email ? (
+            <a
+              href={`mailto:${studio.email}`}
+              className="block text-[11px] uppercase tracking-[0.2em] text-white/70 transition-colors duration-500 hover:text-white"
+            >
+              {studio.email.toUpperCase()}
+            </a>
+          ) : null}
         </div>
 
+        {studio.socials.length ? (
         <div className="space-y-4" data-footer-item>
           <p className="text-[10px] uppercase tracking-[0.28em] text-white/40">
             FOLLOW
           </p>
           <ul className="space-y-3">
-            {socials.map((social) => (
+            {studio.socials.map((social) => (
               <li key={social.label}>
                 <a
                   href={social.href}
@@ -107,6 +112,7 @@ export function Footer() {
             ))}
           </ul>
         </div>
+        ) : null}
       </div>
 
       <div

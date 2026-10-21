@@ -5,23 +5,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
-import {
-  FORM_ENDPOINTS,
-  resolveFormMode,
-  submitForm,
-} from "@/lib/formSubmission";
+import { subscribeToEdit } from "@/app/(public)/actions";
 import { newsletterSchema } from "@/lib/validation";
 import type { FormStatus, NewsletterFormValues } from "@/types/forms";
 
-/**
- * The Velora Edit subscription. No database: in demo mode the values are
- * validated locally and never persisted; the success state says exactly
- * that and claims nothing more.
- */
+/** The Velora Edit subscription, saved to the subscribers list in the admin. */
 export function NewsletterForm() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const mode = resolveFormMode(FORM_ENDPOINTS.newsletter);
 
   const {
     register,
@@ -34,7 +25,7 @@ export function NewsletterForm() {
   const onSubmit = handleSubmit(async (values) => {
     setStatus("submitting");
     setErrorMessage(null);
-    const result = await submitForm(values, FORM_ENDPOINTS.newsletter);
+    const result = await subscribeToEdit(values);
     if (result.ok) {
       setStatus("success");
     } else {
@@ -50,12 +41,10 @@ export function NewsletterForm() {
           THE EDIT
         </p>
         <p className="mt-4 text-base font-light uppercase text-white">
-          {mode === "demo" ? "PRESENTATION MODE." : "REQUEST RECEIVED."}
+          YOU ARE ON THE LIST.
         </p>
         <p className="mt-3 text-sm font-light leading-[1.7] text-white/60">
-          {mode === "demo"
-            ? "Your email was validated locally and was not stored or subscribed — this site runs without a backend."
-            : "Your subscription request has been submitted."}
+          The next Edit will reach your inbox.
         </p>
       </div>
     );
