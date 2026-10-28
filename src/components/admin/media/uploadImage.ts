@@ -26,7 +26,10 @@ export async function measureImage(src: string): Promise<{ width: number; height
  * Resizes a photo in the browser (long edge ≤ 2400 px, WebP), uploads it to
  * the public site-media bucket and returns the media reference to store.
  */
-export async function uploadImage(file: File): Promise<string> {
+export async function uploadImage(
+  file: File,
+  { folder = UPLOAD_FOLDER, maxEdge = MAX_EDGE }: { folder?: string; maxEdge?: number } = {}
+): Promise<string> {
   if (!file.type.startsWith("image/")) throw new Error("Choose a photo (JPEG, PNG, WebP or AVIF).");
 
   const url = URL.createObjectURL(file);
@@ -35,7 +38,7 @@ export async function uploadImage(file: File): Promise<string> {
   let height: number;
   try {
     const img = await loadImage(url);
-    const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+    const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
     width = Math.round(img.naturalWidth * scale);
     height = Math.round(img.naturalHeight * scale);
     const canvas = document.createElement("canvas");
@@ -50,7 +53,7 @@ export async function uploadImage(file: File): Promise<string> {
   }
 
   const supabase = createClient();
-  const path = `${UPLOAD_FOLDER}/${crypto.randomUUID()}.webp`;
+  const path = `${folder}/${crypto.randomUUID()}.webp`;
   const { error } = await supabase.storage.from(SITE_MEDIA_BUCKET).upload(path, blob, { contentType: "image/webp" });
   if (error) throw new Error(error.message);
   const { data } = supabase.storage.from(SITE_MEDIA_BUCKET).getPublicUrl(path);
@@ -67,4 +70,28 @@ export async function listUploads(): Promise<string[]> {
   return (data ?? [])
     .filter((f) => f.id && !f.name.startsWith("."))
     .map((f) => supabase.storage.from(SITE_MEDIA_BUCKET).getPublicUrl(`${UPLOAD_FOLDER}/${f.name}`).data.publicUrl);
+}
+
+/** The average colour of a photo, as #rrggbb — a material's flat tone, read from the file before upload. */
+export async function fileTone(file: File): Promise<string> {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await loadImage(url);
+    const canvas = document.createElement("canvas");
+    canvas.width = 24;
+    canvas.height = 24;
+    const ctx = canvas.getContext("2d")!;
+    ctx.drawImage(img, 0, 0, 24, 24);
+    const px = ctx.getImageData(0, 0, 24, 24).data;
+    let r = 0, g = 0, b = 0;
+    for (let i = 0; i < px.length; i += 4) {
+      r += px[i];
+      g += px[i + 1];
+      b += px[i + 2];
+    }
+    const n = px.length / 4;
+    return "#" + [r, g, b].map((v) => Math.round(v / n).toString(16).padStart(2, "0")).join("");
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }

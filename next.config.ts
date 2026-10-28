@@ -6,6 +6,10 @@ const storage = process.env.NEXT_PUBLIC_SUPABASE_URL
   : null;
 
 const nextConfig: NextConfig = {
+  // The Space Canvas configurator is a static page in public/space-canvas/.
+  async rewrites() {
+    return [{ source: "/space-canvas", destination: "/space-canvas/index.html" }];
+  },
   images: {
     remotePatterns: storage
       ? [

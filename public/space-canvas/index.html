@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>VELORA — Space Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VELORA — Space Canvas
+   A wellness project composed on its real floor plan, priced live.
+   ============================================================ */
+:root {
+  --carbon: #1C1C1C; --panel: #212123; --panel-2: #262628; --gunmetal: #404140;
+  --olive: #91928D; --amber: #C2A36B; --danger: #D0806C;
+  --w90: rgba(255,255,255,.9); --w70: rgba(255,255,255,.7); --w50: rgba(255,255,255,.5);
+  --w40: rgba(255,255,255,.4); --w30: rgba(255,255,255,.3); --w20: rgba(255,255,255,.2);
+  --w10: rgba(255,255,255,.1); --w06: rgba(255,255,255,.06);
+  --ease: cubic-bezier(.22,1,.36,1);
+  --bar: 64px;
+}
+* { box-sizing: border-box; border-radius: 0; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--carbon); color: #fff; font-family: Montserrat, system-ui, sans-serif; font-size: 13px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow: hidden; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 1px solid var(--olive); outline-offset: 2px; }
+.label { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--w40); }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--w50); }
+.ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+/* ---------- Top bar ---------- */
+.bar { height: var(--bar); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 28px; padding: 0 22px; border-bottom: 1px solid var(--w06); background: #1a1a1b; }
+.brand { display: flex; align-items: baseline; gap: 16px; }
+.wordmark { font-size: 14px; font-weight: 600; letter-spacing: .55em; }
+.crumb { font-size: 9px; letter-spacing: .34em; text-transform: uppercase; color: var(--olive); }
+.est { justify-self: center; display: flex; align-items: baseline; gap: 16px; }
+.est b { font-weight: 200; font-size: 22px; letter-spacing: .02em; white-space: nowrap; }
+.est b small { font-size: 10px; color: var(--w40); margin-right: 6px; letter-spacing: .14em; }
+.est .meta { font-size: 11px; color: var(--w50); }
+.bar-actions { display: flex; align-items: center; gap: 10px; }
+.sample { font-size: 8px; letter-spacing: .26em; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(194,163,107,.4); padding: 5px 9px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; font-size: 9px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; border: 1px solid transparent; background: none; transition: all .3s; color: #fff; text-decoration: none; white-space: nowrap; }
+.btn-primary { background: var(--olive); color: var(--carbon); }
+.btn-primary:hover { background: #fff; }
+.btn-ghost { border-color: var(--gunmetal); color: var(--w70); }
+.btn-ghost:hover { border-color: var(--olive); color: #fff; }
+.btn-danger { border-color: rgba(208,128,108,.4); color: var(--danger); }
+.btn-danger:hover { background: rgba(208,128,108,.12); }
+.btn[disabled] { opacity: .35; pointer-events: none; }
+
+/* ---------- App frame ---------- */
+.app { height: calc(100vh - var(--bar)); display: grid; grid-template-columns: 286px minmax(0,1fr) 372px; }
+.library, .inspector { background: var(--panel); overflow: auto; }
+.library { border-right: 1px solid var(--w06); }
+.inspector { border-left: 1px solid var(--w06); }
+
+/* ---------- Library ---------- */
+.tabs { position: sticky; top: 0; z-index: 2; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--panel); border-bottom: 1px solid var(--w06); }
+.tabs button { position: relative; padding: 15px 8px; background: none; border: 0; font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--w50); }
+.tabs button[aria-selected="true"] { color: #fff; }
+.tabs button::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--olive); transform: scaleX(0); transition: transform .4s var(--ease); }
+.tabs button[aria-selected="true"]::after { transform: scaleX(1); }
+.tabs .count { margin-left: 6px; color: var(--olive); }
+.lib-group { padding: 16px 14px 4px; }
+.lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.tile { position: relative; display: grid; gap: 6px; align-content: start; min-height: 86px; padding: 11px 10px 10px; text-align: left; background: var(--panel-2); border: 1px solid var(--w06); transition: border-color .25s, transform .25s; }
+.tile:hover { border-color: var(--w20); transform: translateY(-1px); }
+.tile:active { transform: translateY(1px); }
+.tile .nm { font-size: 11px; line-height: 1.3; color: var(--w90); }
+.tile .meta { font-size: 9px; color: var(--w40); }
+.tile .have { position: absolute; top: 8px; right: 8px; min-width: 16px; height: 16px; padding: 0 4px; display: grid; place-items: center; font-size: 9px; background: var(--olive); color: var(--carbon); }
+.tile .forgot { position: absolute; top: 9px; right: 9px; width: 6px; height: 6px; background: var(--amber); }
+.lib-foot { padding: 14px; font-size: 10px; color: var(--w40); line-height: 1.6; }
+.tile.has-img { padding-top: 0; overflow: hidden; }
+.tile-img { display: block; height: 58px; margin: 0 -10px 4px; background: #333 center/cover no-repeat; }
+.contents { display: grid; gap: 4px; }
+.ct-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; padding: 6px; background: var(--panel-2); border: 1px solid var(--w06); transition: opacity .2s; }
+.ct-row.off { opacity: .5; }
+.ct-img { width: 34px; height: 34px; background: #333 center/cover no-repeat; }
+.ct-mono { display: grid; place-items: center; color: var(--w70); font-size: 11px; background: var(--gunmetal); }
+.ct-name b { display: block; font-weight: 400; font-size: 11px; color: var(--w90); }
+.ct-name small { display: block; font-size: 10px; color: var(--w40); }
+.ct-tag { font-size: 8px; letter-spacing: .2em; text-transform: uppercase; color: var(--olive); }
+.ct-switch { position: relative; width: 32px; height: 18px; border: 1px solid var(--w30); background: none; }
+.ct-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 10px; height: 10px; background: var(--w50); transition: transform .25s var(--ease), background .25s; }
+.ct-switch[aria-checked="true"] { border-color: var(--olive); }
+.ct-switch[aria-checked="true"]::after { transform: translateX(14px); background: var(--olive); }
+.ct-warn { margin: 8px 0 0; font-size: 11px; line-height: 1.5; color: var(--amber); }
+.lib-foot i { display: inline-block; width: 6px; height: 6px; background: var(--amber); margin-right: 6px; }
+
+/* ---------- Stage ---------- */
+.stage { position: relative; display: grid; grid-template-rows: minmax(0,1fr) auto; min-width: 0; overflow: hidden; background: radial-gradient(110% 80% at 50% 20%, #29292c 0%, #1b1b1c 70%); }
+.model { position: relative; min-height: 0; overflow: hidden; cursor: grab; touch-action: none; user-select: none; }
+.model.dragging { cursor: grabbing; }
+.model.edit { cursor: default; }
+.model.marking { cursor: crosshair; }
+.model > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.model .hit { fill: transparent; cursor: pointer; transition: fill .25s; }
+.model.edit .hit { cursor: move; }
+.model .hit:hover { fill: rgba(255,255,255,.06); }
+.model .sel { fill: rgba(145,146,141,.12); stroke: #d9dad4; stroke-dasharray: .35 .25; animation: march 1.2s linear infinite; pointer-events: none; }
+.model .bad { fill: rgba(208,128,108,.14); stroke: #d0806c; stroke-dasharray: .3 .2; animation: march 1.2s linear infinite; pointer-events: none; }
+@keyframes march { to { stroke-dashoffset: -1.2; } }
+.model .ripple { stroke-dasharray: 1.2 .8; animation: ripple 3.2s linear infinite; }
+@keyframes ripple { to { stroke-dashoffset: -4; } }
+.model .flame { animation: flame 1.6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center bottom; }
+@keyframes flame { to { opacity: .55; transform: scale(1.08, .92); } }
+.model .handle { cursor: nwse-resize; }
+.model .handle-ew { cursor: ew-resize; }
+.model .handle-ns { cursor: ns-resize; }
+.model [data-wall], .model [data-pillar], .model [data-window] { cursor: pointer; }
+.empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--w40); font-size: 12px; pointer-events: none; }
+.toolbar { position: absolute; left: 18px; top: 16px; right: 18px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 3; pointer-events: none; }
+.toolbar > * { pointer-events: auto; }
+.tool { height: 34px; min-width: 34px; padding: 0 11px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(28,28,28,.82); border: 1px solid var(--w10); color: var(--w70); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; backdrop-filter: blur(6px); transition: all .25s; }
+.tool:hover { border-color: var(--olive); color: #fff; }
+.tool[aria-pressed="true"] { background: var(--olive); border-color: var(--olive); color: var(--carbon); }
+.tool .ico { width: 16px; height: 16px; }
+.tool.primary { border-color: rgba(145,146,141,.6); color: #fff; }
+.modes { display: inline-flex; border: 1px solid var(--w10); background: rgba(28,28,28,.82); backdrop-filter: blur(6px); }
+.modes button { height: 32px; padding: 0 13px; border: 0; background: none; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--w50); transition: all .25s; }
+.modes button[aria-pressed="true"] { background: var(--olive); color: var(--carbon); }
+.legend { position: absolute; right: 18px; bottom: 14px; z-index: 3; text-align: right; font-size: 10px; color: var(--w50); line-height: 1.7; pointer-events: none; }
+.legend b { font-weight: 400; color: var(--w90); }
+.mode-hint { position: absolute; left: 18px; top: 60px; z-index: 3; max-width: 440px; padding: 8px 12px; font-size: 11px; line-height: 1.5; color: var(--w90); background: rgba(28,28,28,.86); border-left: 2px solid var(--olive); backdrop-filter: blur(6px); pointer-events: none; transition: opacity .3s; }
+.mode-hint:empty { opacity: 0; }
+.hint { position: absolute; left: 18px; bottom: 14px; z-index: 3; font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--w30); pointer-events: none; }
+
+/* Breakdown strip */
+.breakdown { border-top: 1px solid var(--w06); background: rgba(26,26,27,.92); }
+.bd-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 22px; align-items: center; padding: 14px 22px; }
+.bd-bar { display: flex; height: 8px; background: var(--w06); overflow: hidden; }
+.bd-bar span { height: 100%; transition: flex-basis .6s var(--ease); }
+.bd-groups { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; font-size: 11px; color: var(--w70); }
+.bd-groups span { display: inline-flex; align-items: center; gap: 7px; }
+.bd-groups i { width: 7px; height: 7px; }
+.bd-groups b { font-weight: 400; color: #fff; }
+.itemised { max-height: 280px; overflow: auto; border-top: 1px solid var(--w06); padding: 6px 22px 16px; }
+.itemised table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.itemised th { text-align: left; font-weight: 400; font-size: 8px; letter-spacing: .26em; text-transform: uppercase; color: var(--w40); padding: 10px 8px 8px 0; border-bottom: 1px solid var(--w10); }
+.itemised td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--w06); color: var(--w70); }
+.itemised td.r, .itemised th.r { text-align: right; }
+.itemised tr.sub td { color: var(--w90); font-weight: 500; }
+
+/* ---------- Inspector ---------- */
+.insp-body { padding: 18px 18px 28px; animation: rise .35s var(--ease); }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.insp-head { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; }
+.insp-head .ico { width: 26px; height: 26px; color: var(--olive); margin-top: 2px; }
+.insp-head h2 { margin: 0; font-weight: 300; font-size: 17px; letter-spacing: .1em; text-transform: uppercase; line-height: 1.2; }
+.insp-head p { margin: 5px 0 0; font-size: 11px; color: var(--w50); }
+.intro { margin: 0; font-size: 12px; line-height: 1.7; color: var(--w70); }
+.section { margin-top: 22px; }
+.section > .label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.size { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+.size output { font-size: 20px; font-weight: 200; min-width: 92px; text-align: right; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--gunmetal); }
+.stepper button { width: 26px; height: 26px; background: none; border: 0; color: var(--w70); font-size: 14px; }
+.stepper button:hover { background: var(--w06); color: #fff; }
+.stepper span { min-width: 22px; text-align: center; font-size: 11px; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 20px; background: transparent; margin: 0; }
+input[type=range]::-webkit-slider-runnable-track { height: 1px; background: var(--w20); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -7px; background: var(--olive); border: 2px solid var(--carbon); box-shadow: 0 0 0 1px var(--olive); }
+input[type=range]::-moz-range-track { height: 1px; background: var(--w20); }
+input[type=range]::-moz-range-thumb { width: 12px; height: 12px; background: var(--olive); border: 2px solid var(--carbon); }
+input[type=text] { width: 100%; padding: 9px 10px; background: var(--panel-2); border: 1px solid var(--gunmetal); font-size: 12px; }
+input[type=text]:focus { outline: none; border-color: var(--olive); }
+
+.swatches { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; }
+.swatch { display: grid; gap: 5px; padding: 0 0 6px; text-align: left; background: none; border: 1px solid var(--w06); transition: border-color .2s; }
+.swatch:hover { border-color: var(--w30); }
+.swatch[aria-pressed="true"] { border-color: var(--olive); box-shadow: inset 0 0 0 1px var(--olive); }
+.swatch .img { position: relative; display: block; aspect-ratio: 1; background: #333 center/cover no-repeat; overflow: hidden; }
+.swatch .nm { padding: 0 6px; font-size: 9px; line-height: 1.3; color: var(--w70); }
+.swatch .pr { padding: 0 6px; font-size: 8px; color: var(--w40); }
+.swatch[aria-pressed="true"] .nm { color: #fff; }
+.slats::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 9%, rgba(0,0,0,.6) 9% 11%); }
+.baffles::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent 0 12%, rgba(0,0,0,.55) 12% 17%); }
+.mat-mirror { background-image: linear-gradient(115deg, rgba(255,255,255,.45), rgba(255,255,255,0) 40%, rgba(255,255,255,.25) 70%), linear-gradient(160deg, #6f777e, #c9d0d5 45%, #7c848a) !important; }
+.mat-stretch { background-image: linear-gradient(180deg, #f6f6f4, #c9c9c4 70%, #e8e8e5) !important; }
+.view-img { background-image: var(--room); background-size: cover; background-position: center; }
+.view-img::after { content: ''; position: absolute; inset: 0; }
+.g-none::after { background: url(materials/plaster.jpg) center/cover; }
+.g-clear::after { background: linear-gradient(135deg, rgba(190,222,228,.18), rgba(190,222,228,.04)); box-shadow: inset 2px 0 0 rgba(255,255,255,.45); }
+.g-frameless::after { background: linear-gradient(115deg, transparent 0 46%, rgba(255,255,255,.35) 47%, transparent 50%); }
+.g-fluted::after { backdrop-filter: blur(2.5px); background: repeating-linear-gradient(90deg, rgba(255,255,255,.2) 0 3px, rgba(0,0,0,.14) 3px 6px); }
+.g-smart::after { backdrop-filter: blur(7px); background: rgba(240,240,236,.45); clip-path: inset(0 0 0 45%); }
+.g-bronze::after { background: rgba(126,86,46,.42); box-shadow: inset 0 0 0 1px rgba(255,220,180,.25); }
+.l-even { filter: brightness(1.25) saturate(.7); }
+.l-even::after { background: rgba(255,255,255,.08); }
+.l-layered { filter: brightness(.8); }
+.l-layered::after { background: radial-gradient(circle at 25% 30%, rgba(255,214,160,.55), transparent 32%), radial-gradient(circle at 72% 40%, rgba(255,214,160,.45), transparent 30%), radial-gradient(circle at 50% 85%, rgba(255,214,160,.35), transparent 30%); }
+.l-lines { filter: brightness(.55); }
+.l-lines::after { background: linear-gradient(180deg, transparent 0 66%, rgba(248,234,210,.5) 66%, #fff4df 67.5%, rgba(248,234,210,.5) 69%, transparent 74%); }
+.l-circadian::after { background: linear-gradient(90deg, rgba(255,190,120,.45), rgba(255,255,255,0) 50%, rgba(170,200,255,.45)); }
+
+.features { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.feat { display: grid; grid-template-columns: 20px 1fr auto; gap: 9px; align-items: center; padding: 9px; background: var(--panel-2); border: 1px solid var(--w06); font-size: 11px; color: var(--w90); text-align: left; transition: border-color .2s, background .2s; }
+.feat.on { border-color: rgba(145,146,141,.6); background: rgba(145,146,141,.1); }
+.feat .ico { width: 18px; height: 18px; color: var(--olive); }
+.feat .tick { width: 14px; height: 14px; border: 1px solid var(--w30); display: grid; place-items: center; font-size: 10px; color: var(--carbon); }
+.feat.on .tick { background: var(--olive); border-color: var(--olive); }
+.feat.on .tick::after { content: '✓'; }
+.feat .stepper button { width: 22px; height: 22px; font-size: 12px; }
+.cost-card { margin-top: 22px; padding: 14px; background: var(--panel-2); border: 1px solid var(--w06); }
+.cost-card b { display: block; margin-top: 4px; font-weight: 200; font-size: 20px; }
+.cost-card p { margin: 6px 0 0; font-size: 10px; color: var(--w50); }
+.pos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pos .btn { width: 100%; }
+.pos .btn[aria-pressed="true"] { background: var(--olive); color: var(--carbon); border-color: var(--olive); }
+.issues { margin-top: 12px; display: grid; gap: 6px; }
+.issue { display: flex; gap: 9px; align-items: flex-start; padding: 9px 11px; background: rgba(208,128,108,.08); border: 1px solid rgba(208,128,108,.3); font-size: 11px; line-height: 1.45; color: #f0c2b6; text-align: left; }
+.issue::before { content: ''; width: 6px; height: 6px; margin-top: 5px; flex-shrink: 0; background: var(--danger); }
+button.issue { width: 100%; cursor: pointer; }
+.ok { padding: 9px 11px; font-size: 11px; color: var(--w70); background: rgba(145,146,141,.08); border: 1px solid rgba(145,146,141,.25); }
+
+/* Site tab */
+.shapes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.shape { display: grid; gap: 7px; justify-items: center; padding: 10px 4px 8px; background: var(--panel-2); border: 1px solid var(--w06); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--w70); transition: border-color .2s; }
+.shape svg { width: 34px; height: 26px; }
+.shape svg path { fill: rgba(145,146,141,.22); stroke: var(--olive); stroke-width: 1.4; }
+.shape[aria-pressed="true"] { border-color: var(--olive); box-shadow: inset 0 0 0 1px var(--olive); color: #fff; }
+.dims { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.dim { display: grid; gap: 6px; padding: 9px 10px; background: var(--panel-2); border: 1px solid var(--w06); }
+.dim .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.dim b { font-weight: 300; font-size: 15px; }
+.tools { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.tool-btn { position: relative; display: grid; gap: 5px; justify-items: center; padding: 11px 2px 9px; background: var(--panel-2); border: 1px solid var(--w06); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; color: var(--w70); transition: all .2s; }
+.tool-btn .ico { color: var(--olive); }
+.tool-btn[aria-pressed="true"] { border-color: var(--olive); background: rgba(145,146,141,.16); color: #fff; }
+.tool-btn .n { position: absolute; top: 5px; right: 6px; font-size: 9px; color: var(--olive); letter-spacing: 0; }
+.tool-btn[disabled] { opacity: .35; pointer-events: none; }
+.inline { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; }
+.chip { padding: 8px 11px; background: none; border: 1px solid var(--w10); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--w70); transition: all .2s; }
+.chip[aria-pressed="true"] { border-color: var(--olive); background: rgba(145,146,141,.14); color: #fff; }
+.chip:hover { border-color: var(--w30); }
+.meter { position: relative; height: 8px; margin: 10px 0 6px; background: var(--w06); }
+.meter .band { position: absolute; top: 0; bottom: 0; background: rgba(145,146,141,.22); }
+.meter .val { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #fff; transition: left .5s var(--ease); }
+.stat { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--w06); font-size: 12px; color: var(--w70); }
+.stat b { font-weight: 400; color: #fff; }
+
+/* Project tab */
+.feel-grid { display: grid; gap: 6px; }
+.feel { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; padding: 6px; background: var(--panel-2); border: 1px solid var(--w06); text-align: left; transition: border-color .2s; }
+.feel .strip { display: grid; grid-template-columns: repeat(3,1fr); height: 48px; }
+.feel .strip span { background: center/cover no-repeat; }
+.feel b { font-weight: 500; font-size: 10px; letter-spacing: .24em; text-transform: uppercase; }
+.feel p { margin: 3px 0 0; font-size: 10px; color: var(--w50); line-height: 1.4; }
+.feel[aria-pressed="true"] { border-color: var(--olive); box-shadow: inset 0 0 0 1px var(--olive); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.forget { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; margin-bottom: 6px; border: 1px solid rgba(194,163,107,.35); background: rgba(194,163,107,.07); }
+.forget b { display: block; font-weight: 400; font-size: 12px; }
+.forget small { display: block; margin-top: 2px; font-size: 10px; color: var(--amber); line-height: 1.45; }
+.toggle { display: grid; grid-template-columns: 16px 1fr auto; gap: 10px; align-items: start; padding: 9px 0; border-bottom: 1px solid var(--w06); cursor: pointer; }
+.toggle input { appearance: none; width: 14px; height: 14px; margin: 2px 0 0; border: 1px solid var(--w30); display: grid; place-items: center; cursor: pointer; }
+.toggle input:checked { background: var(--olive); border-color: var(--olive); }
+.toggle input:checked::after { content: '✓'; font-size: 10px; color: var(--carbon); }
+.toggle b { display: block; font-weight: 400; font-size: 12px; color: var(--w90); }
+.toggle small { display: block; margin-top: 2px; font-size: 10px; color: var(--w40); line-height: 1.45; }
+.toggle small.why { color: var(--amber); }
+.toggle .amt { font-size: 11px; color: var(--w50); white-space: nowrap; }
+.badge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; margin-left: 6px; padding: 0 4px; background: var(--amber); color: var(--carbon); font-size: 9px; letter-spacing: 0; }
+.badge.red { background: var(--danger); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  body { overflow: auto; }
+  .bar { height: auto; grid-template-columns: 1fr auto; row-gap: 8px; padding: 12px 16px; }
+  .est { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+  .app { height: auto; display: flex; flex-direction: column; }
+  .stage { order: 1; min-height: 66vh; }
+  .model { min-height: 54vh; }
+  .library { order: 2; border-right: 0; border-top: 1px solid var(--w06); }
+  .lib-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(136px, 1fr); overflow-x: auto; padding-bottom: 6px; }
+  .inspector { order: 3; border-left: 0; border-top: 1px solid var(--w06); }
+}
+@media (max-width: 640px) {
+  .sample, #copy { display: none; }
+  .est { flex-wrap: wrap; gap: 4px 12px; }
+  .est b { font-size: 18px; }
+  .legend, .mode-hint { display: none; }
+  .swatches { grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><span class="wordmark">VELORA</span><span class="crumb">Space Canvas</span></div>
+  <div class="est" aria-live="polite"><span class="label">Live estimate</span><b class="num" id="est"></b><span class="meta num" id="est-meta"></span></div>
+  <div class="bar-actions"><span class="sample" title="All prices are placeholders until VELORA's price list replaces them.">Sample pricing</span><button class="btn btn-ghost" id="copy">Copy</button><a class="btn btn-primary" id="send" href="#">Send to VELORA</a></div>
+</header>
+
+<main class="app">
+  <aside class="library" aria-label="Spaces to add">
+    <div class="tabs" role="tablist"><button role="tab" data-lib="in">Indoor<span class="count" data-count="in"></span></button><button role="tab" data-lib="out">Outdoor<span class="count" data-count="out"></span></button></div>
+    <div id="lib"></div>
+    <p class="lib-foot"><i></i>Often forgotten. Tap any space to add it; it finds its own place in the plan.</p>
+  </aside>
+
+  <section class="stage">
+    <div class="model" id="model" aria-label="Plan and model of the project">
+      <div class="toolbar">
+        <div class="modes" role="group" aria-label="View"><button type="button" data-mode="site">Site</button><button type="button" data-mode="layout">Layout</button><button type="button" data-mode="3d">3D</button></div>
+        <button type="button" class="tool primary" id="arrange" title="Re-arrange every space that is not pinned">Arrange</button>
+        <button type="button" class="tool" data-tool="left" title="Turn left"><svg class="ico" viewBox="0 0 24 24"><path d="M9 7H4V2M4.5 7A9 9 0 1112 21"/></svg></button>
+        <button type="button" class="tool" data-tool="right" title="Turn right"><svg class="ico" viewBox="0 0 24 24"><path d="M15 7h5V2M19.5 7A9 9 0 1012 21"/></svg></button>
+        <button type="button" class="tool" data-tool="spin" aria-pressed="false" title="Slow turntable">Spin</button>
+        <button type="button" class="tool" data-tool="labels" aria-pressed="true" title="Show labels">Labels</button>
+      </div>
+      <div class="mode-hint" id="mode-hint"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="breakdown">
+      <div class="bd-row"><div><div class="bd-bar" id="bd-bar"></div><div class="bd-groups" id="bd-groups"></div></div><button type="button" class="btn btn-ghost" id="toggle-items">Itemised</button></div>
+      <div class="itemised" id="itemised" hidden></div>
+    </div>
+  </section>
+
+  <aside class="inspector" aria-label="Inspector">
+    <div class="tabs" role="tablist"><button role="tab" data-insp="space">Selected</button><button role="tab" data-insp="site">Site<span id="site-badge"></span></button><button role="tab" data-insp="project">Project<span id="forget-badge"></span></button></div>
+    <div id="insp"></div>
+  </aside>
+</main>
+
+<script>
+/* ============================================================
+   DATA — sample pricing (QAR). Replace with VELORA's price list.
+   ============================================================ */
+const M = '/space-canvas/materials/';
+const ROOM_IMG = "url('/media/images/still-environment.webp')";
+const TIER_KEYS = ['essential', 'premium', 'signature'];
+const TIER = { essential: 'Essential', premium: 'Premium', signature: 'Signature' };
+const FEES = { design: 0.12, range: 0.1 };
+
+/* Materials: photo (CC0, see materials/CREDITS.md), repeat size in metres, average tone for solid fills. */
+const MAT = {
+  plaster:          { label: 'Painted plaster',   img: 'plaster.jpg', tile: 3, tone: '#d7d3cf' },
+  microcement:      { label: 'Microcement',       img: 'microcement.jpg', tile: 3, tone: '#b8b8b8' },
+  concrete:         { label: 'Polished concrete', img: 'concrete.jpg', tile: 3, tone: '#989388' },
+  fabric:           { label: 'Acoustic fabric',   img: 'fabric.jpg', tile: 1.6, tone: '#746f5d' },
+  walnut:           { label: 'Walnut slats',      img: 'walnut.jpg', tile: 1.6, tone: '#41342e', slats: true },
+  ash:              { label: 'Ash slats',         img: 'ash.jpg', tile: 1.6, tone: '#a0795a', slats: true },
+  travertine:       { label: 'Travertine',        img: 'travertine-light.jpg', tile: 2.4, tone: '#dfcbac' },
+  'travertine-noce':{ label: 'Noce travertine',   img: 'travertine.jpg', tile: 2.4, tone: '#5f5147' },
+  marble:           { label: 'Marble',            img: 'marble.jpg', tile: 2.4, tone: '#acadb5' },
+  tile:             { label: 'White ceramic',     img: 'tile-white.jpg', tile: 1.2, tone: '#f2f2f2' },
+  mirror:           { label: 'Mirror',            css: 'mat-mirror', tone: '#9aa2a8' },
+  rubber:           { label: 'Sports rubber',     img: 'rubber.jpg', tile: 1.2, tone: '#1f2022' },
+  oak:              { label: 'Engineered oak',    img: 'oak.jpg', tile: 2.2, tone: '#6c4213' },
+  terrazzo:         { label: 'Terrazzo',          img: 'terrazzo.jpg', tile: 1.6, tone: '#c1bcb7' },
+  basalt:           { label: 'Basalt tile',       img: 'basalt.jpg', tile: 2.4, tone: '#353536' },
+  turf:             { label: 'Training turf',     img: 'turf.jpg', tile: 2.5, tone: '#65832b' },
+  decking:          { label: 'Hardwood decking',  img: 'decking.jpg', tile: 2.4, tone: '#6e340d' },
+  pavers:           { label: 'Stone pavers',      img: 'stone-pavers.jpg', tile: 3, tone: '#d2cac2' },
+  lawn:             { label: 'Lawn',              img: 'lawn.jpg', tile: 3, tone: '#445b28' },
+  gravel:           { label: 'White gravel',      img: 'gravel.jpg', tile: 2, tone: '#d9d6ce' },
+  stretch:          { label: 'Stretch ceiling',   css: 'mat-stretch', tone: '#e6e6e2' },
+};
+const RATE = { // QAR per m² of the space's footprint, by surface
+  floor:   { rubber: 200, oak: 460, microcement: 520, concrete: 380, terrazzo: 640, travertine: 820, basalt: 760, marble: 1100, turf: 260, tile: 420, decking: 650, pavers: 480, lawn: 90, gravel: 70 },
+  walls:   { plaster: 110, microcement: 380, fabric: 360, walnut: 560, ash: 500, travertine: 900, 'travertine-noce': 950, marble: 1300, tile: 340, mirror: 300 },
+  ceiling: { plaster: 80, concrete: 120, walnut: 460, ash: 420, fabric: 300, stretch: 360 },
+};
+const SURF_OPTS = {
+  floor: { dry: ['rubber', 'oak', 'microcement', 'concrete', 'terrazzo', 'travertine', 'basalt', 'marble', 'turf'], wet: ['terrazzo', 'travertine', 'basalt', 'marble', 'tile', 'microcement'], out: ['decking', 'pavers', 'travertine', 'lawn', 'gravel', 'turf'] },
+  walls: ['plaster', 'microcement', 'fabric', 'walnut', 'ash', 'travertine', 'travertine-noce', 'marble', 'tile', 'mirror'],
+  ceiling: ['plaster', 'concrete', 'walnut', 'ash', 'fabric', 'stretch'],
+};
+const GLASS = { none: ['Solid walls', 0], clear: ['Clear', 380], frameless: ['Frameless', 640], fluted: ['Fluted', 760], smart: ['Smart, switchable', 1500], bronze: ['Bronze tint', 820] };
+const LIGHT = { even: ['Even LED', 150], layered: ['Layered, dimmable', 320], lines: ['Light lines', 540], circadian: ['Circadian', 700] };
+const FEEL = {
+  essential: { dry: { floor: 'rubber', walls: 'plaster', ceiling: 'plaster' }, wet: { floor: 'tile', walls: 'tile', ceiling: 'plaster' }, out: { floor: 'pavers' }, hall: 'microcement', glass: 'clear', lighting: 'even', line: 'Plaster, ceramic, clear glass, even light.' },
+  premium:   { dry: { floor: 'oak', walls: 'walnut', ceiling: 'fabric' }, wet: { floor: 'terrazzo', walls: 'microcement', ceiling: 'plaster' }, out: { floor: 'decking' }, hall: 'oak', glass: 'frameless', lighting: 'layered', line: 'Oak, walnut, terrazzo, warm layered light.' },
+  signature: { dry: { floor: 'travertine', walls: 'travertine-noce', ceiling: 'walnut' }, wet: { floor: 'marble', walls: 'marble', ceiling: 'stretch' }, out: { floor: 'travertine' }, hall: 'travertine', glass: 'fluted', lighting: 'lines', line: 'Travertine, marble, fluted glass, light lines.' },
+};
+
+/* Spaces. by:'area' priced per m² (pools per m² of water, deck added); by:'unit' per room/unit. */
+const S = (o) => ({ by: 'area', step: 5, min: 5, max: 900, ...o });
+const SPACES = {
+  gym:        S({ label: 'Gym floor', where: 'in', kind: 'dry', group: 'Training', def: 70, rate: [2600, 4200, 6800], floor: 'rubber', note: 'Cardio & strength, equipment included', heavy: true }),
+  functional: S({ label: 'Functional zone', where: 'in', kind: 'dry', group: 'Training', def: 35, rate: [1400, 2200, 3400], floor: 'turf', note: 'Turf lane, rig & sleds', heavy: true }),
+  boxing:     S({ label: 'Boxing studio', where: 'in', kind: 'dry', group: 'Training', def: 35, rate: [1800, 2800, 4400], floor: 'rubber', heavy: true }),
+  studio:     S({ label: 'Yoga & pilates', where: 'in', kind: 'dry', group: 'Training', def: 40, rate: [1600, 2800, 4800] }),
+  spin:       S({ label: 'Spin studio', where: 'in', kind: 'dry', group: 'Training', def: 35, rate: [2400, 3800, 6000], floor: 'rubber' }),
+  pool:       S({ label: 'Indoor pool', where: 'in', kind: 'wet', group: 'Water', def: 40, rate: [9000, 14000, 22000], deck: 1.8, note: 'm² of water, deck added', pool: true }),
+  hydro:      S({ label: 'Hydrotherapy pool', where: 'in', kind: 'wet', group: 'Water', def: 16, rate: [14000, 21000, 32000], deck: 2, pool: true }),
+  plunge:     S({ label: 'Cold plunge', where: 'in', kind: 'wet', group: 'Water', by: 'unit', step: 1, min: 1, max: 6, def: 1, foot: 4, rate: [45000, 80000, 140000] }),
+  showers:    S({ label: 'Experience showers', where: 'in', kind: 'wet', group: 'Water', by: 'unit', step: 1, min: 1, max: 10, def: 2, foot: 2.5, rate: [22000, 42000, 75000] }),
+  sauna:      S({ label: 'Sauna', where: 'in', kind: 'dry', group: 'Heat', by: 'unit', step: 1, min: 1, max: 6, def: 1, foot: 6, rate: [55000, 95000, 170000], heat: true }),
+  infrared:   S({ label: 'Infrared sauna', where: 'in', kind: 'dry', group: 'Heat', by: 'unit', step: 1, min: 1, max: 6, def: 1, foot: 4, rate: [35000, 60000, 110000], heat: true }),
+  steam:      S({ label: 'Steam room', where: 'in', kind: 'wet', group: 'Heat', by: 'unit', step: 1, min: 1, max: 6, def: 1, foot: 6, rate: [70000, 120000, 200000], heat: true }),
+  hammam:     S({ label: 'Hammam', where: 'in', kind: 'wet', group: 'Heat', by: 'unit', step: 1, min: 1, max: 3, def: 1, foot: 16, rate: [160000, 280000, 450000], heat: true }),
+  salt:       S({ label: 'Salt room', where: 'in', kind: 'dry', group: 'Heat', by: 'unit', step: 1, min: 1, max: 3, def: 1, foot: 12, rate: [90000, 150000, 240000] }),
+  treatment:  S({ label: 'Treatment rooms', where: 'in', kind: 'dry', group: 'Care', by: 'unit', step: 1, min: 1, max: 12, def: 2, foot: 12, rate: [40000, 70000, 115000] }),
+  cryo:       S({ label: 'Cryotherapy', where: 'in', kind: 'dry', group: 'Care', by: 'unit', step: 1, min: 1, max: 2, def: 1, foot: 6, rate: [180000, 240000, 320000] }),
+  lounge:     S({ label: 'Relaxation lounge', where: 'in', kind: 'dry', group: 'Hospitality', def: 30, rate: [1800, 3200, 5600] }),
+  changing:   S({ label: 'Changing & lockers', where: 'in', kind: 'wet', group: 'Hospitality', def: 30, rate: [2600, 4200, 7000] }),
+  reception:  S({ label: 'Reception', where: 'in', kind: 'dry', group: 'Hospitality', def: 15, rate: [2200, 3800, 6400] }),
+  cafe:       S({ label: 'Juice bar & café', where: 'in', kind: 'dry', group: 'Hospitality', def: 25, rate: [2600, 4200, 6800] }),
+  office:     S({ label: 'Office', where: 'in', kind: 'dry', group: 'Support', def: 12, rate: [1500, 2400, 3800] }),
+  plantroom:  S({ label: 'Plant room', where: 'in', kind: 'dry', group: 'Support', def: 15, rate: [1800, 2200, 2600], floor: 'concrete', note: 'Pumps, filtration, air handling', forgotten: true }),
+  laundry:    S({ label: 'Laundry', where: 'in', kind: 'wet', group: 'Support', def: 10, rate: [2200, 2800, 3600], forgotten: true }),
+  storage:    S({ label: 'Storage', where: 'in', kind: 'dry', group: 'Support', def: 8, rate: [700, 900, 1200], floor: 'concrete', forgotten: true }),
+  custom:     S({ label: 'Custom room', where: 'in', kind: 'dry', group: 'Other rooms', def: 20, rate: [1500, 2500, 4000], note: 'Name it yourself', named: true }),
+  existing:   S({ label: 'Existing room (kept)', where: 'in', kind: 'dry', group: 'Other rooms', def: 20, rate: [0, 0, 0], note: 'Stays as it is: no works, no cost', named: true, kept: true }),
+  opool:      S({ label: 'Outdoor pool', where: 'out', kind: 'out', group: 'Water', def: 50, rate: [7000, 11000, 18000], deck: 2.2, pool: true }),
+  hottub:     S({ label: 'Hot tub', where: 'out', kind: 'out', group: 'Water', by: 'unit', step: 1, min: 1, max: 4, def: 1, foot: 9, rate: [45000, 85000, 150000] }),
+  oshower:    S({ label: 'Outdoor shower', where: 'out', kind: 'out', group: 'Water', by: 'unit', step: 1, min: 1, max: 6, def: 1, foot: 3, rate: [12000, 22000, 38000] }),
+  sundeck:    S({ label: 'Sun deck', where: 'out', kind: 'out', group: 'Leisure', def: 40, rate: [900, 1600, 2800] }),
+  ydeck:      S({ label: 'Yoga deck', where: 'out', kind: 'out', group: 'Leisure', def: 30, rate: [900, 1500, 2600], floor: 'decking' }),
+  firepit:    S({ label: 'Fire-pit lounge', where: 'out', kind: 'out', group: 'Leisure', def: 20, rate: [1600, 2800, 4800] }),
+  garden:     S({ label: 'Garden', where: 'out', kind: 'out', group: 'Leisure', def: 60, rate: [250, 480, 900], floor: 'lawn' }),
+  ogym:       S({ label: 'Outdoor gym', where: 'out', kind: 'out', group: 'Sport', def: 40, rate: [1100, 1800, 2800], floor: 'turf' }),
+  padel:      S({ label: 'Padel court', where: 'out', kind: 'out', group: 'Sport', by: 'unit', step: 1, min: 1, max: 3, def: 1, foot: 200, rate: [180000, 240000, 320000] }),
+};
+/* How each space behaves on a real floor plan. */
+const LIGHT_WANT = new Set(['pool', 'hydro', 'studio', 'lounge', 'gym', 'cafe', 'spin', 'functional', 'reception']);
+const LIGHT_AVOID = new Set(['sauna', 'infrared', 'steam', 'hammam', 'salt', 'cryo', 'treatment', 'plantroom', 'storage', 'laundry', 'changing']);
+const PILLARS_OK = new Set(['gym', 'functional', 'boxing', 'lounge', 'cafe', 'reception', 'changing', 'storage', 'office', 'existing']); // open areas work around columns
+const NEAR_ENTRY = new Set(['reception', 'changing', 'cafe']);
+const FAR_ENTRY = new Set(['plantroom', 'storage', 'laundry', 'treatment', 'sauna', 'steam', 'hammam', 'salt']);
+
+const FEATURES = {
+  planters: { label: 'Planters', by: 'count', max: 12, where: 'any', price: [1800, 3500, 7000] },
+  greenwall:{ label: 'Green wall', by: 'toggle', where: 'in', price: [28000, 45000, 75000] },
+  skylight: { label: 'Skylight', by: 'toggle', where: 'in', price: [35000, 60000, 95000] },
+  mirror:   { label: 'Mirror wall', by: 'toggle', where: 'in', price: [9000, 16000, 28000] },
+  screens:  { label: 'Screens', by: 'count', max: 8, where: 'in', price: [6000, 11000, 18000] },
+  water:    { label: 'Water feature', by: 'toggle', where: 'any', price: [25000, 48000, 90000] },
+  art:      { label: 'Sculpture', by: 'count', max: 4, where: 'any', price: [8000, 20000, 45000] },
+  trees:    { label: 'Trees', by: 'count', max: 12, where: 'out', price: [3500, 7000, 15000] },
+  pergola:  { label: 'Pergola', by: 'toggle', where: 'out', price: [38000, 65000, 110000] },
+  parasols: { label: 'Parasols', by: 'count', max: 8, where: 'out', price: [2500, 5500, 12000] },
+};
+/* Equipment and system prices. Filled from the catalog; empty/defaults when it can't be reached. */
+const EQUIP = {};
+const SYS = {
+  hvac: { label: 'Fresh air & cooling', base: 0, rate: 260 }, dehum: { label: 'Pool dehumidification', base: 150000, rate: 1800 },
+  water: { label: 'Water treatment (UV + ozone)', base: 90000, rate: 15000 }, waterproof: { label: 'Waterproofing & tanking', base: 0, rate: 420 },
+  structure: { label: 'Structural survey & reinforcement', base: 80000, rate: 2500 }, acoustic: { label: 'Acoustic floor isolation', base: 0, rate: 420 },
+  ventilation: { label: 'Heat & steam extraction', base: 0, rate: 18000 }, irrigation: { label: 'Irrigation & planting care', base: 15000, rate: 450 },
+  outlight: { label: 'Outdoor & landscape lighting', base: 0, rate: 90 }, drainage: { label: 'Outdoor drainage', base: 0, rate: 60 },
+  court: { label: 'Court lighting', base: 0, rate: 45000 }, sound: { label: 'Sound system', base: 0, rate: 85 },
+  access: { label: 'Access control & smart lockers', base: 40000, rate: 600 }, blinds: { label: 'Blinds & solar control', base: 0, rate: 1400 },
+  av: { label: 'Screens & AV system', base: 45000, rate: 0 }, scent: { label: 'Scent & air quality', base: 18000, rate: 0 },
+};
+let CONFIG_OK = false;
+const texSrc = (m) => (m && m.img ? (/^(https?:)?\/\//.test(m.img) || m.img.startsWith('/') ? m.img : M + m.img) : null);
+const refill = (obj, entries) => { Object.keys(obj).forEach((k) => delete obj[k]); entries.forEach(([k, v]) => (obj[k] = v)); };
+
+/**
+ * Replaces the built-in data with the catalog managed in /admin/canvas. Every
+ * table keeps its shape, so the rest of the configurator reads it unchanged.
+ */
+function applyConfig(cfg) {
+  const mats = cfg.materials;
+  refill(MAT, mats.map((m) => [m.key, { label: m.label, img: m.image, tile: m.tile, tone: m.tone, slats: m.effect === 'slats', css: m.effect === 'mirror' ? 'mat-mirror' : m.effect === 'stretch' ? 'mat-stretch' : '' }]));
+  refill(RATE.floor, mats.filter((m) => m.price.floor !== null).map((m) => [m.key, m.price.floor]));
+  refill(RATE.walls, mats.filter((m) => m.price.walls !== null).map((m) => [m.key, m.price.walls]));
+  refill(RATE.ceiling, mats.filter((m) => m.price.ceiling !== null).map((m) => [m.key, m.price.ceiling]));
+  SURF_OPTS.floor.dry = mats.filter((m) => m.price.floor !== null && m.floor.dry).map((m) => m.key);
+  SURF_OPTS.floor.wet = mats.filter((m) => m.price.floor !== null && m.floor.wet).map((m) => m.key);
+  SURF_OPTS.floor.out = mats.filter((m) => m.price.floor !== null && m.floor.out).map((m) => m.key);
+  SURF_OPTS.walls = mats.filter((m) => m.price.walls !== null).map((m) => m.key);
+  SURF_OPTS.ceiling = mats.filter((m) => m.price.ceiling !== null).map((m) => m.key);
+  const st = cfg.settings;
+  refill(GLASS, st.glass.map((g) => [g.key, [g.label, g.price]]));
+  refill(LIGHT, st.lighting.map((l) => [l.key, [l.label, l.price]]));
+  TIER_KEYS.forEach((t) => { const f = st.tiers[t]; if (!f) return; FEEL[t] = { ...f }; TIER[t] = f.label; });
+  Object.assign(FEES, st.fees);
+  Object.entries(st.systems || {}).forEach(([k, v]) => (SYS[k] = { ...SYS[k], ...v }));
+  refill(EQUIP, cfg.equipment.map((e) => [e.key, e]));
+  refill(SPACES, cfg.spaces.map((sp) => [sp.key, sp]));
+  refill(FEATURES, cfg.features.map((f) => [f.key, { label: f.label, by: f.by, max: f.max, where: f.where, price: f.price, image: f.image }]));
+  [LIGHT_WANT, LIGHT_AVOID, PILLARS_OK, NEAR_ENTRY, FAR_ENTRY].forEach((set) => set.clear());
+  cfg.spaces.forEach((sp) => {
+    if (sp.light === 'want') LIGHT_WANT.add(sp.key);
+    if (sp.light === 'avoid') LIGHT_AVOID.add(sp.key);
+    if (sp.pillarsOk) PILLARS_OK.add(sp.key);
+    if (sp.entrance === 'near') NEAR_ENTRY.add(sp.key);
+    if (sp.entrance === 'far') FAR_ENTRY.add(sp.key);
+  });
+  if (!GLASS[state.glass]) state.glass = FEEL[state.tier].glass;
+  if (!LIGHT[state.lighting]) state.lighting = FEEL[state.tier].lighting;
+  CONFIG_OK = true;
+}
+
+/* ============================================================
+   CONTENTS — what each space holds, from the catalog
+   ============================================================ */
+const PRIORITY_ORDER = { essential: 0, recommended: 1, optional: 2 };
+/** How many of an item a space gets: fixed, one per N m², or N per room. Clamped to min…max. */
+function itemQty(it, z) {
+  const sp = SPACES[z.type], area = sp.by === 'unit' ? z.amount * (sp.foot || 0) : z.amount;
+  const n = it.mode === 'fixed' ? it.qty : it.mode === 'per_unit' ? it.qty * z.amount : it.qty > 0 ? Math.round(area / it.qty) : 0;
+  return clamp(Math.round(Math.max(0, n)), it.min, it.max);
+}
+/** Each item of a space with its quantity and whether it's in: essentials always; recommended unless removed; optional when added. */
+function contentsOf(z) {
+  const sp = SPACES[z.type];
+  if (!sp?.items?.length || sp.kept) return [];
+  return sp.items
+    .filter((it) => EQUIP[it.equipment])
+    .map((it) => {
+      const on = it.priority === 'essential' || (z.picks[it.equipment] ?? it.priority === 'recommended');
+      return { it, eq: EQUIP[it.equipment], qty: itemQty(it, z), on };
+    })
+    .sort((a, b) => PRIORITY_ORDER[a.it.priority] - PRIORITY_ORDER[b.it.priority]);
+}
+/** Lays items out in rows inside a room, in priority order; returns what fits and what's left (see src/lib/canvasMath.ts). */
+function packRoom(room, items) {
+  const WALL = 0.3, placed = [], left = [];
+  let x = WALL, y = WALL, rowD = 0;
+  for (const item of items) {
+    let rw = item.w, rd = item.d;
+    if (rd > rw && rd > room.d - 2 * WALL && rw <= room.d - 2 * WALL) [rw, rd] = [rd, rw];
+    if (x + rw > room.w - WALL && x > WALL) { x = WALL; y += rowD + item.clearance; rowD = 0; }
+    if (x + rw > room.w - WALL + 1e-6 || y + rd > room.d - WALL + 1e-6) { left.push(item); continue; }
+    placed.push({ ...item, x, y, rw, rd });
+    x += rw + item.clearance;
+    rowD = Math.max(rowD, rd);
+  }
+  return { placed, left };
+}
+const instancesOf = (z) => contentsOf(z).filter((c) => c.on && c.qty > 0).flatMap((c) => Array.from({ length: c.qty }, () => ({ key: c.it.equipment, w: c.eq.w, d: c.eq.d, h: c.eq.h, clearance: c.eq.clearance, shape: c.eq.shape, priority: c.it.priority })));
+/** What won't fit in the space at its current size and shape. */
+function overflowOf(z) {
+  const r = anim.to.get(z.id) || z.place;
+  if (!r || SPACES[z.type].render !== 'contents') return [];
+  const left = packRoom({ w: r.w, d: r.h }, instancesOf(z)).left, n = {};
+  left.forEach((i) => (n[i.key] = (n[i.key] || 0) + 1));
+  return Object.entries(n).map(([k, c]) => `${c} × ${EQUIP[k].label}`);
+}
+
+const LOCATIONS = { ground: 'Ground floor', upper: 'Upper floor', rooftop: 'Rooftop', basement: 'Basement' };
+const SHAPES = { auto: 'Auto', rect: 'Rectangle', L: 'L-shape', U: 'U-shape', T: 'T-shape' };
+const WALKS = [[1.2, 'Narrow 1.2 m'], [1.5, 'Standard 1.5 m'], [2, 'Generous 2 m']];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const CELL = 0.5; // planning grid, metres
+const state = {
+  tier: 'premium', location: 'ground', glass: 'frameless', lighting: 'layered', zones: [], sel: null, nextId: 1,
+  extrasOff: new Set(), extrasOn: new Set(), lib: 'in', insp: 'space', labels: true, mode: '3d', tool: 'select',
+  site: { shape: 'auto', W: 20, D: 14, a: 8, b: 8, pillars: [], walls: [], windows: [], entrance: null, walk: 1.5 },
+  analysis: null,
+};
+const ti = () => TIER_KEYS.indexOf(state.tier);
+const defMat = (type, surf) => { const sp = SPACES[type]; if (surf === 'floor' && sp.floor) return sp.floor; return FEEL[state.tier][sp.kind][surf]; };
+function makeZone(type, amount, feat = {}) {
+  const sp = SPACES[type];
+  const z = { id: state.nextId++, type, amount: amount ?? sp.def, feat: { ...feat }, custom: new Set(), mat: {}, place: null, name: '', picks: {} };
+  ['floor', 'walls', 'ceiling'].forEach((f) => (z.mat[f] = defMat(type, f)));
+  return z;
+}
+const zoneById = (id) => state.zones.find((z) => z.id === id);
+const zoneName = (z) => (z.name || SPACES[z.type].label);
+const isIn = (z) => SPACES[z.type].where === 'in';
+const foot = (z) => { const sp = SPACES[z.type]; return sp.by === 'unit' ? z.amount * sp.foot : sp.deck ? z.amount * sp.deck : z.amount; };
+const has = (t) => state.zones.some((z) => z.type === t);
+const count = (t) => state.zones.filter((z) => z.type === t).reduce((a, z) => a + z.amount, 0);
+const inArea = () => state.zones.filter(isIn).reduce((a, z) => a + foot(z), 0);
+const outArea = () => state.zones.filter((z) => !isIn(z)).reduce((a, z) => a + foot(z), 0);
+const wetIn = () => state.zones.filter((z) => isIn(z) && SPACES[z.type].kind === 'wet').reduce((a, z) => a + foot(z), 0);
+const featTotal = (k) => state.zones.reduce((a, z) => a + (z.feat[k] || 0), 0);
+const amountLabel = (z) => { const sp = SPACES[z.type]; if (sp.by === 'area') return `${z.amount} m²`; const u = sp.render === 'court' || z.type === 'padel' ? 'court' : ['plunge', 'glass', 'tub'].includes(sp.cell) || /plunge|showers|hottub|oshower/.test(z.type) ? 'unit' : 'room'; return `${z.amount} ${u}${z.amount === 1 ? '' : 's'}`; };
+
+/* ============================================================
+   DON'T FORGET — systems and missing rooms implied by the plan
+   ============================================================ */
+const sum = (pred, f = (z) => z.amount) => state.zones.filter((z) => SPACES[z.type] && pred(SPACES[z.type], z)).reduce((a, z) => a + f(z), 0);
+const anyPool = () => state.zones.some((z) => SPACES[z.type]?.pool);
+const upper = () => state.location === 'upper' || state.location === 'rooftop';
+const indoorWater = () => sum((sp) => sp.pool && sp.where === 'in');
+const plungesAndTubs = () => sum((sp, z) => ['plunge', 'tub'].includes(sp.cell) || ['plunge', 'hottub'].includes(z.type));
+const sysLabel = (k) => SYS[k]?.label || k;
+const EXTRAS = {
+  hvac:       { price: () => SYS.hvac.base + SYS.hvac.rate * inArea(), when: () => inArea() > 0 && 'Indoor training needs air sized for exertion.' },
+  dehum:      { price: () => SYS.dehum.base + SYS.dehum.rate * indoorWater(), when: () => indoorWater() > 0 && 'An indoor pool needs it, or the whole room sweats.' },
+  water:      { price: () => (anyPool() ? SYS.water.base : 0) + SYS.water.rate * plungesAndTubs(), when: () => (anyPool() || plungesAndTubs() > 0) && 'Pools, plunges and tubs need filtration and disinfection.' },
+  waterproof: { price: () => SYS.waterproof.base + SYS.waterproof.rate * wetIn(), when: () => wetIn() > 0 && 'Wet rooms need a tanked, tested floor and walls.' },
+  structure:  { price: () => SYS.structure.base + (upper() ? SYS.structure.rate * sum((sp) => sp.pool) : 0), when: () => (upper() && (anyPool() || plungesAndTubs() > 0) && 'Water is heavy: pools above ground need the slab checked.') || (upper() && state.zones.some((z) => SPACES[z.type]?.heavy) && 'Weights and machines above ground need a load check.') },
+  acoustic:   { price: () => SYS.acoustic.base + SYS.acoustic.rate * sum((sp, z) => sp.heavy || z.type === 'spin', foot), when: () => upper() && state.zones.some((z) => SPACES[z.type]?.heavy || z.type === 'spin') && 'Dropped weights and bass carry into the rooms below.' },
+  ventilation:{ price: () => SYS.ventilation.base + SYS.ventilation.rate * sum((sp) => sp.heat), when: () => state.zones.some((z) => SPACES[z.type]?.heat) && 'Heat rooms need their own extraction.' },
+  irrigation: { price: () => SYS.irrigation.base + SYS.irrigation.rate * (featTotal('planters') + featTotal('trees') + featTotal('greenwall') * 25 + count('garden') / 20), when: () => (featTotal('planters') + featTotal('trees') + featTotal('greenwall') > 0 || has('garden')) && 'Plants need water and care, especially a green wall.' },
+  outlight:   { price: () => SYS.outlight.base + SYS.outlight.rate * outArea(), when: () => outArea() > 0 && 'Outdoor spaces are used after dark.' },
+  drainage:   { price: () => SYS.drainage.base + SYS.drainage.rate * outArea(), when: () => outArea() > 0 && 'Rain and pool splash need somewhere to go.' },
+  court:      { price: () => SYS.court.base + SYS.court.rate * sum((sp, z) => sp.render === 'court' || z.type === 'padel'), when: () => sum((sp, z) => sp.render === 'court' || z.type === 'padel') > 0 && 'Courts are played most in the cool of the evening.' },
+  sound:      { price: () => SYS.sound.base + SYS.sound.rate * inArea(), when: () => ['gym', 'studio', 'spin', 'boxing', 'functional'].some(has) && 'Training spaces are rarely used in silence.' },
+  access:     { price: () => SYS.access.base + SYS.access.rate * count('changing'), when: () => has('changing') && 'Shared facilities need controlled entry.' },
+  blinds:     { price: () => SYS.blinds.base + SYS.blinds.rate * marks('windows').reduce((a, w) => a + Math.hypot(w.x2 - w.x1, w.y2 - w.y1), 0), when: () => marks('windows').length > 0 && inArea() > 0 && 'Windows on a training floor need glare and heat control.' },
+  av:         { price: () => SYS.av.base + SYS.av.rate * inArea(), when: () => false },
+  scent:      { price: () => SYS.scent.base + SYS.scent.rate * inArea(), when: () => false },
+};
+const ROOM_SUGGEST = [
+  { type: 'plantroom', when: () => anyPool() && !has('plantroom') && 'Pools need a plant room for pumps, filtration and heating.' },
+  { type: 'changing', when: () => (anyPool() || state.zones.some((z) => SPACES[z.type].heat)) && !has('changing') && 'Wet and heat areas need changing space beside them.' },
+  { type: 'laundry', when: () => (has('changing') || state.zones.some((z) => SPACES[z.type].heat)) && !has('laundry') && 'Towels from wet and heat areas are washed on site.' },
+  { type: 'storage', when: () => ['gym', 'functional', 'studio'].some(has) && !has('storage') && 'Spare kit, mats and cleaning need a home.' },
+];
+const suggestions = () => Object.keys(EXTRAS).map((k) => ({ k, why: EXTRAS[k].when() })).filter((x) => x.why);
+const activeExtras = () => { const sug = new Set(suggestions().map((x) => x.k)); return Object.keys(EXTRAS).filter((k) => (sug.has(k) && !state.extrasOff.has(k)) || state.extrasOn.has(k)); };
+const missingRooms = () => ROOM_SUGGEST.filter((r) => SPACES[r.type]).map((r) => ({ ...r, why: r.when() })).filter((r) => r.why);
+
+/* ============================================================
+   PRICE
+   ============================================================ */
+function zoneCost(z) {
+  const sp = SPACES[z.type], f = foot(z), t = ti();
+  if (sp.kept) return { space: 0, equipment: 0, surfaces: 0, features: 0, total: 0 };
+  const space = z.amount * sp.rate[t];
+  const equipment = contentsOf(z).reduce((a, c) => a + (c.on ? c.qty * c.eq.price[t] : 0), 0);
+  let surfaces = (RATE.floor[z.mat.floor] || 0) * f;
+  if (sp.where === 'in') surfaces += (RATE.walls[z.mat.walls] || 0) * f + (RATE.ceiling[z.mat.ceiling] || 0) * f + GLASS[state.glass][1] * f * 0.35 + LIGHT[state.lighting][1] * f;
+  const features = Object.entries(z.feat).reduce((a, [k, n]) => a + (n && FEATURES[k] ? n * FEATURES[k].price[t] : 0), 0);
+  return { space, equipment, surfaces, features, total: space + equipment + surfaces + features };
+}
+/** Walkway that gets finished: the free floor, but no more than half the rooms it serves. Spare floor beyond that is left as it is. */
+const hallM2 = () => (state.analysis ? Math.min(state.analysis.freeArea, state.zones.filter((z) => isIn(z) && z.place).reduce((a, z) => a + foot(z), 0) * 0.5) : 0);
+function compute() {
+  const zones = state.zones.map((z) => ({ z, c: zoneCost(z) }));
+  const total_ = (k) => zones.reduce((a, x) => a + x.c[k], 0);
+  const A = state.analysis;
+  const hallArea = hallM2(), hall = hallArea * ((RATE.floor[FEEL[state.tier].hall] || 0) + LIGHT[state.lighting][1]); // walkways get a floor and light too
+  const systems = activeExtras().map((k) => ({ k, label: sysLabel(k), amount: EXTRAS[k].price() }));
+  const groups = [
+    { g: 'Spaces', amount: total_('space'), c: '#D7D7D1' },
+    { g: 'Equipment', amount: total_('equipment'), c: '#A9B6BD' },
+    { g: 'Surfaces & light', amount: total_('surfaces') + hall, c: '#91928D' },
+    { g: 'Features', amount: total_('features'), c: '#7FA37A' },
+    { g: 'Systems', amount: systems.reduce((a, x) => a + x.amount, 0), c: '#B9A27E' },
+  ];
+  const sub = groups.reduce((a, g) => a + g.amount, 0);
+  groups.push({ g: 'Design & supervision', amount: sub * FEES.design, c: '#5E5F5B' });
+  const total = sub * (1 + FEES.design);
+  return { zones, systems, hall, hallArea, groups, total, low: total * (1 - FEES.range), high: total * (1 + FEES.range) };
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = (q, el = document) => el.querySelector(q);
+const $$ = (q, el = document) => [...el.querySelectorAll(q)];
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const snap = (v, s = CELL) => Math.round(v / s) * s;
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const roundTo = (n, s) => Math.round(n / s) * s;
+const short = (n) => (n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 1 : 2).replace(/\.?0+$/, '') + 'M' : n >= 1000 ? Math.round(n / 1000) + 'K' : String(Math.round(n)));
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const ICON = {
+  gym: 'M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12', functional: 'M4 20V6h16v14M4 10h16M9 10v10M15 10v10', boxing: 'M8 3h8v9a4 4 0 01-8 0V3zM12 16v5',
+  studio: 'M4 18h16M7 18c.6-3.4 2.4-5.5 5-5.5s4.4 2.1 5 5.5M12 9.5a2 2 0 100-4 2 2 0 000 4', spin: 'M6 18a3 3 0 100-6 3 3 0 000 6zM18 18a3 3 0 100-6 3 3 0 000 6zM6 15l5-8h4M11 7l4 8',
+  pool: 'M3 10c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0M3 15c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0', hydro: 'M3 12c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0M8 8c0-2 1-3 1-3M12 8c0-2 1-3 1-3M16 8c0-2 1-3 1-3',
+  plunge: 'M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9', showers: 'M5 10a7 7 0 0114 0H5zM12 3v3M8 14v1M12 14v2M16 14v1M10 18v1M14 18v1',
+  sauna: 'M8 3c-1 2 1 3 0 5M12 3c-1 2 1 3 0 5M16 3c-1 2 1 3 0 5M4 12h16v8H4z', infrared: 'M4 12h16v8H4zM7 9l2-5M12 9V3M17 9l-2-5',
+  steam: 'M7 18h10a4 4 0 000-8 5 5 0 00-9.6-1.2A3.6 3.6 0 007 18z', hammam: 'M4 20h16M6 20v-6a6 6 0 0112 0v6M12 4v4', salt: 'M12 3l7 9-7 9-7-9 7-9z',
+  treatment: 'M3 18V8M3 14h18v4M21 14v-2a3 3 0 00-3-3h-7v5M7 11.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3', cryo: 'M12 2v20M5 6l14 12M19 6L5 18M9 3l3 3 3-3M9 21l3-3 3 3',
+  lounge: 'M3 18l3-5h8l4-5M6 13l-1 5M14 13l1 5', changing: 'M5 3h6v18H5zM13 3h6v18h-6zM8 9v2M16 9v2', reception: 'M3 12h18v8H3zM7 12V9h10v3M12 5v4',
+  cafe: 'M5 8h11v6a5 5 0 01-5 5h-1a5 5 0 01-5-5V8zM16 10h2a2 2 0 010 4h-2M8 3v2M12 3v2', office: 'M4 7h16v10H4zM2 20h20M9 7V5h6v2',
+  plantroom: 'M12 8a4 4 0 100 8 4 4 0 000-8zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2', laundry: 'M5 3h14v18H5zM5 7h14M12 15a3 3 0 100-6 3 3 0 000 6z', storage: 'M4 4h16v6H4zM4 14h16v6H4zM10 7h4M10 17h4',
+  custom: 'M4 4h16v16H4zM4 12h7v8M12 8h4', existing: 'M4 4h16v16H4zM4 4l16 16M12 4l8 8M4 12l8 8',
+  opool: 'M3 14c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0M7 10V5a2 2 0 014 0M13 10V5a2 2 0 014 0M7 7h4M13 7h4', hottub: 'M3 12h18v4a4 4 0 01-4 4H7a4 4 0 01-4-4v-4zM8 9c0-2 1-3 1-3M12 9c0-2 1-3 1-3M16 9c0-2 1-3 1-3', oshower: 'M8 21V5a2 2 0 012-2h4v4M12 7h5M14 10v1M16 10v2M18 10v1',
+  sundeck: 'M12 3v3M4.2 6.2l2.1 2.1M3 13h3M18 13h3M17.7 8.3l2.1-2.1M8 13a4 4 0 018 0M3 18h18', ydeck: 'M3 20h18M3 16h18M12 4a2 2 0 100 4 2 2 0 000-4zM8 13l4-3 4 3', firepit: 'M12 3c2 3 4 4 4 7a4 4 0 01-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-2-1-4 0-6zM4 20h16',
+  garden: 'M12 21v-8M12 13c-4 0-6-3-6-7 4 0 6 3 6 7zM12 13c4 0 6-3 6-7-4 0-6 3-6 7z', ogym: 'M4 20V5h16v15M4 9h16M9 9v4M15 9v4', padel: 'M4 4h16v16H4zM12 4v16M4 12h16',
+  planters: 'M7 14h10l-1 7H8l-1-7zM12 14c0-4-2-7-5-8 0 4 2 7 5 8zM12 14c0-4 2-7 5-8 0 4-2 7-5 8z', greenwall: 'M4 3h16v18H4zM8 7c1 1 1 2 0 3M12 6c1 1 1 2 0 3M16 7c1 1 1 2 0 3M8 14c1 1 1 2 0 3M12 13c1 1 1 2 0 3M16 14c1 1 1 2 0 3',
+  skylight: 'M4 9l8-6 8 6M7 12v9M17 12v9M9 14l-2 4M15 14l2 4M12 14v5', mirror: 'M6 3h12v18H6zM9 7l-1 3M13 6l-3 7', screens: 'M3 5h18v11H3zM8 20h8M12 16v4',
+  water: 'M12 3c3 4 6 7 6 11a6 6 0 01-12 0c0-4 3-7 6-11z', art: 'M12 3a5 5 0 100 10 5 5 0 000-10zM8 21h8M10 13v8M14 13v8', trees: 'M12 22v-6M12 16c-4 0-7-3-7-7a7 7 0 0114 0c0 4-3 7-7 7z',
+  pergola: 'M3 7h18M5 7v14M19 7v14M3 4h18M8 4v3M12 4v3M16 4v3', parasols: 'M3 11a9 9 0 0118 0H3zM12 11v10M12 2v1',
+  pillar: 'M8 3h8v18H8zM5 3h14M5 21h14', grid: 'M4 4h4v4H4zM16 4h4v4h-4zM4 16h4v4H4zM16 16h4v4h-4zM10 10h4v4h-4z', wall: 'M3 8h18v8H3zM9 8v8M15 8v8M3 12h6M15 12h6', window: 'M4 4h16v16H4zM12 4v16M4 12h16', entrance: 'M14 3h6v18h-6M10 8l4 4-4 4M3 12h11',
+  shape: 'M3 3h18v8h-9v10H3z',
+  pin: 'M12 2l3 6 6 1-4.5 4 1 6.5L12 16l-5.5 3.5 1-6.5L3 9l6-1 3-6z', rotate: 'M4 12a8 8 0 0114-5.3M20 4v4h-4M20 12a8 8 0 01-14 5.3M4 20v-4h4',
+};
+const icon = (k) => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICON[k] || ICON.custom}"/></svg>`;
+const matImg = (k) => (texSrc(MAT[k]) ? `background-image:url('${texSrc(MAT[k])}')` : '');
+const matClass = (k) => [MAT[k].css || '', MAT[k].slats ? 'slats' : ''].join(' ');
+const warmTextures = () => Object.values(MAT).forEach((m) => { if (texSrc(m)) { const i = new Image(); i.src = texSrc(m); } });
+
+/* ============================================================
+   SITE — the floor plan as it really is
+   ============================================================ */
+const armA = (s = state.site) => clamp(s.a, 2, s.D - 2);
+const armB = (s = state.site) => clamp(s.b, 2, s.shape === 'U' ? s.W / 2 - 1 : s.W - 2);
+function footRects(s = state.site) {
+  const { W, D } = s, a = armA(s), b = armB(s);
+  switch (s.shape) {
+    case 'L': return [{ x: 0, y: 0, w: W, h: a }, { x: 0, y: a, w: b, h: D - a }];
+    case 'U': return [{ x: 0, y: 0, w: W, h: a }, { x: 0, y: a, w: b, h: D - a }, { x: W - b, y: a, w: b, h: D - a }];
+    case 'T': { const x = snap((W - b) / 2); return [{ x: 0, y: 0, w: W, h: a }, { x, y: a, w: b, h: D - a }]; }
+    default: return [{ x: 0, y: 0, w: W, h: D }];
+  }
+}
+/**
+ * What is marked on the real plan and lies within its current outline. Marks
+ * are never deleted by an outline change, so trying another shape loses
+ * nothing; an Auto plan has none.
+ */
+const insideFoot = (x, y) => footRects().some((r) => x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h);
+const ON_PLAN = {
+  pillars: (p) => insideFoot((p.i + 0.5) * CELL, (p.j + 0.5) * CELL),
+  walls: (w) => { const mx = (w.x1 + w.x2) / 2, my = (w.y1 + w.y2) / 2; return w.y1 === w.y2 ? insideFoot(mx, my - 0.1) || insideFoot(mx, my + 0.1) : insideFoot(mx - 0.1, my) || insideFoot(mx + 0.1, my); },
+  windows: (w) => { const mx = (w.x1 + w.x2) / 2, my = (w.y1 + w.y2) / 2; return w.y1 === w.y2 ? insideFoot(mx, my - 0.1) !== insideFoot(mx, my + 0.1) : insideFoot(mx - 0.1, my) !== insideFoot(mx + 0.1, my); },
+};
+const marks = (k) => (state.site.shape === 'auto' ? [] : state.site[k].filter(ON_PLAN[k]));
+const unmark = (k, idx) => { const it = marks(k)[idx], all = state.site[k]; if (it) all.splice(all.indexOf(it), 1); };
+/** The plan as a grid of 0.5 m cells, with its pillars, walls and windows rasterised onto cell edges. */
+function makeGrid() {
+  const s = state.site, GW = Math.round(s.W / CELL), GD = Math.round(s.D / CELL), N = GW * GD;
+  const inside = new Uint8Array(N), pillar = new Uint8Array(N);
+  footRects().forEach((r) => { const i0 = Math.round(r.x / CELL), j0 = Math.round(r.y / CELL), i1 = Math.round((r.x + r.w) / CELL), j1 = Math.round((r.y + r.h) / CELL); for (let j = j0; j < j1; j++) for (let i = i0; i < i1; i++) inside[j * GW + i] = 1; });
+  marks('pillars').forEach((p) => { if (p.i >= 0 && p.j >= 0 && p.i < GW && p.j < GD && inside[p.j * GW + p.i]) pillar[p.j * GW + p.i] = 1; });
+  const raster = (segs) => {
+    const H = new Uint8Array(GW * (GD + 1)), V = new Uint8Array((GW + 1) * GD);
+    segs.forEach((w) => {
+      if (Math.abs(w.y1 - w.y2) < 1e-6) { const j = Math.round(w.y1 / CELL); if (j < 0 || j > GD) return; for (let i = Math.round(Math.min(w.x1, w.x2) / CELL); i < Math.round(Math.max(w.x1, w.x2) / CELL); i++) if (i >= 0 && i < GW) H[j * GW + i] = 1; }
+      else { const i = Math.round(w.x1 / CELL); if (i < 0 || i > GW) return; for (let j = Math.round(Math.min(w.y1, w.y2) / CELL); j < Math.round(Math.max(w.y1, w.y2) / CELL); j++) if (j >= 0 && j < GD) V[j * (GW + 1) + i] = 1; }
+    });
+    return [H, V];
+  };
+  const [wallH, wallV] = raster(marks('walls')), [winH, winV] = raster(marks('windows'));
+  return { GW, GD, N, inside, pillar, wallH, wallV, winH, winV };
+}
+/** Summed-area table, so any rectangle's count is O(1). */
+function sat(mask, w, h) { const S = new Int32Array((w + 1) * (h + 1)); for (let j = 0; j < h; j++) { let row = 0; for (let i = 0; i < w; i++) { row += mask[j * w + i]; S[(j + 1) * (w + 1) + i + 1] = S[j * (w + 1) + i + 1] + row; } } return S; }
+function rs(S, w, h, i0, j0, i1, j1) { i0 = Math.max(0, i0); j0 = Math.max(0, j0); i1 = Math.min(w, i1); j1 = Math.min(h, j1); if (i1 <= i0 || j1 <= j0) return 0; const W1 = w + 1; return S[j1 * W1 + i1] - S[j0 * W1 + i1] - S[j1 * W1 + i0] + S[j0 * W1 + i0]; }
+const cellBox = (p) => [Math.round(p.x / CELL), Math.round(p.y / CELL), Math.round((p.x + p.w) / CELL), Math.round((p.y + p.h) / CELL)];
+function markRect(occ, G, p) { const [i0, j0, i1, j1] = cellBox(p); for (let j = Math.max(0, j0); j < Math.min(G.GD, j1); j++) for (let i = Math.max(0, i0); i < Math.min(G.GW, i1); i++) occ[j * G.GW + i] = 1; }
+
+/** The wings of the plan, each with a walkway along it. A side wing's walkway starts at the main one. */
+function armsOf(G) {
+  const s = state.site, { GW, GD } = G, A = Math.round(armA() / CELL), B = Math.round(armB() / CELL);
+  if (s.shape === 'auto' || s.shape === 'rect') return [GW >= GD ? { h: 1, a0: 0, a1: GD, b0: 0, b1: GW } : { h: 0, a0: 0, a1: GW, b0: 0, b1: GD }];
+  const out = [{ h: 1, a0: 0, a1: A, b0: 0, b1: GW }];
+  if (s.shape === 'L' || s.shape === 'U') out.push({ h: 0, a0: 0, a1: B, b1: GD });
+  if (s.shape === 'U') out.push({ h: 0, a0: GW - B, a1: GW, b1: GD });
+  if (s.shape === 'T') { const x0 = Math.round(snap((s.W - armB()) / 2) / CELL); out.push({ h: 0, a0: x0, a1: x0 + B, b1: GD }); }
+  return out;
+}
+const SPINE_AT = [0.5, 0.3, 0.7, 0, 1]; // where a walkway crosses its wing: middle, thirds, or along either edge
+function spineConfigs() {
+  const n = state.site.shape === 'auto' || state.site.shape === 'rect' ? 1 : state.site.shape === 'U' ? 3 : 2, out = [];
+  if (n === 1) return SPINE_AT.map((f) => [f]);
+  SPINE_AT.forEach((f0) => SPINE_AT.forEach((f1) => out.push(n === 3 ? [f0, f1, 1 - f1] : [f0, f1])));
+  return out;
+}
+
+/**
+ * Walkways the arranger keeps free: one along each wing (more than one when a
+ * wing is deep), joined where wings meet, plus a short link from the entrance.
+ * Rooms then line up along them.
+ */
+function spines(G, cfg = state.site.cfg) {
+  const s = state.site, { GW, GD } = G, cor = new Uint8Array(G.N), wc = Math.max(2, Math.round(s.walk / CELL)), half = Math.floor(wc / 2);
+  const band = (i0, j0, i1, j1) => { for (let j = Math.max(0, j0); j < Math.min(GD, j1); j++) for (let i = Math.max(0, i0); i < Math.min(GW, i1); i++) if (G.inside[j * GW + i]) cor[j * GW + i] = 1; };
+  const pillarsIn = (i0, j0, i1, j1) => { let n = 0; for (let j = Math.max(0, j0); j < Math.min(GD, j1); j++) for (let i = Math.max(0, i0); i < Math.min(GW, i1); i++) n += G.pillar[j * GW + i]; return n; };
+  let mainC = 0, entrance;
+  armsOf(G).forEach((arm, n) => {
+    const S = arm.a1 - arm.a0, k = Math.max(1, Math.round((S * CELL) / (13 + s.walk))), lo = arm.a0 + half, hi = arm.a1 - wc + half, b0 = arm.b0 ?? mainC;
+    // A column in a walkway blocks it, so slide the walkway sideways until it runs between columns.
+    const clearOfPillars = (c) => { for (const d of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6]) { const cc = c + d; if (cc < lo || cc > hi) continue; if (!(arm.h ? pillarsIn(b0, cc - half, arm.b1, cc - half + wc) : pillarsIn(cc - half, b0, cc - half + wc, arm.b1))) return cc; } return c; };
+    const cs = (k > 1 ? [...Array(k)].map((_, q) => arm.a0 + Math.round((S * (q + 0.5)) / k)) : [Math.round(lo + (hi - lo) * (cfg?.[n] ?? 0.5))]).map(clearOfPillars);
+    cs.forEach((c) => (arm.h ? band(b0, c - half, arm.b1, c - half + wc) : band(c - half, b0, c - half + wc, arm.b1)));
+    if (k > 1) arm.h ? band(b0, cs[0], b0 + wc, cs[k - 1]) : band(cs[0], b0, cs[k - 1], b0 + wc);
+    if (n === 0) { mainC = cs[0]; const mid = (cs[0] - half + wc / 2) * CELL; entrance = arm.h ? { x: 0, y: mid, nx: -1, ny: 0 } : { x: mid, y: 0, nx: 0, ny: -1 }; }
+  });
+  if (s.entrance) entrance = s.entrance;
+  // Link the entrance to the nearest spine.
+  const ei = clamp(Math.floor((entrance.x - entrance.nx * CELL * 0.5) / CELL), 0, GW - 1), ej = clamp(Math.floor((entrance.y - entrance.ny * CELL * 0.5) / CELL), 0, GD - 1);
+  const di = -entrance.nx, dj = -entrance.ny;
+  for (let step = 0; step < GW + GD; step++) {
+    const ci = ei + di * step, cj = ej + dj * step;
+    if (ci < 0 || cj < 0 || ci >= GW || cj >= GD || !G.inside[cj * GW + ci]) break;
+    if (step > 1 && cor[cj * GW + ci]) break;
+    if (di) band(ci, cj - half, ci + 1, cj - half + wc); else band(ci - half, cj, ci - half + wc, cj + 1);
+  }
+  return { cor, entrance, ei, ej };
+}
+
+const waterInset = (w, h) => Math.min(1.2, Math.min(w, h) * 0.16); // pool deck around the water; columns may stand in the deck
+const UNIT = { 2.5: [1.5, 1.7], 3: [1.5, 2], 4: [2, 2], 6: [3, 2], 9: [3, 3], 12: [4, 3], 16: [4, 4] };
+function dimOptions(z) {
+  const sp = SPACES[z.type], out = [], seen = new Set();
+  const add = (w, h) => { const cw = Math.max(2, Math.round(w / CELL)), ch = Math.max(2, Math.round(h / CELL)), key = cw + 'x' + ch; if (!seen.has(key)) { seen.add(key); out.push([cw, ch]); } };
+  if (z.place && Math.abs(z.place.w * z.place.h - foot(z)) < foot(z) * 0.15) { add(z.place.w, z.place.h); }
+  if (sp.by === 'unit') {
+    const [uw, uh] = UNIT[sp.foot] || [Math.sqrt(sp.foot), Math.sqrt(sp.foot)], n = z.amount;
+    add(n * uw, uh); add(uh, n * uw);
+    if (n > 1) { const r = Math.ceil(n / 2); add(r * uw, 2 * uh); add(2 * uh, r * uw); }
+  } else {
+    // Every proportion from square to long and thin (1:4), so a space can fill whatever strip is free.
+    const A = foot(z), r = sp.pool ? 3 : 4;
+    for (let h = Math.max(2, Math.ceil(Math.sqrt(A / r) / CELL) * CELL); h <= Math.sqrt(A * r); h += CELL) { const w = snap(A / h); if (w >= 2 && Math.abs(w * h - A) <= A * 0.08) { add(w, h); add(h, w); } }
+    if (out.length < 2) { const s = Math.sqrt(A); add(s, s); }
+  }
+  return out;
+}
+
+/**
+ * Places spaces on the real plan: around pillars (unless the space is an open
+ * area that can live with one), never across an existing wall, always beside a
+ * walkway, preferring windows for pools and studios and keeping heat rooms and
+ * plant rooms away from them. Pinned spaces stay where they are.
+ */
+function plan(cfg, { only = null } = {}) {
+  const G = makeGrid(), { GW, GD, N } = G, indoor = state.zones.filter(isIn);
+  const { cor: allCor, entrance, ei, ej } = spines(G, cfg);
+  const occ = new Uint8Array(N);
+  const fixed = indoor.filter((z) => z.place && (only ? z !== only : z.place.locked));
+  fixed.forEach((z) => markRect(occ, G, z.place));
+  let total = 0;
+  for (let c = 0; c < N; c++) { if (occ[c] && allCor[c]) total -= 4; if (G.pillar[c] && allCor[c]) total -= 300; } // walkways through pinned spaces or columns make worse plans
+  // Only walkway people can reach from the entrance gives a space its way in; walkway cut off by a pinned space is free floor.
+  const cor = new Uint8Array(N), stack = [];
+  for (let dj = -3; dj <= 3; dj++) for (let di = -3; di <= 3; di++) { const i = ei + di, j = ej + dj, c = j * GW + i; if (i >= 0 && j >= 0 && i < GW && j < GD && allCor[c] && !occ[c] && !cor[c]) { cor[c] = 1; stack.push(c); } }
+  while (stack.length) { const c = stack.pop(), i = c % GW, j = (c / GW) | 0; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ni = i + di, nj = j + dj, n = nj * GW + ni; if (ni >= 0 && nj >= 0 && ni < GW && nj < GD && allCor[n] && !occ[n] && !cor[n]) { cor[n] = 1; stack.push(n); } } }
+  if (cor.reduce((a, v) => a + v, 0) < allCor.reduce((a, v) => a + v, 0) * 0.3) cor.set(allCor); // entrance itself blocked: keep the full walkway plan
+  const todo = only ? [only] : indoor.filter((z) => !fixed.includes(z));
+  todo.sort((a, b) => (SPACES[b.type].priority ?? 3) - (SPACES[a.type].priority ?? 3) || (SPACES[b.type].pool ? 1 : 0) - (SPACES[a.type].pool ? 1 : 0) || foot(b) - foot(a));
+  const pil = sat(G.pillar, GW, GD), wH = sat(G.wallH, GW, GD + 1), wV = sat(G.wallV, GW + 1, GD), corS = sat(cor, GW, GD);
+  const winCell = new Uint8Array(N);
+  for (let j = 0; j < GD; j++) for (let i = 0; i < GW; i++) if (G.inside[j * GW + i] && (G.winH[j * GW + i] || G.winH[(j + 1) * GW + i] || G.winV[j * (GW + 1) + i] || G.winV[j * (GW + 1) + i + 1])) winCell[j * GW + i] = 1;
+  const winS = sat(winCell, GW, GD);
+  const unplaced = [], result = new Map();
+  for (const z of todo) {
+    const hardM = new Uint8Array(N), solidM = new Uint8Array(N);
+    for (let c = 0; c < N; c++) { const blocked = !G.inside[c] || occ[c]; solidM[c] = blocked ? 1 : 0; hardM[c] = blocked || cor[c] ? 1 : 0; }
+    const hard = sat(hardM, GW, GD), solid = sat(solidM, GW, GD), t = z.type, okPillars = PILLARS_OK.has(t), isPool = !!SPACES[t].pool, need = foot(z) / (CELL * CELL);
+    const edge = (i0, j0, i1, j1) => { const total = (i1 - i0) * (j1 - j0), ci0 = Math.max(0, i0), cj0 = Math.max(0, j0), ci1 = Math.min(GW, i1), cj1 = Math.min(GD, j1), inGrid = Math.max(0, ci1 - ci0) * Math.max(0, cj1 - cj0); return total - inGrid + rs(solid, GW, GD, i0, j0, i1, j1); };
+    let best = null;
+    for (const needAccess of [true, false]) {
+      for (const [cw, ch] of dimOptions(z)) {
+        if (cw > GW || ch > GD) continue;
+        for (let j = 0; j + ch <= GD; j++) for (let i = 0; i + cw <= GW; i++) {
+          if (rs(hard, GW, GD, i, j, i + cw, j + ch)) continue;
+          if (!okPillars) { const m = isPool ? Math.round(waterInset(cw * CELL, ch * CELL) / CELL) : 0; if (rs(pil, GW, GD, i + m, j + m, i + cw - m, j + ch - m)) continue; }
+          if (rs(wH, GW, GD + 1, i, j + 1, i + cw, j + ch) || rs(wV, GW + 1, GD, i + 1, j, i + cw, j + ch)) continue;
+          const access = rs(corS, GW, GD, i, j - 1, i + cw, j) + rs(corS, GW, GD, i, j + ch, i + cw, j + ch + 1) + rs(corS, GW, GD, i - 1, j, i, j + ch) + rs(corS, GW, GD, i + cw, j, i + cw + 1, j + ch);
+          if (needAccess && !access) continue;
+          const hug = edge(i, j - 1, i + cw, j) + edge(i, j + ch, i + cw, j + ch + 1) + edge(i - 1, j, i, j + ch) + edge(i + cw, j, i + cw + 1, j + ch);
+          const expo = rs(winS, GW, GD, i, j, i + cw, j + ch), dist = Math.hypot((i + cw / 2) * CELL - entrance.x, (j + ch / 2) * CELL - entrance.y);
+          let score = hug + Math.min(access, 8) * 0.5 - Math.abs(cw * ch - need) * 0.04;
+          if (LIGHT_WANT.has(t)) score += Math.min(expo, 40) * 1.5;
+          if (LIGHT_AVOID.has(t)) score -= expo * 3;
+          if (NEAR_ENTRY.has(t)) score -= dist * 0.6;
+          if (FAR_ENTRY.has(t)) score += dist * 0.15;
+          if (!best || score > best.score) best = { i, j, cw, ch, score };
+        }
+      }
+      if (best) break;
+    }
+    if (best) { const p = { x: best.i * CELL, y: best.j * CELL, w: best.cw * CELL, h: best.ch * CELL, locked: false }; result.set(z.id, p); markRect(occ, G, p); total += 1000 + best.score; }
+    else { result.set(z.id, null); unplaced.push(z.id); }
+  }
+  return { cfg, result, unplaced, score: total };
+}
+const commit = (r) => r.result.forEach((p, id) => (zoneById(id).place = p));
+/** Tries every walkway position for every wing and keeps the plan that fits the most, best. */
+function bestPlan() { let best = null; for (const cfg of spineConfigs()) { const r = plan(cfg); if (!best || r.score > best.score) best = r; } return best; }
+
+/** No floor plan yet: size a rectangle to the spaces (plus walkways) and arrange; grow until all fit. */
+function autoSite(grow) {
+  const total = Math.max(30, inArea() * 1.3 * grow + 10);
+  state.site.W = Math.max(8, Math.ceil(Math.sqrt(total * 1.45) / CELL) * CELL);
+  state.site.D = Math.max(6, Math.ceil(total / state.site.W / CELL) * CELL);
+}
+function arrangeAll() {
+  let r;
+  if (state.site.shape === 'auto') {
+    state.zones.filter(isIn).forEach((z) => { if (z.place) z.place.locked = false; });
+    for (let k = 0; k < 8; k++) { autoSite(1 + k * 0.1); r = bestPlan(); if (!r.unplaced.length) break; }
+  } else r = bestPlan();
+  state.site.cfg = r.cfg; commit(r);
+}
+function placeNew(z) {
+  if (state.site.shape === 'auto') return arrangeAll();
+  const r = plan(state.site.cfg, { only: z });
+  if (r.unplaced.length) arrangeAll(); else commit(r);
+}
+
+/**
+ * What the plan means for people: conflicts per space, walkable floor (at
+ * least 1 m wide) reachable from the entrance, every space checked for a way
+ * in, the share of floor left for moving, and the outside walls with windows.
+ * Doors are assumed where walkways meet existing walls.
+ */
+function analyze() {
+  const G = makeGrid(), { GW, GD, N } = G, owner = new Int32Array(N).fill(-1), issues = new Map();
+  const { entrance, ei, ej } = spines(G);
+  const indoor = state.zones.filter(isIn);
+  for (const z of indoor) {
+    const list = [];
+    if (!z.place) { issues.set(z.id, ['Does not fit. Make the site bigger, remove a pillar, or make this space smaller.']); continue; }
+    const [i0, j0, i1, j1] = cellBox(z.place);
+    let outside = 0, pil = 0, walls = 0; const over = new Set(), m = SPACES[z.type].pool ? Math.round(waterInset(z.place.w, z.place.h) / CELL) : 0;
+    for (let j = j0; j < j1; j++) for (let i = i0; i < i1; i++) {
+      if (i < 0 || j < 0 || i >= GW || j >= GD || !G.inside[j * GW + i]) { outside++; continue; }
+      const c = j * GW + i; if (G.pillar[c] && i >= i0 + m && i < i1 - m && j >= j0 + m && j < j1 - m) pil++;
+      if (owner[c] >= 0 && owner[c] !== z.id) over.add(owner[c]); else owner[c] = z.id;
+    }
+    for (let j = j0 + 1; j < j1; j++) for (let i = i0; i < i1; i++) if (i >= 0 && i < GW && j > 0 && j < GD && G.wallH[j * GW + i]) walls++;
+    for (let j = j0; j < j1; j++) for (let i = i0 + 1; i < i1; i++) if (i > 0 && i < GW && j >= 0 && j < GD && G.wallV[j * (GW + 1) + i]) walls++;
+    if (outside) list.push('Partly outside the floor plan.');
+    if (pil && !PILLARS_OK.has(z.type)) list.push(SPACES[z.type].pool ? `${pil > 1 ? 'Pillars stand' : 'A pillar stands'} in the water. Columns can only sit in the deck around it.` : `Sits on ${pil > 1 ? 'pillars' : 'a pillar'}. This room needs clear floor.`);
+    over.forEach((o) => list.push(`Overlaps ${zoneName(zoneById(o))}.`));
+    if (walls) list.push('Crosses an existing wall.');
+    issues.set(z.id, list);
+  }
+  const free = new Uint8Array(N);
+  let insideN = 0, freeN = 0;
+  for (let c = 0; c < N; c++) { if (G.inside[c]) insideN++; if (G.inside[c] && owner[c] < 0 && !G.pillar[c]) { free[c] = 1; freeN++; } }
+  const blk = (i, j) => i >= 0 && j >= 0 && i + 1 < GW && j + 1 < GD && free[j * GW + i] && free[j * GW + i + 1] && free[(j + 1) * GW + i] && free[(j + 1) * GW + i + 1];
+  const walk = new Uint8Array(N);
+  for (let j = 0; j < GD; j++) for (let i = 0; i < GW; i++) if (free[j * GW + i] && (blk(i - 1, j - 1) || blk(i, j - 1) || blk(i - 1, j) || blk(i, j))) walk[j * GW + i] = 1;
+  const reach = new Uint8Array(N), queue = [];
+  for (let dj = -3; dj <= 3; dj++) for (let di = -3; di <= 3; di++) { const i = ei + di, j = ej + dj; if (i >= 0 && j >= 0 && i < GW && j < GD && walk[j * GW + i] && !reach[j * GW + i]) { reach[j * GW + i] = 1; queue.push(j * GW + i); } }
+  while (queue.length) { const c = queue.pop(), i = c % GW, j = (c / GW) | 0; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ni = i + di, nj = j + dj; if (ni < 0 || nj < 0 || ni >= GW || nj >= GD) continue; const n = nj * GW + ni; if (walk[n] && !reach[n]) { reach[n] = 1; queue.push(n); } } }
+  let reachN = 0; for (let c = 0; c < N; c++) reachN += reach[c];
+  let reachable = 0;
+  for (const z of indoor) {
+    if (!z.place) continue;
+    const [i0, j0, i1, j1] = cellBox(z.place);
+    let ok = false;
+    for (let i = i0; i < i1 && !ok; i++) for (const j of [j0 - 1, j1]) if (i >= 0 && j >= 0 && i < GW && j < GD && reach[j * GW + i]) ok = true;
+    for (let j = j0; j < j1 && !ok; j++) for (const i of [i0 - 1, i1]) if (i >= 0 && j >= 0 && i < GW && j < GD && reach[j * GW + i]) ok = true;
+    if (ok) reachable++; else issues.get(z.id).push('No walkway reaches it from the entrance. Leave at least 1 m clear to it.');
+  }
+  // Walkway area as row runs (for drawing).
+  const walkRuns = [];
+  for (let j = 0; j < GD; j++) { let s0 = -1; for (let i = 0; i <= GW; i++) { const on = i < GW && reach[j * GW + i]; if (on && s0 < 0) s0 = i; if (!on && s0 >= 0) { walkRuns.push([s0 * CELL, j * CELL, i * CELL, (j + 1) * CELL]); s0 = -1; } } }
+  // Outside walls as runs, each with the space behind it and whether it is glazed.
+  const perim = [];
+  const pushRuns = (horizontal) => {
+    const outer = horizontal ? GD : GW, inner = horizontal ? GW : GD;
+    for (let L = 0; L <= outer; L++) for (const dir of [-1, 1]) {
+      let cur = null;
+      for (let k = 0; k <= inner; k++) {
+        let key = null;
+        if (k < inner) {
+          const a = dir < 0 ? L : L - 1, b = dir < 0 ? L - 1 : L; // a = inside cell line, b = outside
+          const cellIn = horizontal ? (a >= 0 && a < GD ? a * GW + k : -1) : (a >= 0 && a < GW ? k * GW + a : -1);
+          const cellOut = horizontal ? (b >= 0 && b < GD ? b * GW + k : -1) : (b >= 0 && b < GW ? k * GW + b : -1);
+          if (cellIn >= 0 && G.inside[cellIn] && !(cellOut >= 0 && G.inside[cellOut])) {
+            const win = horizontal ? G.winH[L * GW + k] : G.winV[k * (GW + 1) + L];
+            key = `${owner[cellIn]}|${win}`;
+          }
+        }
+        if (key !== null && cur && cur.key === key) cur.k1 = k + 1;
+        else {
+          if (cur) { const [o, w] = cur.key.split('|'); perim.push(horizontal ? { x0: cur.k0 * CELL, y0: L * CELL, x1: cur.k1 * CELL, y1: L * CELL, nx: 0, ny: dir, owner: +o, win: w === '1' } : { x0: L * CELL, y0: cur.k0 * CELL, x1: L * CELL, y1: cur.k1 * CELL, nx: dir, ny: 0, owner: +o, win: w === '1' }); }
+          cur = key !== null ? { k0: k, k1: k + 1, key } : null;
+        }
+      }
+    }
+  };
+  pushRuns(true); pushRuns(false);
+  state.analysis = { G, owner, issues, entrance, walkRuns, perim, reachable, indoorPlaced: indoor.filter((z) => z.place).length, indoorCount: indoor.length,
+    insideArea: insideN * CELL * CELL, freeArea: freeN * CELL * CELL, walkArea: reachN * CELL * CELL, circulation: insideN ? freeN / insideN : 0 };
+}
+const issuesOf = (z) => state.analysis?.issues.get(z.id) || [];
+const issueCount = () => state.zones.filter(isIn).reduce((a, z) => a + (issuesOf(z).length ? 1 : 0), 0);
+
+/* ============================================================
+   ANIMATION — layout tweens and an eased camera
+   ============================================================ */
+const anim = { cur: new Map(), from: new Map(), to: new Map(), t0: 0, dur: 700, ghosts: new Map(), running: false };
+const view = { cur: { ang: Math.PI / 4 - 0.25, k: 0.5, zf: 0.87 }, turn: -0.25, spin: false };
+const viewTarget = () => (state.mode !== '3d' ? { ang: 0, k: 1, zf: 0 } : { ang: Math.PI / 4 + view.turn, k: 0.5, zf: 0.87 });
+let frozen = null; // camera bounds held still while a site handle is dragged
+
+function outdoorRects() {
+  const outs = state.zones.filter((z) => !isIn(z)).map((z) => ({ id: z.id, v: foot(z) })).sort((a, b) => b.v - a.v);
+  const Ao = outs.reduce((a, o) => a + o.v, 0); if (!Ao) return [];
+  const D0 = Math.max(Math.min(state.site.D, Math.sqrt(Ao)), Math.sqrt(Ao / 2.4)), W0 = Ao / D0, x0 = (state.zones.some(isIn) ? state.site.W + 3 : 0);
+  return squarify(outs, x0, 0, W0, D0);
+}
+function squarify(items, x, y, w, h) {
+  const out = [];
+  const worst = (row, len) => { const s = row.reduce((a, r) => a + r.v, 0), mx = Math.max(...row.map((r) => r.v)), mn = Math.min(...row.map((r) => r.v)); return Math.max((len * len * mx) / (s * s), (s * s) / (len * len * mn)); };
+  let rect = { x, y, w, h }, rest = items.slice();
+  while (rest.length) {
+    const len = Math.min(rect.w, rect.h), row = [rest[0]];
+    let i = 1;
+    while (i < rest.length && worst([...row, rest[i]], len) <= worst(row, len)) row.push(rest[i++]);
+    rest = rest.slice(i);
+    const sum = row.reduce((a, r) => a + r.v, 0);
+    if (rect.w >= rect.h) { const cw = sum / rect.h; let cy = rect.y; row.forEach((r) => { const ch = r.v / cw; out.push({ ...r, x: rect.x, y: cy, w: cw, h: ch }); cy += ch; }); rect = { x: rect.x + cw, y: rect.y, w: rect.w - cw, h: rect.h }; }
+    else { const ch = sum / rect.w; let cx = rect.x; row.forEach((r) => { const cw = r.v / ch; out.push({ ...r, x: cx, y: rect.y, w: cw, h: ch }); cx += cw; }); rect = { x: rect.x, y: rect.y + ch, w: rect.w, h: rect.h - ch }; }
+  }
+  return out;
+}
+const lastSeen = new Map();
+function relayout(dur = 700) {
+  anim.from = new Map(anim.cur);
+  const to = new Map();
+  state.zones.filter((z) => isIn(z) && z.place).forEach((z) => to.set(z.id, { ...z.place, g: 1 }));
+  outdoorRects().forEach((r) => to.set(r.id, { x: r.x, y: r.y, w: r.w, h: r.h, g: 1 }));
+  anim.to = to; anim.t0 = performance.now(); anim.dur = dur;
+  for (const id of anim.from.keys()) if (!to.has(id) && !anim.ghosts.has(id)) { const z = lastSeen.get(id); if (z) anim.ghosts.set(id, z); }
+  kick();
+}
+function setImmediate(z) { const r = { ...z.place, g: 1 }; anim.cur.set(z.id, r); anim.to.set(z.id, r); anim.from.set(z.id, r); }
+function kick() { if (!anim.running) { anim.running = true; requestAnimationFrame(tick); } }
+function tick(now) {
+  const t = clamp((now - anim.t0) / anim.dur, 0, 1), e = ease(t), cur = new Map();
+  for (const [id, b] of anim.to) {
+    const a = anim.from.get(id);
+    if (a) cur.set(id, { x: lerp(a.x, b.x, e), y: lerp(a.y, b.y, e), w: lerp(a.w, b.w, e), h: lerp(a.h, b.h, e), g: lerp(a.g ?? 1, 1, e) });
+    else cur.set(id, { x: b.x + (b.w * (1 - e)) / 2, y: b.y + (b.h * (1 - e)) / 2, w: b.w * e, h: b.h * e, g: e });
+  }
+  for (const [id, a] of anim.from) if (!anim.to.has(id)) { if (t < 1) cur.set(id, { x: a.x + (a.w * e) / 2, y: a.y + (a.h * e) / 2, w: a.w * (1 - e), h: a.h * (1 - e), g: (a.g ?? 1) * (1 - e) }); else anim.ghosts.delete(id); }
+  anim.cur = cur;
+  if (view.spin && state.mode === '3d') view.turn += 0.0035;
+  const tgt = viewTarget(), c = view.cur;
+  let moving = false;
+  for (const k of ['ang', 'k', 'zf']) { const d = tgt[k] - c[k]; if (Math.abs(d) > 0.0005) { c[k] += d * 0.14; moving = true; } else c[k] = tgt[k]; }
+  draw();
+  if (t < 1 || moving || (view.spin && state.mode === '3d')) requestAnimationFrame(tick); else anim.running = false;
+}
+
+/* ============================================================
+   RENDER — the plan as a textured isometric model (or flat plan)
+   ============================================================ */
+const H = 3.0; // storey height, metres
+const BOX = {
+  machine: ['#3d3d41', '#2b2b2e', '#1f1f22'], bike: ['#3a3a3e', '#2a2a2d', '#1e1e21'], lounger: ['#8e877c', '#6f695f', '#5a554d'], bench: ['#7a5a3c', '#5e4430', '#4a3524'],
+  locker: ['#3a3a3d', '#323235', '#262628'], counter: ['#b8b1a5', '#8f887c', '#77716a'], sauna: ['#a06d45', '#7f5434', '#613f27'], infrared: ['#a06d45', '#8a4f33', '#6b3a24'],
+  hammam: ['#d6cfc3', '#b9b1a4', '#a0988b'], salt: ['#e3c2b4', '#cfa898', '#b98f80'], cryo: ['#e9eef2', '#cfd8de', '#b5c1c9'], room: ['#4b4b4f', '#3a3a3d', '#2d2d30'],
+  tank: ['#7c8186', '#5f6469', '#4c5055'], washer: ['#e6e6e2', '#c9c9c4', '#b0b0ab'], shelf: ['#5b5852', '#47443f', '#38352f'], pot: ['#8c8278', '#6e655c', '#5a524a'], plinth: ['#d0cbc2', '#b3ada3', '#9a948a'],
+  bag: ['#2b2b2e', '#1f1f22', '#161618'], rig: ['#2a2a2c', '#202022', '#18181a'], machine2: ['#46464a', '#333336', '#26262a'],
+  column: ['#151516', '#8d8a84', '#6f6c66'], cutwall: ['#151516', '#7d7a74', '#625f59'],
+};
+const GLASS_FILL = { clear: 'rgba(190,222,228,.16)', frameless: 'rgba(200,228,232,.12)', fluted: 'rgba(220,236,240,.24)', smart: 'rgba(238,238,234,.42)', bronze: 'rgba(126,86,46,.32)' };
+let proj = null; // the last projection, for turning pointer positions into plan coordinates
+
+function draw() {
+  const el = $('#model');
+  state.zones.forEach((z) => lastSeen.set(z.id, z));
+  $(':scope > svg', el)?.remove();
+  $('.empty', el)?.remove();
+  const items = [...anim.cur.entries()].map(([id, r]) => ({ id, r, z: zoneById(id) || anim.ghosts.get(id) })).filter((i) => i.z && i.r.w > 0.01 && i.r.h > 0.01);
+  const site = state.site, hasIn = state.zones.some(isIn) || site.shape !== 'auto';
+  if (!items.length && !hasIn) { el.insertAdjacentHTML('beforeend', '<div class="empty">Add a space from the library to start composing.</div>'); return; }
+  const A = state.analysis, mode = state.mode, editing = mode !== '3d';
+
+  // Camera framing: the floor plan plus the outdoors. Held still while a site handle is dragged.
+  let minX = 0, minY = 0, maxX = hasIn ? site.W : 0, maxY = hasIn ? site.D : 0;
+  items.filter((i) => !isIn(i.z)).forEach(({ r }) => { minX = Math.min(minX, r.x); minY = Math.min(minY, r.y); maxX = Math.max(maxX, r.x + r.w); maxY = Math.max(maxY, r.y + r.h); });
+  if (!hasIn && items.length) { minX = Math.min(...items.map((i) => i.r.x)); minY = Math.min(...items.map((i) => i.r.y)); }
+  if (frozen) ({ minX, minY, maxX, maxY } = frozen);
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  const { ang, k, zf } = view.cur, cos = Math.cos(ang), sin = Math.sin(ang);
+  proj = { cx, cy, ang, k, minX, minY, maxX, maxY };
+  const P = (x, y, z = 0) => [(x - cx) * cos - (y - cy) * sin, ((x - cx) * sin + (y - cy) * cos) * k - z * zf];
+  const depth = (x, y) => (x - cx) * sin + (y - cy) * cos;
+  const pts = (l) => l.map((p) => p[0].toFixed(3) + ',' + p[1].toFixed(3)).join(' ');
+  const quad = (a, b, c2, e, z = 0) => pts([P(a, b, z), P(c2, b, z), P(c2, e, z), P(a, e, z)]);
+  // Frame: a fixed circle in 3D (so turning never zooms), the plan's own box when flat; blended while the camera moves.
+  const R = Math.hypot(maxX - minX, maxY - minY) / 2 + 1.6, flat = clamp(1 - zf / 0.87, 0, 1), pad = 2.6;
+  const corners = [P(minX, minY), P(maxX, minY), P(maxX, maxY), P(minX, maxY)];
+  const tight = { x: Math.min(...corners.map((p) => p[0])) - pad, y: Math.min(...corners.map((p) => p[1])) - pad, x1: Math.max(...corners.map((p) => p[0])) + pad, y1: Math.max(...corners.map((p) => p[1])) + pad };
+  const orbit = { x: -R * 1.1, y: -R * k - H * zf - 1.6, x1: R * 1.1, y1: R * k + 1 };
+  const vb = { x: lerp(orbit.x, tight.x, flat), y: lerp(orbit.y, tight.y, flat), x1: lerp(orbit.x1, tight.x1, flat), y1: lerp(orbit.y1, tight.y1, flat) };
+  const sc = Math.max(0.6, (vb.x1 - vb.x) / 22), sw = (n) => (n * sc).toFixed(3);
+
+  const pat = new Map();
+  const floorPat = (m) => {
+    const id = 'f-' + m; if (!MAT[m].img) return MAT[m].tone; if (pat.has(id)) return `url(#${id})`;
+    const t = MAT[m].tile, e = -(cos * cx - sin * cy), f = -k * (sin * cx + cos * cy);
+    pat.set(id, `<pattern id="${id}" patternUnits="userSpaceOnUse" width="${t}" height="${t}" patternTransform="matrix(${cos} ${k * sin} ${-sin} ${k * cos} ${e} ${f})"><image href="${texSrc(MAT[m])}" width="${t}" height="${t}" preserveAspectRatio="none"/></pattern>`);
+    return `url(#${id})`;
+  };
+  let wallN = 0;
+  const wallPat = (m, p, q) => {
+    if (!MAT[m].img || zf < 0.05) return MAT[m].tone;
+    const id = 'w' + wallN++, L = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1, dx = (q[0] - p[0]) / L, dy = (q[1] - p[1]) / L;
+    const [X0, Y0] = P(p[0], p[1], 0), Xd = dx * cos - dy * sin, Yd = k * (dx * sin + dy * cos), t = MAT[m].tile;
+    pat.set(id, `<pattern id="${id}" patternUnits="userSpaceOnUse" width="${t}" height="${t}" patternTransform="matrix(${Xd} ${Yd} 0 ${-zf} ${X0} ${Y0})"><image href="${texSrc(MAT[m])}" width="${t}" height="${t}" preserveAspectRatio="none"/></pattern>`);
+    return `url(#${id})`;
+  };
+
+  let floors = '', overlays = '', top = '', entryBox = null;
+  const objs = [];
+  const addRaw = (d, s) => objs.push({ d, s });
+  const addBox = (a, b, c2, e, h, col, z0 = 0) => {
+    if (c2 - a < 0.02 || e - b < 0.02 || h <= 0) return;
+    const mid = depth((a + c2) / 2, (b + e) / 2);
+    let s = '';
+    [[[a, b], [c2, b]], [[c2, b], [c2, e]], [[c2, e], [a, e]], [[a, e], [a, b]]].forEach(([p, q], i) => {
+      if (depth((p[0] + q[0]) / 2, (p[1] + q[1]) / 2) <= mid || zf < 0.02) return;
+      s += `<polygon points="${pts([P(...p, z0), P(...q, z0), P(...q, z0 + h), P(...p, z0 + h)])}" fill="${i % 2 ? col[2] : col[1]}" stroke="rgba(255,255,255,.07)" stroke-width="${sw(0.012)}"/>`;
+    });
+    s += `<polygon points="${quad(a, b, c2, e, z0 + h)}" fill="${col[0]}" stroke="rgba(255,255,255,.14)" stroke-width="${sw(0.012)}"/>`;
+    objs.push({ d: mid, s });
+  };
+  const grid = (x0, y0, w, d, px, py, iw, idd, cap, fn) => { const cols = Math.max(1, Math.floor(w / px)), rows = Math.max(1, Math.floor(d / py)), ox = x0 + (w - cols * px) / 2 + (px - iw) / 2, oy = y0 + (d - rows * py) / 2 + (py - idd) / 2; let n = 0; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (n++ < cap && iw <= w && idd <= d) fn(ox + c * px, oy + r * py); };
+  const canopy = (x, y, z, r, tone = '#4f6b35') => { const [px, py] = P(x, y, z), rr = r * Math.max(0.55, k + 0.1); addRaw(depth(x, y) + 0.01, `<circle cx="${px}" cy="${py}" r="${rr}" fill="${tone}"/><circle cx="${px - rr * 0.35}" cy="${py - rr * 0.25}" r="${rr * 0.62}" fill="#6a8a46" opacity=".9"/><circle cx="${px + rr * 0.3}" cy="${py - rr * 0.1}" r="${rr * 0.5}" fill="#3f5a2a" opacity=".85"/>`); };
+  const inGrid = (x, y) => { if (!A) return false; const G = A.G, i = Math.floor(x / CELL), j = Math.floor(y / CELL); return i >= 0 && j >= 0 && i < G.GW && j < G.GD && G.inside[j * G.GW + i]; };
+
+  // 1 · The floor plan itself, in the walkway finish, with the walkable area picked out.
+  if (hasIn && mode === 'site') { // Site reads like a drawing: neutral floor on a 1 m grid, every 5 m stronger
+    footRects().forEach((r) => {
+      floors += `<polygon points="${quad(r.x, r.y, r.x + r.w, r.y + r.h)}" fill="#2e2f31"/>`;
+      for (let x = Math.ceil(r.x); x < r.x + r.w; x++) floors += `<polyline points="${pts([P(x, r.y), P(x, r.y + r.h)])}" stroke="rgba(255,255,255,${x % 5 ? 0.05 : 0.12})" stroke-width="${sw(0.015)}" fill="none"/>`;
+      for (let y = Math.ceil(r.y); y < r.y + r.h; y++) floors += `<polyline points="${pts([P(r.x, y), P(r.x + r.w, y)])}" stroke="rgba(255,255,255,${y % 5 ? 0.05 : 0.12})" stroke-width="${sw(0.015)}" fill="none"/>`;
+    });
+  } else if (hasIn) {
+    footRects().forEach((r) => (floors += `<polygon points="${quad(r.x, r.y, r.x + r.w, r.y + r.h)}" fill="${floorPat(FEEL[state.tier].hall)}"/>`));
+    footRects().forEach((r) => (floors += `<polygon points="${quad(r.x, r.y, r.x + r.w, r.y + r.h)}" fill="#000" opacity="${lerp(0.28, 0.55, flat).toFixed(2)}"/>`));
+    if (A) floors += `<path d="${A.walkRuns.map(([a, b, c2, e]) => 'M' + [P(a, b), P(c2, b), P(c2, e), P(a, e)].map((p) => p[0].toFixed(3) + ' ' + p[1].toFixed(3)).join('L') + 'Z').join('')}" fill="#fff" opacity="${mode === 'layout' ? 0.07 : 0.045}"/>`;
+  }
+
+  // 2 · Spaces
+  items.forEach(({ id, r, z }) => {
+    const sp = SPACES[z.type], g = r.g, x0 = r.x, y0 = r.y, x1 = r.x + r.w, y1 = r.y + r.h, out = !isIn(z);
+    const cxz = (x0 + x1) / 2, cyz = (y0 + y1) / 2, cd = depth(cxz, cyz), faded = mode === 'site' && !out;
+    if (faded) { floors += `<polygon points="${quad(x0, y0, x1, y1)}" fill="rgba(145,146,141,.16)" stroke="rgba(255,255,255,.35)" stroke-width="${sw(0.025)}" stroke-dasharray="${sw(0.2)} ${sw(0.15)}"/>`; return; }
+    if (sp.kept) {
+      floors += `<polygon points="${quad(x0, y0, x1, y1)}" fill="#2c2c2e" stroke="rgba(255,255,255,.3)" stroke-width="${sw(0.03)}"/>`;
+      for (let d = -r.h; d < r.w; d += 0.6) { const a1 = [x0 + Math.max(0, d), y0 + Math.max(0, -d)], a2 = [x0 + Math.min(r.w, d + r.h), y0 + Math.min(r.h, r.h - (d + r.h - Math.min(r.w, d + r.h)))]; floors += `<line x1="${P(...a1)[0]}" y1="${P(...a1)[1]}" x2="${P(...a2)[0]}" y2="${P(...a2)[1]}" stroke="rgba(255,255,255,.08)" stroke-width="${sw(0.02)}"/>`; }
+    } else floors += `<polygon points="${quad(x0, y0, x1, y1)}" fill="${floorPat(z.mat.floor)}" stroke="rgba(255,255,255,${out ? 0.08 : lerp(0.18, 0.4, flat).toFixed(2)})" stroke-width="${sw(lerp(0.025, 0.04, flat))}"/>`;
+    if (sp.render === 'court' || (!CONFIG_OK && z.type === 'padel')) { floors += `<polygon points="${quad(x0 + 0.6, y0 + 0.6, x1 - 0.6, y1 - 0.6)}" fill="#2f5f8f" stroke="#fff" stroke-width="${sw(0.04)}"/>`; const mx = (x0 + x1) / 2; floors += `<polyline points="${pts([P(mx, y0 + 0.6), P(mx, y1 - 0.6)])}" stroke="#fff" stroke-width="${sw(0.03)}" fill="none"/>`; }
+    if (sp.pool) {
+      const m = waterInset(r.w, r.h);
+      floors += `<polygon points="${quad(x0 + m, y0 + m, x1 - m, y1 - m)}" fill="url(#water)" stroke="#bfe3e6" stroke-width="${sw(0.035)}"/>`;
+      for (let q = 1; q < 5; q++) { const yy = y0 + m + ((y1 - y0 - 2 * m) * q) / 5; floors += `<polyline class="ripple" points="${pts([P(x0 + m + 0.4, yy), P(x1 - m - 0.4, yy)])}" stroke="rgba(255,255,255,.28)" stroke-width="${sw(0.022)}" fill="none"/>`; }
+    }
+    if (!out && state.lighting === 'layered' && !sp.kept) { const [px, py] = P(cxz, cyz); overlays += `<ellipse cx="${px}" cy="${py}" rx="${Math.min(r.w, r.h) * 0.45}" ry="${Math.min(r.w, r.h) * 0.45 * Math.max(k, 0.3)}" fill="#ffdcaa" opacity=".13" filter="url(#soft)"/>`; }
+    if (state.sel === id) overlays += `<polygon class="sel" points="${quad(x0, y0, x1, y1)}" stroke-width="${sw(0.05)}"/>`;
+    if (!out && issuesOf(z).length) overlays += `<polygon class="bad" points="${quad(x0, y0, x1, y1)}" stroke-width="${sw(0.06)}"/>`;
+
+    // Inner partitions on the space's far sides (outside walls are drawn with the building).
+    if (!out && zf > 0.05) {
+      [[[x0, y0], [x1, y0], 0, -1], [[x1, y0], [x1, y1], 1, 0], [[x1, y1], [x0, y1], 0, 1], [[x0, y1], [x0, y0], -1, 0]].forEach(([p, q, nx, ny]) => {
+        const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+        if (depth(mx, my) >= cd) return;
+        if (!inGrid(mx + nx * 0.3, my + ny * 0.3)) return; // an outside wall
+        const hh = (state.glass === 'none' || sp.kept ? 1.1 : H) * g, face = pts([P(...p, 0), P(...q, 0), P(...q, hh), P(...p, hh)]);
+        let s;
+        if (state.glass === 'none' || sp.kept) s = `<polygon points="${face}" fill="${sp.kept ? '#3a3a3c' : wallPat(z.mat.walls, p, q)}" stroke="rgba(255,255,255,.1)" stroke-width="${sw(0.015)}"/><polygon points="${face}" fill="#000" opacity=".28"/>`;
+        else {
+          s = `<polygon points="${face}" fill="${GLASS_FILL[state.glass]}" stroke="rgba(255,255,255,.45)" stroke-width="${sw(0.018)}"/>`;
+          const L = Math.hypot(q[0] - p[0], q[1] - p[1]), step = state.glass === 'fluted' ? 0.12 : 1.2, n = Math.floor(L / step);
+          for (let i = 1; i < n; i++) { const tt = i / n, x = p[0] + (q[0] - p[0]) * tt, y = p[1] + (q[1] - p[1]) * tt; s += `<line x1="${P(x, y, 0)[0]}" y1="${P(x, y, 0)[1]}" x2="${P(x, y, hh)[0]}" y2="${P(x, y, hh)[1]}" stroke="rgba(255,255,255,${state.glass === 'fluted' ? 0.12 : 0.3})" stroke-width="${sw(state.glass === 'fluted' ? 0.012 : 0.02)}"/>`; }
+        }
+        addRaw(depth(mx, my) - 0.02, s);
+      });
+    }
+
+    // Contents
+    const pad = Math.min(0.5, Math.min(r.w, r.h) * 0.12), ix0 = x0 + pad, iy0 = y0 + pad, ix1 = x1 - pad, iy1 = y1 - pad, iw = ix1 - ix0, ih = iy1 - iy0;
+    const cells = (n, inset = 0.25) => { const o = [], horiz = iw >= ih, len = (horiz ? iw : ih) / n; for (let i = 0; i < n; i++) o.push(horiz ? [ix0 + i * len + inset, iy0 + inset, ix0 + (i + 1) * len - inset, iy1 - inset] : [ix0 + inset, iy0 + i * len + inset, ix1 - inset, iy0 + (i + 1) * len - inset]); return o; };
+    const clearOf = (x, y, w2, d2) => !A || !A.G || !marks('pillars').some((pp) => { const px = (pp.i + 0.5) * CELL, py = (pp.j + 0.5) * CELL; return px > x - 0.4 && px < x + w2 + 0.4 && py > y - 0.4 && py < y + d2 + 0.4; });
+    const legacy = (type) => { switch (type) {
+      case 'gym': grid(ix0, iy0, iw, ih, 1.9, 2.5, 0.8, 1.7, 40, (x, y) => clearOf(x, y, 0.8, 1.7) && addBox(x, y, x + 0.8, y + 1.7, 1.4 * g, BOX.machine)); break;
+      case 'functional': { const rw = Math.min(iw * 0.8, 6); for (let i = 0; i <= 3; i++) addBox(ix0 + i * (rw / 3), iy0, ix0 + i * (rw / 3) + 0.12, iy0 + 0.12, 2.6 * g, BOX.rig); addBox(ix0, iy0, ix0 + rw + 0.12, iy0 + 0.12, 0.1 * g, BOX.rig, 2.6 * g); grid(ix0, iy0 + 1.5, iw, ih - 1.5, 1.6, 1.6, 0.6, 0.6, 8, (x, y) => clearOf(x, y, 0.6, 0.6) && addBox(x, y, x + 0.6, y + 0.6, 0.6 * g, BOX.counter)); break; }
+      case 'boxing': grid(ix0, iy0, iw, ih, 1.8, 1.8, 0.4, 0.4, 12, (x, y) => clearOf(x, y, 0.4, 0.4) && addBox(x, y, x + 0.4, y + 0.4, 1.1 * g, BOX.bag, 0.6 * g)); break;
+      case 'studio': case 'ydeck': grid(ix0, iy0, iw, ih, 1.3, 2.4, 0.65, 1.85, 30, (x, y) => (floors += `<polygon points="${quad(x, y, x + 0.65, y + 1.85, 0.01)}" fill="#6b6c66"/>`)); break;
+      case 'spin': grid(ix0, iy0, iw, ih, 1.2, 1.8, 0.5, 1.1, 30, (x, y) => addBox(x, y, x + 0.5, y + 1.1, 1.05 * g, BOX.bike)); break;
+      case 'lounge': case 'sundeck': grid(ix0, iy0, iw, ih, 1.5, 2.6, 0.75, 1.9, 24, (x, y) => clearOf(x, y, 0.75, 1.9) && addBox(x, y, x + 0.75, y + 1.9, 0.38 * g, BOX.lounger)); break;
+      case 'firepit': { const [px, py] = P(cxz, cyz), rr = Math.min(r.w, r.h) * 0.16; floors += `<ellipse cx="${px}" cy="${py}" rx="${rr}" ry="${rr * Math.max(k, 0.3)}" fill="#3a3330" stroke="#8a7c70" stroke-width="${sw(0.05)}"/>`; addRaw(cd, `<ellipse class="flame" cx="${px}" cy="${py - 0.3 * zf}" rx="${rr * 0.55}" ry="${rr * 0.9 * Math.max(zf, 0.3)}" fill="#ffb25c" opacity=".85" filter="url(#soft)"/>`); [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([u, v]) => { const bx = cxz + u * rr * 2.4, by = cyz + v * rr * 2.4; addBox(bx - 0.8, by - 0.25, bx + 0.8, by + 0.25, 0.42 * g, BOX.bench); }); break; }
+      case 'changing': { const n = Math.max(1, Math.floor(iw / 0.5)); for (let i = 0; i < n; i++) addBox(ix0 + i * (iw / n), iy0, ix0 + (i + 1) * (iw / n) - 0.04, iy0 + 0.5, 1.9 * g, BOX.locker); grid(ix0, iy0 + 1.2, iw, ih - 1.2, 2.2, 1.6, 1.6, 0.4, 10, (x, y) => clearOf(x, y, 1.6, 0.4) && addBox(x, y, x + 1.6, y + 0.4, 0.45 * g, BOX.bench)); break; }
+      case 'reception': addBox(ix0 + iw * 0.2, iy0 + ih * 0.35, ix1 - iw * 0.2, iy0 + ih * 0.35 + 0.7, 1.05 * g, BOX.counter); break;
+      case 'cafe': addBox(ix0, iy0, ix1, iy0 + 0.7, 1.05 * g, BOX.counter); grid(ix0, iy0 + 1.6, iw, ih - 1.6, 1.8, 1.8, 0.7, 0.7, 12, (x, y) => clearOf(x, y, 0.7, 0.7) && addBox(x, y, x + 0.7, y + 0.7, 0.75 * g, BOX.bench)); break;
+      case 'office': case 'custom': grid(ix0, iy0, iw, ih, 2.2, 2, 1.4, 0.7, 6, (x, y) => addBox(x, y, x + 1.4, y + 0.7, 0.75 * g, BOX.counter)); break;
+      case 'plantroom': grid(ix0, iy0, iw, ih, 1.6, 1.6, 1, 1, 8, (x, y) => addBox(x, y, x + 1, y + 1, 1.8 * g, BOX.tank)); break;
+      case 'laundry': { const n = Math.max(1, Math.floor(iw / 0.75)); for (let i = 0; i < n; i++) addBox(ix0 + i * (iw / n), iy0, ix0 + (i + 1) * (iw / n) - 0.06, iy0 + 0.65, 0.9 * g, BOX.washer); break; }
+      case 'storage': grid(ix0, iy0, iw, ih, 1.4, 1.2, 1.2, 0.45, 10, (x, y) => clearOf(x, y, 1.2, 0.45) && addBox(x, y, x + 1.2, y + 0.45, 2.1 * g, BOX.shelf)); break;
+      case 'ogym': { const rw = Math.min(iw * 0.7, 5); for (let i = 0; i <= 2; i++) addBox(ix0 + i * (rw / 2), iy0 + ih / 2, ix0 + i * (rw / 2) + 0.12, iy0 + ih / 2 + 0.12, 2.4 * g, BOX.rig); addBox(ix0, iy0 + ih / 2, ix0 + rw + 0.12, iy0 + ih / 2 + 0.12, 0.1 * g, BOX.rig, 2.4 * g); break; }
+      case 'padel': [[x0 + 0.6, y0 + 0.6, x0 + 0.7, y1 - 0.6], [x1 - 0.7, y0 + 0.6, x1 - 0.6, y1 - 0.6]].forEach(([a, b, c2, e]) => addRaw(depth((a + c2) / 2, (b + e) / 2), `<polygon points="${pts([P(a, b, 0), P(a, e, 0), P(a, e, 3 * g), P(a, b, 3 * g)])}" fill="rgba(200,226,230,.14)" stroke="rgba(255,255,255,.4)" stroke-width="${sw(0.015)}"/>`)); break;
+      case 'hottub': cells(z.amount, 0.35).forEach(([a, b, c2, e]) => { addBox(a, b, c2, e, 0.9 * g, BOX.plinth); addRaw(depth((a + c2) / 2, (b + e) / 2) + 0.01, `<polygon points="${quad(a + 0.25, b + 0.25, c2 - 0.25, e - 0.25, 0.9 * g + 0.005)}" fill="url(#water)"/>`); }); break;
+      case 'plunge': cells(z.amount, 0.4).forEach(([a, b, c2, e]) => { addBox(a, b, c2, e, 0.95 * g, BOX.plinth); addRaw(depth((a + c2) / 2, (b + e) / 2) + 0.01, `<polygon points="${quad(a + 0.15, b + 0.15, c2 - 0.15, e - 0.15, 0.95 * g + 0.005)}" fill="url(#water)"/>`); }); break;
+      case 'showers': case 'oshower': cells(z.amount, 0.2).forEach(([a, b, c2, e]) => addBox(a, b, c2, e, 2.3 * g, ['rgba(232,242,244,.18)', 'rgba(232,242,244,.24)', 'rgba(232,242,244,.12)'])); break;
+      case 'sauna': case 'infrared': cells(z.amount).forEach(([a, b, c2, e]) => addBox(a, b, c2, e, 2.2 * g, BOX[type])); break;
+      case 'steam': cells(z.amount).forEach(([a, b, c2, e]) => addBox(a, b, c2, e, 2.2 * g, ['rgba(236,244,246,.22)', 'rgba(236,244,246,.28)', 'rgba(236,244,246,.16)'])); break;
+      case 'hammam': cells(z.amount, 0.35).forEach(([a, b, c2, e]) => { addBox(a, b, c2, e, 2.4 * g, BOX.hammam); const dome = Math.min(c2 - a, e - b); if (dome <= 0.05) return; const [dx, dy] = P((a + c2) / 2, (b + e) / 2, 2.4 * g); addRaw(depth((a + c2) / 2, (b + e) / 2) + 0.02, `<ellipse cx="${dx}" cy="${dy - 0.3 * sc}" rx="${dome * 0.32}" ry="${dome * 0.2}" fill="#e2dbcf"/>`); }); break;
+      case 'salt': case 'cryo': case 'treatment': cells(z.amount, 0.2).forEach(([a, b, c2, e]) => addBox(a, b, c2, e, 2.4 * g, type === 'treatment' ? [MAT[z.mat.walls]?.tone || BOX.room[0], BOX.room[1], BOX.room[2]] : BOX[type])); break;
+    } };
+    // Each piece of equipment, drawn by its shape at its real footprint.
+    const drawItem = (it, ax, ay) => {
+      const x = ax + it.x, y = ay + it.y, w = it.rw, d = it.rd, h = Math.max(0.05, it.h) * g;
+      if (!clearOf(x, y, w, d)) return;
+      switch (it.shape) {
+        case 'mat': floors += `<polygon points="${quad(x, y, x + w, y + d, 0.01)}" fill="#6b6c66"/>`; break;
+        case 'rig': { const posts = w >= d ? [[x, y], [x + w / 2, y], [x + w, y], [x, y + d], [x + w, y + d]] : [[x, y], [x, y + d / 2], [x, y + d], [x + w, y], [x + w, y + d]];
+          posts.forEach(([px, py]) => addBox(px - 0.06, py - 0.06, px + 0.06, py + 0.06, h, BOX.rig)); addBox(x - 0.06, y - 0.06, x + w + 0.06, y + d + 0.06, 0.08 * g, BOX.rig, h); break; }
+        case 'bag': addBox(x, y, x + w, y + d, h, BOX.bag, 0.6 * g); break;
+        case 'table': addBox(x, y, x + w, y + d, h, BOX.bench); break;
+        case 'kit': addBox(x, y, x + w, y + d, h, BOX.counter); break;
+        default: addBox(x, y, x + w, y + d, h, BOX[it.shape] || BOX.machine);
+      }
+    };
+    const CELL_CASE = { wood: 'sauna', infrared: 'infrared', steam: 'steam', dome: 'hammam', salt: 'salt', cryo: 'cryo', room: 'treatment', glass: 'showers', plunge: 'plunge', tub: 'hottub' };
+    if (!CONFIG_OK) legacy(z.type);
+    else if (sp.render === 'cells') legacy(CELL_CASE[sp.cell] || 'treatment');
+    else if (sp.render === 'firepit') legacy('firepit');
+    else if (sp.render === 'court') legacy('padel');
+    else if (sp.render === 'contents') packRoom({ w: r.w, d: r.h }, instancesOf(z)).placed.forEach((it) => drawItem(it, x0, y0));
+
+    // Features placed in the space
+    const f = z.feat, farEdge = (() => { const es = [[[x0, y0], [x1, y0]], [[x1, y0], [x1, y1]], [[x1, y1], [x0, y1]], [[x0, y1], [x0, y0]]].filter(([p, q]) => depth((p[0] + q[0]) / 2, (p[1] + q[1]) / 2) < cd); return es.sort((a, b) => Math.hypot(b[1][0] - b[0][0], b[1][1] - b[0][1]) - Math.hypot(a[1][0] - a[0][0], a[1][1] - a[0][1]))[0]; })();
+    const onWall = (from, to, z0, z1, fill, extra = '') => { if (!farEdge || zf < 0.05) return; const [p, q] = farEdge, L = Math.hypot(q[0] - p[0], q[1] - p[1]), nx = (q[0] - p[0]) / L, ny = (q[1] - p[1]) / L, ox = -ny * 0.06, oy = nx * 0.06; const A2 = [p[0] + nx * L * from + ox, p[1] + ny * L * from + oy], B2 = [p[0] + nx * L * to + ox, p[1] + ny * L * to + oy]; addRaw(depth((A2[0] + B2[0]) / 2, (A2[1] + B2[1]) / 2), `<polygon points="${pts([P(...A2, z0 * g), P(...B2, z0 * g), P(...B2, z1 * g), P(...A2, z1 * g)])}" fill="${fill}" ${extra}/>`); };
+    if (f.greenwall) onWall(0.08, 0.92, 0.1, 2.7, floorPat('lawn'), `stroke="#2f4220" stroke-width="${sw(0.03)}"`);
+    if (f.mirror) onWall(0.15, 0.85, 0.2, 2.3, 'url(#mirrorGrad)', `stroke="rgba(255,255,255,.4)" stroke-width="${sw(0.015)}"`);
+    if (f.water) { onWall(0.38, 0.62, 0.3, 2.6, '#2b2c2e'); onWall(0.44, 0.56, 0.4, 2.4, 'url(#water)'); }
+    for (let i = 0; i < (f.screens || 0); i++) { const s0 = 0.1 + (i / Math.max(1, f.screens)) * 0.8; onWall(s0, Math.min(0.95, s0 + 0.8 / Math.max(1, f.screens) - 0.04), 1.3, 2.05, '#0e0e10', `stroke="#555" stroke-width="${sw(0.012)}"`); }
+    if (f.skylight && mode === '3d') { const a = cxz - r.w * 0.18, b = cyz - r.h * 0.18, c2 = cxz + r.w * 0.18, e = cyz + r.h * 0.18; overlays += `<polygon points="${pts([P(a, b, H + 0.6), P(c2, b, H + 0.6), P(c2, e, 0), P(a, e, 0)])}" fill="#fff6e0" opacity=".1" filter="url(#soft)"/><polygon points="${quad(a, b, c2, e, 0)}" fill="#fff3d6" opacity=".14"/>`; addRaw(cd + 50, `<polygon points="${quad(a, b, c2, e, H + 0.6)}" fill="rgba(220,236,240,.35)" stroke="rgba(255,255,255,.6)" stroke-width="${sw(0.02)}"/>`); }
+    const corners = [[x0 + 0.5, y0 + 0.5], [x1 - 0.5, y0 + 0.5], [x1 - 0.5, y1 - 0.5], [x0 + 0.5, y1 - 0.5]];
+    for (let i = 0; i < (f.planters || 0); i++) { const t2 = (i + 0.5) / f.planters, per = 2 * (r.w + r.h) - 4, s = t2 * per; let x, y; if (s < r.w - 1) { x = x0 + 0.5 + s; y = y0 + 0.5; } else if (s < r.w + r.h - 2) { x = x1 - 0.5; y = y0 + 0.5 + (s - r.w + 1); } else if (s < 2 * r.w + r.h - 3) { x = x1 - 0.5 - (s - r.w - r.h + 2); y = y1 - 0.5; } else { x = x0 + 0.5; y = y1 - 0.5 - (s - 2 * r.w - r.h + 3); } addBox(x - 0.25, y - 0.25, x + 0.25, y + 0.25, 0.5 * g, BOX.pot); canopy(x, y, 1.0 * g, 0.45 * g); }
+    for (let i = 0; i < (f.trees || 0); i++) { const [x, y] = corners[i % 4]; const jx = x + (i >= 4 ? (cxz - x) * 0.45 : 0), jy = y + (i >= 4 ? (cyz - y) * 0.45 * ((i % 3) / 2) : 0); addBox(jx - 0.1, jy - 0.1, jx + 0.1, jy + 0.1, 2.2 * g, ['#5a4632', '#4a3828', '#3a2c20']); canopy(jx, jy, 3.0 * g, 1.2 * g, '#46622f'); }
+    for (let i = 0; i < (f.parasols || 0); i++) { const x = x0 + (r.w * (i + 0.5)) / f.parasols, y = cyz; addBox(x - 0.04, y - 0.04, x + 0.04, y + 0.04, 2.3 * g, BOX.rig); const [px, py] = P(x, y, 2.3 * g); addRaw(depth(x, y) + 0.02, `<ellipse cx="${px}" cy="${py}" rx="1.3" ry="${1.3 * Math.max(k, 0.3)}" fill="#e8e1d4" stroke="#b9b0a2" stroke-width="${sw(0.02)}"/>`); }
+    for (let i = 0; i < (f.art || 0); i++) { const x = cxz + (i - (f.art - 1) / 2) * 1.6, y = cyz + r.h * 0.22; addBox(x - 0.3, y - 0.3, x + 0.3, y + 0.3, 0.9 * g, BOX.plinth); const [px, py] = P(x, y, 0.9 * g + 0.4); addRaw(depth(x, y) + 0.02, `<circle cx="${px}" cy="${py}" r="0.38" fill="#9c8f7c" stroke="#d8cdbb" stroke-width="${sw(0.02)}"/>`); }
+    if (f.pergola) { const a = x0 + r.w * 0.15, b = y0 + r.h * 0.15, c2 = x1 - r.w * 0.15, e = y1 - r.h * 0.15; [[a, b], [c2, b], [c2, e], [a, e]].forEach(([x, y]) => addBox(x - 0.08, y - 0.08, x + 0.08, y + 0.08, 2.7 * g, ['#7a5a3c', '#5e4430', '#4a3524'])); let s = ''; for (let yy = b; yy <= e; yy += 0.45) s += `<polyline points="${pts([P(a, yy, 2.75 * g), P(c2, yy, 2.75 * g)])}" stroke="#7a5a3c" stroke-width="${sw(0.07)}" fill="none"/>`; addRaw(cd + 40, s); }
+    if (z.place?.locked && editing) { const [px, py] = P(x0 + 0.7, y0 + 0.7); top += `<circle cx="${px}" cy="${py}" r="${sw(0.32)}" fill="#91928D"/><path d="M${px - 0.12 * sc} ${py - 0.05 * sc}h${0.24 * sc}M${px} ${py - 0.18 * sc}v${0.32 * sc}" stroke="#1c1c1c" stroke-width="${sw(0.06)}"/>`; }
+  });
+
+  // 3 · The building: outside walls (in the finish of the space behind them), windows, existing walls, pillars, entrance.
+  if (hasIn && A) {
+    A.perim.forEach((w) => {
+      const z = w.owner >= 0 ? zoneById(w.owner) : null, matKey = z && !SPACES[z.type].kept ? z.mat.walls : FEEL[state.tier].dry.walls;
+      const p = [w.x0, w.y0], q = [w.x1, w.y1], far = w.nx * sin + w.ny * cos < 0, mx = (w.x0 + w.x1) / 2, my = (w.y0 + w.y1) / 2;
+      if (zf < 0.05) { // flat plan: walls as solid bands, windows as glazing lines
+        const t = 0.3, band = pts([P(...p), P(...q), P(q[0] + w.nx * t, q[1] + w.ny * t), P(p[0] + w.nx * t, p[1] + w.ny * t)]);
+        top += `<polygon points="${band}" fill="${w.win ? '#a9cfd6' : '#d8d4cc'}"/>`;
+        if (w.win) top += `<polyline points="${pts([P(p[0] + w.nx * t / 2, p[1] + w.ny * t / 2), P(q[0] + w.nx * t / 2, q[1] + w.ny * t / 2)])}" stroke="#1c1c1c" stroke-width="${sw(0.03)}" fill="none"/>`;
+        return;
+      }
+      if (!far) { // cut-away near wall: a low curb, glazed in light blue
+        addRaw(depth(mx, my) + 0.3, `<polygon points="${pts([P(...p, 0), P(...q, 0), P(...q, 0.35), P(...p, 0.35)])}" fill="${MAT[matKey].tone}" opacity=".9"/>${w.win ? `<polyline points="${pts([P(...p, 0.36), P(...q, 0.36)])}" stroke="#a9cfd6" stroke-width="${sw(0.08)}" fill="none"/>` : ''}`);
+        return;
+      }
+      const face = pts([P(...p, 0), P(...q, 0), P(...q, H), P(...p, H)]);
+      let s = `<polygon points="${face}" fill="${matKey === 'mirror' ? 'url(#mirrorGrad)' : wallPat(matKey, p, q)}" stroke="rgba(255,255,255,.1)" stroke-width="${sw(0.015)}"/><polygon points="${face}" fill="#000" opacity=".2"/>`;
+      if (MAT[matKey].slats && !w.win) { const L = Math.hypot(q[0] - p[0], q[1] - p[1]), n = Math.floor(L / 0.16); for (let i = 1; i < n; i++) { const tt = i / n, x = p[0] + (q[0] - p[0]) * tt, y = p[1] + (q[1] - p[1]) * tt; s += `<line x1="${P(x, y, 0)[0]}" y1="${P(x, y, 0)[1]}" x2="${P(x, y, H)[0]}" y2="${P(x, y, H)[1]}" stroke="rgba(0,0,0,.45)" stroke-width="${sw(0.02)}"/>`; } }
+      if (w.win) {
+        s += `<polygon points="${pts([P(...p, 0.4), P(...q, 0.4), P(...q, 2.7), P(...p, 2.7)])}" fill="url(#sky)" stroke="#e9f3f5" stroke-width="${sw(0.03)}"/>`;
+        const L = Math.hypot(q[0] - p[0], q[1] - p[1]), n = Math.max(1, Math.round(L / 1.5));
+        for (let i = 1; i < n; i++) { const tt = i / n, x = p[0] + (q[0] - p[0]) * tt, y = p[1] + (q[1] - p[1]) * tt; s += `<line x1="${P(x, y, 0.4)[0]}" y1="${P(x, y, 0.4)[1]}" x2="${P(x, y, 2.7)[0]}" y2="${P(x, y, 2.7)[1]}" stroke="#e9f3f5" stroke-width="${sw(0.03)}"/>`; }
+        const [lx, ly] = P(mx - w.nx * 1.2, my - w.ny * 1.2); overlays += `<ellipse cx="${lx}" cy="${ly}" rx="${Math.min(3, Math.hypot(q[0] - p[0], q[1] - p[1]) / 2)}" ry="${1.2 * k}" fill="#fff8e6" opacity=".1" filter="url(#soft)"/>`;
+      } else if (state.lighting === 'lines' || state.lighting === 'circadian') { const a1 = P(...p, 0.12), a2 = P(...q, 0.12), col = state.lighting === 'lines' ? '#f8ead2' : '#e4ecff'; s += `<line x1="${a1[0]}" y1="${a1[1]}" x2="${a2[0]}" y2="${a2[1]}" stroke="${col}" stroke-width="${sw(0.16)}" opacity=".5" filter="url(#soft)"/><line x1="${a1[0]}" y1="${a1[1]}" x2="${a2[0]}" y2="${a2[1]}" stroke="${col}" stroke-width="${sw(0.04)}"/>`; }
+      addRaw(depth(mx, my) - 0.05, s);
+    });
+    // Existing walls: cut at 1.2 m with a dark section on top, the way plans show structure.
+    marks('walls').forEach((w, idx) => {
+      const t = 0.1, x0 = Math.min(w.x1, w.x2) - (w.y1 === w.y2 ? 0 : t), x1 = Math.max(w.x1, w.x2) + (w.y1 === w.y2 ? 0 : t), y0 = Math.min(w.y1, w.y2) - (w.y1 === w.y2 ? t : 0), y1 = Math.max(w.y1, w.y2) + (w.y1 === w.y2 ? t : 0);
+      if (zf < 0.05) top += `<polygon points="${quad(x0 - 0.05, y0 - 0.05, x1 + 0.05, y1 + 0.05)}" fill="#e8e4dc"/>`;
+      else addBox(x0, y0, x1, y1, 1.2, BOX.cutwall);
+      if (mode === 'site') top += `<polygon data-wall="${idx}" points="${quad(x0 - 0.3, y0 - 0.3, x1 + 0.3, y1 + 0.3)}" fill="transparent"/>`;
+    });
+    // Pillars: full height columns cut at 2.8 m.
+    marks('pillars').forEach((pp, idx) => {
+      const x = (pp.i + 0.5) * CELL, y = (pp.j + 0.5) * CELL;
+      if (zf < 0.05) top += `<polygon points="${quad(x - 0.3, y - 0.3, x + 0.3, y + 0.3)}" fill="#e8e4dc" stroke="#1c1c1c" stroke-width="${sw(0.02)}"/><path d="M${P(x - 0.3, y - 0.3).join(' ')}L${P(x + 0.3, y + 0.3).join(' ')}M${P(x + 0.3, y - 0.3).join(' ')}L${P(x - 0.3, y + 0.3).join(' ')}" stroke="#1c1c1c" stroke-width="${sw(0.02)}"/>`;
+      else addBox(x - 0.3, y - 0.3, x + 0.3, y + 0.3, 2.8, BOX.column);
+      if (mode === 'site') top += `<polygon data-pillar="${idx}" points="${quad(x - 0.45, y - 0.45, x + 0.45, y + 0.45)}" fill="transparent"/>`;
+    });
+    // Entrance arrow on the floor.
+    const en = A.entrance, ex = en.x - en.nx * 0.2, ey = en.y - en.ny * 0.2, tx = -en.ny, ty = en.nx;
+    const arrow = [[ex + tx * 0.6, ey + ty * 0.6], [ex - tx * 0.6, ey - ty * 0.6], [ex - en.nx * 1.2, ey - en.ny * 1.2]];
+    top += `<polygon points="${pts(arrow.map((p) => P(...p, 0.02)))}" fill="#C2A36B"/>`;
+    const [lx, ly] = P(en.x + en.nx * 0.7, en.y + en.ny * 0.9, 0.02), fe = 0.3 * sc, tw = fe * 6.4, X = en.nx * cos - en.ny * sin;
+    if (flat > 0.9 && Math.abs(X) > 0.7) { // on a side wall of the flat plan the label runs along the wall
+      top += `<text x="${lx}" y="${ly}" transform="rotate(-90 ${lx} ${ly})" font-size="${fe.toFixed(3)}" fill="#C2A36B" text-anchor="middle" dominant-baseline="middle" letter-spacing="${(0.05 * sc).toFixed(3)}">ENTRANCE</text>`;
+      entryBox = [lx - fe * 0.7, ly - tw / 2, lx + fe * 0.7, ly + tw / 2];
+    } else {
+      const anchor = X < -0.3 ? 'end' : X > 0.3 ? 'start' : 'middle', bx = anchor === 'end' ? lx - tw : anchor === 'start' ? lx : lx - tw / 2;
+      top += `<text x="${lx}" y="${ly + fe * 0.35}" font-size="${fe.toFixed(3)}" fill="#C2A36B" text-anchor="${anchor}" letter-spacing="${(0.05 * sc).toFixed(3)}">ENTRANCE</text>`;
+      entryBox = [bx, ly - fe * 0.7, bx + tw, ly + fe * 0.6]; // room labels keep clear of it
+    }
+  }
+
+  // 4 · Outdoor planting edge on the far sides of the outdoor area.
+  const outItems = items.filter((i) => !isIn(i.z));
+  if (outItems.length && zf > 0.05) {
+    const ox0 = Math.min(...outItems.map((i) => i.r.x)), oy0 = Math.min(...outItems.map((i) => i.r.y)), ox1 = Math.max(...outItems.map((i) => i.r.x + i.r.w)), oy1 = Math.max(...outItems.map((i) => i.r.y + i.r.h)), ocd = depth((ox0 + ox1) / 2, (oy0 + oy1) / 2);
+    [[[ox0, oy0], [ox1, oy0]], [[ox1, oy0], [ox1, oy1]], [[ox1, oy1], [ox0, oy1]], [[ox0, oy1], [ox0, oy0]]].forEach(([p, q]) => { if (depth((p[0] + q[0]) / 2, (p[1] + q[1]) / 2) >= ocd) return; addRaw(depth((p[0] + q[0]) / 2, (p[1] + q[1]) / 2) - 0.05, `<polygon points="${pts([P(...p, 0), P(...q, 0), P(...q, 0.9), P(...p, 0.9)])}" fill="${floorPat('lawn')}" stroke="#2f4220" stroke-width="${sw(0.02)}"/><polygon points="${pts([P(...p, 0), P(...q, 0), P(...q, 0.9), P(...p, 0.9)])}" fill="#000" opacity=".25"/>`); });
+  }
+
+  // 5 · Editing aids: site dimensions and handles; the wall being drawn; resize handle.
+  let aids = '';
+  const handle = (x, y, key, cls) => { const [px, py] = P(x, y); aids += `<circle cx="${px}" cy="${py}" r="${sw(0.5)}" fill="transparent" data-handle="${key}" class="${cls}"/><circle cx="${px}" cy="${py}" r="${sw(0.2)}" fill="#ecebe6" stroke="#91928D" stroke-width="${sw(0.06)}" pointer-events="none"/>`; };
+  const dimText = (x, y, txt, anchor = 'middle', upright = false) => { const [px, py] = P(x, y); aids += `<text x="${px}" y="${py}"${upright ? ` transform="rotate(-90 ${px} ${py})"` : ''} font-size="${(0.3 * sc).toFixed(3)}" fill="#fff" text-anchor="${anchor}" dominant-baseline="middle" stroke="#1a1a1b" stroke-width="${(0.1 * sc).toFixed(3)}" paint-order="stroke" letter-spacing="${(0.04 * sc).toFixed(3)}">${txt}</text>`; };
+  if (mode === 'site' && hasIn && zf < 0.05) {
+    const a = armA(), b = armB(), W = site.W, D = site.D, x0 = snap((W - b) / 2), m = (v) => `${v.toFixed(1)} M`;
+    dimText(W / 2, -1.1, m(W)); dimText(A && A.entrance.nx < 0 ? -2 : -1.1, D / 2, m(D), 'middle', true); // clear of an entrance label on the same wall
+    if (site.shape !== 'auto' && site.shape !== 'rect') { // the inner edges: the top wing's depth and the side wing's width
+      const ax = site.shape === 'L' ? (b + W) / 2 : site.shape === 'U' ? W / 2 : (x0 + b + W) / 2, bx = site.shape === 'T' ? x0 + b : b, by = (a + D) / 2;
+      dimText(ax, a + 1.1, m(a)); dimText(bx + 0.9, by, m(b), 'start');
+      if (state.tool === 'select') { handle(ax, a, 'a', 'handle-ns'); handle(bx, by + 2, 'b', 'handle-ew'); }
+    }
+    if (site.shape !== 'auto' && state.tool === 'select') {
+      handle(W, site.shape === 'rect' ? D / 2 : a / 2, 'W', 'handle-ew');
+      handle(site.shape === 'rect' || site.shape === 'T' ? W / 2 : b / 2, D, 'D', 'handle-ns');
+    }
+  }
+  if (drag?.kind === 'wall') { aids += `<polyline points="${pts([P(drag.x0, drag.y0), P(drag.x1, drag.y1)])}" stroke="#C2A36B" stroke-width="${sw(0.18)}" fill="none"/>`; const L = Math.hypot(drag.x1 - drag.x0, drag.y1 - drag.y0); if (L >= 0.5) dimText((drag.x0 + drag.x1) / 2 + (drag.x0 === drag.x1 ? 0.9 : 0), (drag.y0 + drag.y1) / 2 - (drag.y0 === drag.y1 ? 0.8 : 0), `${L.toFixed(1)} M`, drag.x0 === drag.x1 ? 'start' : 'middle'); }
+  if (mode === 'layout' && zf < 0.05) {
+    const z = zoneById(state.sel), r = z && anim.cur.get(z.id);
+    if (z && r && isIn(z) && SPACES[z.type].by === 'area') handle(r.x + r.w, r.y + r.h, 'resize', 'handle');
+    if (z && r && (drag?.kind === 'move' || drag?.kind === 'resize') && drag.id === z.id) dimText(r.x + r.w / 2, r.y + r.h + 0.8, `${r.w.toFixed(1)} × ${r.h.toFixed(1)} M`);
+  }
+
+  // 6 · Labels, kept clear of each other and inside the frame.
+  let labels = '';
+  if (state.labels && mode !== 'site') {
+    const taken = entryBox ? [entryBox] : [], hit = (rr) => taken.some((o) => rr[0] < o[2] && rr[2] > o[0] && rr[1] < o[3] && rr[3] > o[1]);
+    [...items].filter((i) => i.r.g > 0.6).sort((a, b) => b.r.w * b.r.h - a.r.w * a.r.h).forEach(({ r, z }) => {
+      const name = zoneName(z).toUpperCase(), fs = flat > 0.9 ? clamp(Math.min((r.w * 0.9) / (name.length * 0.9 + 1.4), r.h * 0.24), 0.24 * sc, 0.4 * sc) : clamp(Math.sqrt(r.w * r.h) * 0.075, 0.28 * sc, 0.46 * sc);
+      const lift = zf < 0.05 ? 0 : 3.1, [ax, ay] = P(r.x + r.w / 2, r.y + r.h / 2, lift), [zx, zy] = P(r.x + r.w / 2, r.y + r.h / 2, 0.3);
+      const w = name.length * fs * 0.9 + fs * 1.4, h = fs * 2.6, rectAt = (x, y) => [x - w / 2, y - fs, x + w / 2, y - fs + h];
+      let lx = ax, ly = ay, found = false;
+      for (const kk of [0, -1, 1, -2, 2, -3, 3, -4, 4, -5]) { for (const sx of [0, -0.55, 0.55]) { const x = ax + sx * w, y = ay + kk * h * 1.05, rr = rectAt(x, y); if (!hit(rr) && rr[0] > vb.x && rr[2] < vb.x1 && rr[1] > vb.y) { lx = x; ly = y; found = true; break; } } if (found) break; }
+      if (!found) ly = Math.min(...taken.map((t) => t[1]), ay) - h;
+      taken.push(rectAt(lx, ly));
+      if (lx !== ax || ly !== ay) labels += `<line x1="${lx}" y1="${ly + fs * 1.6}" x2="${zx}" y2="${zy}" stroke="rgba(255,255,255,.35)" stroke-width="${sw(0.015)}"/><circle cx="${zx}" cy="${zy}" r="${sw(0.06)}" fill="#fff"/>`;
+      const bad = isIn(z) && issuesOf(z).length;
+      labels += `<text x="${lx}" y="${ly}" font-size="${fs}" fill="${bad ? '#f0b3a3' : '#fff'}" text-anchor="middle" letter-spacing="${fs * 0.12}" stroke="#1a1a1b" stroke-width="${fs * 0.3}" paint-order="stroke">${esc(name)}</text><text x="${lx}" y="${ly + fs * 1.25}" font-size="${fs * 0.8}" fill="rgba(255,255,255,.7)" text-anchor="middle" stroke="#1a1a1b" stroke-width="${fs * 0.26}" paint-order="stroke">${amountLabel(z)}${bad ? ' · CHECK' : ''}</text>`;
+    });
+  }
+  const hits = mode === 'site' ? '' : items.filter((i) => state.zones.some((z) => z.id === i.id)).map(({ id, r }) => `<polygon class="hit" data-zone="${id}" points="${quad(r.x, r.y, r.x + r.w, r.y + r.h)}"/>`).join('');
+
+  objs.sort((a, b) => a.d - b.d);
+  el.insertAdjacentHTML('afterbegin', `<svg viewBox="${vb.x.toFixed(2)} ${vb.y.toFixed(2)} ${(vb.x1 - vb.x).toFixed(2)} ${(vb.y1 - vb.y).toFixed(2)}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Plan and model of the project">
+    <defs>${[...pat.values()].join('')}
+      <linearGradient id="water" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3c7f88"/><stop offset=".55" stop-color="#5ea7ad"/><stop offset="1" stop-color="#2e6870"/></linearGradient>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3e8" stop-opacity=".85"/><stop offset="1" stop-color="#8fb7c0" stop-opacity=".55"/></linearGradient>
+      <linearGradient id="mirrorGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c848a"/><stop offset=".45" stop-color="#d4dbe0"/><stop offset=".6" stop-color="#8a9298"/><stop offset="1" stop-color="#b7bec4"/></linearGradient>
+      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${(0.16 * sc).toFixed(3)}"/></filter>
+    </defs>${floors}${overlays}${objs.map((o) => o.s).join('')}${top}${labels}${hits}${aids}</svg>`);
+}
+
+/* ============================================================
+   UI — library, inspector, estimate
+   ============================================================ */
+function renderLibrary() {
+  $$('.library .tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.lib === state.lib));
+  ['in', 'out'].forEach((w) => ($(`[data-count="${w}"]`).textContent = state.zones.filter((z) => SPACES[z.type].where === w).length || ''));
+  const groups = {};
+  Object.entries(SPACES).filter(([, sp]) => sp.where === state.lib).forEach(([k, sp]) => (groups[sp.group] ||= []).push([k, sp]));
+  $('#lib').innerHTML = Object.entries(groups).map(([g, list]) => `<div class="lib-group"><div class="label">${g}</div><div class="lib-grid">${list.map(([k, sp]) => {
+    const n = state.zones.filter((z) => z.type === k).length, price = sp.kept ? 'No works, no cost' : sp.by === 'unit' ? `QAR ${short(sp.rate[ti()])} each` : `QAR ${short(sp.rate[ti()])} / m²`;
+    const art = sp.image ? `<span class="tile-img" style="background-image:url('${esc(sp.image)}')"></span>` : icon(k);
+    return `<button type="button" class="tile${sp.image ? ' has-img' : ''}" data-add="${k}" title="Add ${esc(sp.label)}">${art}<span class="nm">${sp.label}</span><span class="meta num">${price}</span>${n ? `<span class="have">${n}</span>` : sp.forgotten ? '<span class="forgot" title="Often forgotten"></span>' : ''}</button>`;
+  }).join('')}</div></div>`).join('');
+}
+
+const swatch = (surf, k, pressed, rate, label = MAT[k].label, extra = '') => `<button type="button" class="swatch" data-surf="${surf}" data-mat="${k}" aria-pressed="${pressed}"><span class="img ${matClass(k)} ${extra}" style="${matImg(k)}"></span><span class="nm">${label}</span><span class="pr num">${rate} / m²</span></button>`;
+
+function renderInspector() {
+  $$('.inspector .tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.insp === state.insp));
+  const open = missingRooms().length, bad = issueCount();
+  $('#forget-badge').innerHTML = open ? `<span class="badge">${open}</span>` : '';
+  $('#site-badge').innerHTML = bad ? `<span class="badge red">${bad}</span>` : '';
+  const z = zoneById(state.sel);
+  if (state.insp === 'site') return renderSiteInspector();
+  if (state.insp === 'project') return renderProjectInspector();
+  if (z) return renderZoneInspector(z);
+  $('#insp').innerHTML = `<div class="insp-body"><p class="intro">Click a space in the model to size it, move it, pin it, and choose its floor, walls, ceiling and features.</p><p class="intro" style="margin-top:12px">Working from a real floor plan, with an L-shape, pillars, walls you already have, or windows? Open <b>Site</b>.</p><button type="button" class="btn btn-ghost" data-insp="site" style="margin-top:16px">Open site</button></div>`;
+}
+
+const PRIORITY_NOTE = { essential: 'Included', recommended: 'Recommended', optional: 'Optional' };
+/** Equipment in the space: essentials are in; recommended and optional switch on and off. */
+function contentsSection(z) {
+  const list = contentsOf(z);
+  if (!list.length) return '';
+  const t = ti(), over = overflowOf(z), total = list.reduce((a, c) => a + (c.on ? c.qty * c.eq.price[t] : 0), 0);
+  return `<div class="section"><div class="label"><span>What's in it</span><span class="num">QAR ${short(total)}</span></div><div class="contents">${list.map((c) => {
+    const thumb = c.eq.image ? `<span class="ct-img" style="background-image:url('${esc(c.eq.image)}')"></span>` : `<span class="ct-img ct-mono">${esc(c.eq.label.slice(0, 1))}</span>`;
+    const ctl = c.it.priority === 'essential' ? `<span class="ct-tag">${PRIORITY_NOTE.essential}</span>` : `<button type="button" class="ct-switch" role="switch" aria-checked="${c.on}" aria-label="${esc(c.eq.label)}" data-pick="${c.it.equipment}"></button>`;
+    return `<div class="ct-row${c.on ? '' : ' off'}">${thumb}<span class="ct-name"><b>${esc(c.eq.label)}</b><small class="num">${c.qty} × ${short(c.eq.price[t])}${c.it.priority !== 'essential' ? ` · ${PRIORITY_NOTE[c.it.priority].toLowerCase()}` : ''}</small></span>${ctl}</div>`;
+  }).join('')}</div>${over.length ? `<p class="ct-warn">Won't fit at this size: ${esc(over.join(', '))}. Make the space bigger, or switch something off.</p>` : ''}</div>`;
+}
+
+function renderZoneInspector(z) {
+  const sp = SPACES[z.type], c = zoneCost(z), out = !isIn(z), list = out ? [] : issuesOf(z);
+  const featKeys = Object.keys(FEATURES).filter((k) => FEATURES[k].where === 'any' || FEATURES[k].where === sp.where);
+  $('#insp').innerHTML = `<div class="insp-body">
+    <div class="insp-head">${icon(z.type)}<div><h2>${esc(zoneName(z))}</h2><p>${out ? 'Outdoor' : 'Indoor'} · ${sp.group}${sp.note ? ' · ' + sp.note : ''}</p></div><button type="button" class="btn btn-danger" data-remove="${z.id}">Remove</button></div>
+    ${sp.named ? `<div class="section"><div class="label"><span>Name</span></div><input type="text" id="zone-name" value="${esc(z.name)}" placeholder="${sp.kept ? 'e.g. Existing kitchen' : 'e.g. Physio room'}" maxlength="40"></div>` : ''}
+    ${list.length ? `<div class="issues">${list.map((t) => `<div class="issue">${esc(t)}</div>`).join('')}<button type="button" class="btn btn-ghost" data-arrange>Arrange spaces to fix</button></div>` : ''}
+    <div class="section"><div class="label"><span>Size</span><span class="num">${Math.round(foot(z))} m² footprint${z.place ? ` · ${z.place.w.toFixed(1)} × ${z.place.h.toFixed(1)} m` : ''}</span></div>
+      <div class="size"><input type="range" id="size" min="${sp.min}" max="${sp.max}" step="${sp.step}" value="${z.amount}" aria-label="Size of ${esc(zoneName(z))}"><output class="num" id="size-o">${amountLabel(z)}</output></div></div>
+    ${contentsSection(z)}
+    ${out ? '' : `<div class="section"><div class="label"><span>Position</span><span>${z.place ? (z.place.locked ? 'Pinned' : 'Free to move') : 'Not placed'}</span></div><div class="pos"><button type="button" class="btn btn-ghost" data-pin aria-pressed="${!!z.place?.locked}" ${z.place ? '' : 'disabled'}>${icon('pin')}${z.place?.locked ? 'Pinned' : 'Pin here'}</button><button type="button" class="btn btn-ghost" data-rotate ${z.place ? '' : 'disabled'}>${icon('rotate')}Rotate</button></div><p class="muted" style="font-size:10px;margin:8px 0 0">Move it by dragging in <b>Layout</b> view. Pinned spaces stay put when you press Arrange.</p></div>`}
+    ${sp.kept ? '' : `<div class="section"><div class="label"><span>${out ? 'Ground' : 'Floor'}</span><span>${MAT[z.mat.floor].label}</span></div><div class="swatches">${SURF_OPTS.floor[sp.kind].map((k) => swatch('floor', k, z.mat.floor === k, RATE.floor[k])).join('')}</div></div>
+    ${out ? '' : `<div class="section"><div class="label"><span>Walls</span><span>${MAT[z.mat.walls].label}</span></div><div class="swatches">${SURF_OPTS.walls.map((k) => swatch('walls', k, z.mat.walls === k, RATE.walls[k])).join('')}</div></div>
+    <div class="section"><div class="label"><span>Ceiling</span><span>${MAT[z.mat.ceiling].label}</span></div><div class="swatches">${SURF_OPTS.ceiling.map((k) => swatch('ceiling', k, z.mat.ceiling === k, RATE.ceiling[k], k === 'fabric' ? 'Acoustic baffles' : MAT[k].label, k === 'fabric' ? 'baffles' : '')).join('')}</div></div>`}
+    <div class="section"><div class="label"><span>Features ${out ? '' : '· above & around'}</span></div><div class="features">${featKeys.map((k) => {
+      const F = FEATURES[k], n = z.feat[k] || 0;
+      return F.by === 'toggle' ? `<button type="button" class="feat${n ? ' on' : ''}" data-feat="${k}">${icon(k)}<span>${F.label}</span><span class="tick"></span></button>`
+        : `<div class="feat${n ? ' on' : ''}">${icon(k)}<span>${F.label}</span><span class="stepper"><button type="button" data-fdec="${k}" aria-label="Fewer">−</button><span class="num">${n}</span><button type="button" data-finc="${k}" aria-label="More">+</button></span></div>`;
+    }).join('')}</div></div>`}
+    <div class="cost-card"><span class="label">This space</span><b class="num">QAR ${fmt(roundTo(c.total, 1000))}</b><p>${sp.kept ? 'Kept as it is: it takes floor area but costs nothing.' : `Fit-out ${short(c.space)}${c.equipment ? ` · equipment ${short(c.equipment)}` : ''} · surfaces & light ${short(c.surfaces)} · features ${short(c.features)}`}</p></div>
+    ${z.custom.size ? `<button type="button" class="btn btn-ghost" data-reset-mat style="margin-top:12px;width:100%">Reset finishes to ${TIER[state.tier]}</button>` : ''}
+  </div>`;
+}
+
+const SHAPE_ICON = { auto: 'M4 6h26v16H4z', rect: 'M3 4h28v18H3z', L: 'M3 3h28v8H13v12H3z', U: 'M3 3h28v20h-9V11h-10v12H3z', T: 'M3 3h28v8h-9v12h-10V11H3z' };
+const TOOL_HINT = {
+  select: 'Drag the round handles to size the outline, or type the sizes here.',
+  pillar: 'Click the plan to place a pillar; click one to remove it.',
+  wall: 'Drag on the plan to draw a wall you already have; click a wall to remove it.',
+  window: 'Click an outside wall to add a 2 m window; click again to remove it.',
+  entrance: 'Click an outside wall to set where people come in.',
+};
+function renderSiteInspector() {
+  const s = state.site, A = state.analysis, custom = s.shape !== 'auto';
+  const dim = (key, label, v, min, max) => `<div class="dim"><span class="label">${label}</span><div class="row"><b class="num">${v.toFixed(1)} m</b><span class="stepper"><button type="button" data-dim="${key}" data-d="-1" aria-label="Smaller">−</button><button type="button" data-dim="${key}" data-d="1" aria-label="Bigger">+</button></span></div></div>`;
+  const circ = A ? Math.round(A.circulation * 100) : 0;
+  const circNote = !A ? '' : circ < 12 ? 'Very tight: people will squeeze past each other.' : circ > 45 ? 'Lots of spare floor: room for another space.' : 'Comfortable for moving around.';
+  const problems = state.zones.filter((z) => isIn(z) && issuesOf(z).length);
+  $('#insp').innerHTML = `<div class="insp-body">
+    <p class="intro">Start from the floor plan you really have. Pick its shape and size, then mark what is already there. Spaces re-arrange around everything you add, and walkways are always kept free.</p>
+    <div class="section"><div class="label"><span>Shape</span><span>${custom ? `${s.W.toFixed(1)} × ${s.D.toFixed(1)} m` : 'Sized to the spaces'}</span></div><div class="shapes">${Object.entries(SHAPES).map(([k, l]) => `<button type="button" class="shape" data-shape="${k}" aria-pressed="${s.shape === k}"><svg viewBox="0 0 34 26"><path d="${SHAPE_ICON[k]}"/></svg>${l}</button>`).join('')}</div>
+      ${custom ? `<div class="dims" style="margin-top:8px">${dim('W', 'Width', s.W)}${dim('D', 'Depth', s.D)}${s.shape !== 'rect' ? dim('a', 'Top wing depth', armA()) + dim('b', s.shape === 'T' ? 'Stem width' : 'Side wing width', armB()) : ''}</div>` : '<p class="muted" style="font-size:11px;margin:10px 0 0">Auto keeps it simple: the plan grows with your spaces. Choose a shape when you have real dimensions.</p>'}</div>
+    <div class="section"><div class="label"><span>Already there</span><span>mark it on the plan</span></div>
+      <div class="tools">${[['select', 'Outline', 'shape'], ['pillar', 'Pillar', 'pillar'], ['wall', 'Wall', 'wall'], ['window', 'Window', 'window'], ['entrance', 'Entrance', 'entrance']].map(([k, l, ic]) => `<button type="button" class="tool-btn" data-site-tool="${k}" aria-pressed="${state.mode === 'site' && state.tool === k}" ${custom ? '' : 'disabled'}>${icon(ic)}${l}${(n => (n ? `<span class="n">${n}</span>` : ''))(k === 'pillar' ? marks('pillars').length : k === 'wall' ? marks('walls').length : k === 'window' ? marks('windows').length : 0)}</button>`).join('')}</div>
+      ${custom ? `<p class="muted" style="font-size:11px;margin:10px 0 0;color:var(--amber)">${state.mode === 'site' ? TOOL_HINT[state.tool] : 'Pick a tool, then click the plan.'}</p>
+      <div class="inline"><span class="label">Column grid every</span>${[6, 8, 10].map((n) => `<button type="button" class="chip" data-colgrid="${n}">${n} m</button>`).join('')}</div>
+      <div class="inline">${marks('pillars').length ? '<button type="button" class="chip" data-clear="pillars">Clear pillars</button>' : ''}${marks('walls').length ? '<button type="button" class="chip" data-clear="walls">Clear walls</button>' : ''}${marks('windows').length ? '<button type="button" class="chip" data-clear="windows">Clear windows</button>' : ''}</div>` : ''}</div>
+    <div class="section"><div class="label"><span>Walkways</span><span>kept free when arranging</span></div><div class="chips">${WALKS.map(([v, l]) => `<button type="button" class="chip" data-walk="${v}" aria-pressed="${s.walk === v}">${l}</button>`).join('')}</div></div>
+    <div class="section"><div class="label"><span>How the plan works</span></div>
+      <div class="stat"><span>Floor for moving around</span><b class="num">${circ}%</b></div>
+      <div class="meter"><span class="band" style="left:15%;width:20%"></span><span class="val" style="left:${clamp(circ, 0, 100)}%"></span></div>
+      <p class="muted" style="font-size:10px;margin:0 0 8px">${circNote} Most wellness floors work at 15–35%.</p>
+      <div class="stat"><span>Spaces reachable from the entrance</span><b class="num">${A ? A.reachable : 0} of ${A ? A.indoorCount : 0}</b></div>
+      <div class="stat"><span>Floor plan area</span><b class="num">${A ? Math.round(A.insideArea) : 0} m²</b></div>
+      ${problems.length ? `<div class="issues">${problems.map((z) => `<button type="button" class="issue" data-goto="${z.id}"><span><b style="font-weight:500">${esc(zoneName(z))}</b> · ${esc(issuesOf(z)[0])}</span></button>`).join('')}</div>` : '<div class="ok" style="margin-top:12px">Every space fits, has a way in, and clears the pillars and walls.</div>'}
+      <button type="button" class="btn btn-primary" data-arrange style="width:100%;margin-top:12px">Arrange spaces</button>
+      ${state.zones.some((z) => z.place?.locked) ? '<button type="button" class="btn btn-ghost" data-unpin style="width:100%;margin-top:6px">Unpin all</button>' : ''}</div>
+  </div>`;
+}
+
+function renderProjectInspector() {
+  const sug = Object.fromEntries(suggestions().map((x) => [x.k, x.why])), on = new Set(activeExtras());
+  const order = [...Object.keys(EXTRAS).filter((k) => sug[k]), ...Object.keys(EXTRAS).filter((k) => !sug[k])];
+  $('#insp').innerHTML = `<div class="insp-body">
+    ${missingRooms().length ? `<div class="section" style="margin-top:0"><div class="label"><span>Don't forget</span></div>${missingRooms().map((m) => `<div class="forget"><span><b>${SPACES[m.type].label}</b><small>${m.why}</small></span><button type="button" class="btn btn-ghost" data-add="${m.type}">Add</button></div>`).join('')}</div>` : ''}
+    <div class="section" style="${missingRooms().length ? '' : 'margin-top:0'}"><div class="label"><span>Feel</span><span>sets every finish</span></div><div class="feel-grid">${TIER_KEYS.map((t) => `<button type="button" class="feel" data-tier="${t}" aria-pressed="${state.tier === t}"><span class="strip">${[FEEL[t].dry.floor, FEEL[t].dry.walls, FEEL[t].wet.walls].map((m) => `<span style="${matImg(m)}"></span>`).join('')}</span><span><b>${TIER[t]}</b><p>${FEEL[t].line}</p></span></button>`).join('')}</div></div>
+    <div class="section"><div class="label"><span>Location</span></div><div class="chips">${Object.entries(LOCATIONS).map(([k, l]) => `<button type="button" class="chip" data-loc="${k}" aria-pressed="${state.location === k}">${l}</button>`).join('')}</div></div>
+    <div class="section"><div class="label"><span>Glass partitions</span><span>${GLASS[state.glass][0]}</span></div><div class="swatches">${Object.entries(GLASS).map(([k, [l, rate]]) => `<button type="button" class="swatch" data-glass="${k}" aria-pressed="${state.glass === k}"><span class="img view-img g-${k}" style="--room:${ROOM_IMG}"></span><span class="nm">${l}</span><span class="pr num">${rate} / m²</span></button>`).join('')}</div></div>
+    <div class="section"><div class="label"><span>Lighting</span><span>${LIGHT[state.lighting][0]}</span></div><div class="swatches">${Object.entries(LIGHT).map(([k, [l, rate]]) => `<button type="button" class="swatch" data-light="${k}" aria-pressed="${state.lighting === k}"><span class="img view-img l-${k}" style="--room:${ROOM_IMG}"></span><span class="nm">${l}</span><span class="pr num">${rate} / m²</span></button>`).join('')}</div></div>
+    <div class="section"><div class="label"><span>Systems</span><span>${on.size} included</span></div>${order.map((k) => `<label class="toggle"><input type="checkbox" data-x="${k}" ${on.has(k) ? 'checked' : ''}><span><b>${sysLabel(k)}</b><small class="${sug[k] ? 'why' : ''}">${sug[k] ? 'Suggested: ' + sug[k] : 'Optional'}</small></span><span class="amt num">QAR ${short(EXTRAS[k].price() || 0)}</span></label>`).join('')}</div>
+  </div>`;
+}
+
+let shown = { low: 0, high: 0 }, tweenRaf = 0;
+function renderEstimate() {
+  const q = compute(), to = { low: roundTo(q.low, 1000), high: roundTo(q.high, 1000) }, from = { ...shown }, t0 = performance.now();
+  cancelAnimationFrame(tweenRaf);
+  const step = (now) => { const t = Math.min(1, (now - t0) / 500), e = 1 - Math.pow(1 - t, 3); $('#est').innerHTML = `<small>QAR</small>${short(lerp(from.low, to.low, e))} – ${short(lerp(from.high, to.high, e))}`; if (t < 1) tweenRaf = requestAnimationFrame(step); else shown = to; };
+  tweenRaf = requestAnimationFrame(step);
+  const A = state.analysis, oa = outArea();
+  $('#est-meta').textContent = `${Math.round((A ? A.insideArea : 0) + oa)} m² · ${state.zones.length} spaces · ${TIER[state.tier]}`;
+  $('#legend').innerHTML = A ? `<b>${Math.round(A.insideArea)} m²</b> plan · <b>${Math.round(A.circulation * 100)}%</b> walkways${oa ? ` · <b>${Math.round(oa)} m²</b> outdoor` : ''}<br>${state.site.shape === 'auto' ? 'Auto plan' : SHAPES[state.site.shape]} · ${LOCATIONS[state.location]}` : '';
+  $('#bd-bar').innerHTML = q.groups.map((x) => `<span style="flex:0 0 ${q.total ? (x.amount / q.total) * 100 : 0}%;background:${x.c}" title="${x.g}"></span>`).join('');
+  $('#bd-groups').innerHTML = q.groups.map((x) => `<span><i style="background:${x.c}"></i>${x.g} <b class="num">${short(x.amount)}</b></span>`).join('');
+  $('#itemised').innerHTML = `<table><thead><tr><th>Space</th><th>Size</th><th>Finishes</th><th class="r">Fit-out</th><th class="r">Equipment</th><th class="r">Surfaces & light</th><th class="r">Features</th><th class="r">Total</th></tr></thead><tbody>
+    ${q.zones.map(({ z, c }) => `<tr><td>${esc(zoneName(z))}</td><td class="num">${amountLabel(z)}</td><td>${SPACES[z.type].kept ? 'Kept as is' : MAT[z.mat.floor].label + (isIn(z) ? ' · ' + MAT[z.mat.walls].label : '')}</td><td class="r num">${short(c.space)}</td><td class="r num">${short(c.equipment)}</td><td class="r num">${short(c.surfaces)}</td><td class="r num">${short(c.features)}</td><td class="r num">${short(c.total)}</td></tr>`).join('')}
+    ${q.hall ? `<tr><td>Walkways</td><td class="num">${Math.round(q.hallArea)} m²</td><td>${MAT[FEEL[state.tier].hall].label}</td><td class="r">—</td><td class="r">—</td><td class="r num">${short(q.hall)}</td><td class="r">—</td><td class="r num">${short(q.hall)}</td></tr>` : ''}
+    ${q.systems.map((s) => `<tr><td colspan="7">${s.label}</td><td class="r num">${short(s.amount)}</td></tr>`).join('')}
+    <tr><td colspan="7">Design, management & supervision (${Math.round(FEES.design * 1000) / 10}%)</td><td class="r num">${short(q.groups.find((g) => g.g === 'Design & supervision').amount)}</td></tr>
+    <tr class="sub"><td colspan="7">Estimate (±${Math.round(FEES.range * 100)}%)</td><td class="r num">QAR ${short(q.low)} – ${short(q.high)}</td></tr></tbody></table>`;
+  $('#send').href = `mailto:hello@velora.qa?subject=${encodeURIComponent('Space Canvas — project estimate')}&body=${encodeURIComponent(summary(q))}`;
+}
+function summary(q = compute()) {
+  const s = state.site, A = state.analysis;
+  return ['VELORA Space Canvas (sample pricing)', `${s.shape === 'auto' ? 'Auto plan' : SHAPES[s.shape] + ` ${s.W} × ${s.D} m`} · ${LOCATIONS[state.location]} · ${TIER[state.tier]}`,
+    `Site: ${marks('pillars').length} pillars, ${marks('walls').length} existing walls, ${marks('windows').length} windows · walkways ${s.walk} m${A ? ` · ${Math.round(A.circulation * 100)}% floor for moving` : ''}`, '',
+    ...q.zones.map(({ z, c }) => `${zoneName(z)} (${amountLabel(z)})${SPACES[z.type].kept ? ': kept as is' : `: floor ${MAT[z.mat.floor].label}${isIn(z) ? `, walls ${MAT[z.mat.walls].label}, ceiling ${MAT[z.mat.ceiling].label}` : ''}`}${contentsOf(z).filter((c) => c.on && c.qty).map((c) => `, ${c.qty} × ${c.eq.label.toLowerCase()}`).join('')}${Object.entries(z.feat).filter(([k, n]) => n && FEATURES[k]).map(([k, n]) => `, ${FEATURES[k].by === 'count' ? n + ' × ' : ''}${FEATURES[k].label.toLowerCase()}`).join('')}${z.place?.locked ? ' (pinned)' : ''} — QAR ${fmt(roundTo(c.total, 100))}`),
+    '', 'Systems:', ...q.systems.map((x) => `  ${x.label}: QAR ${fmt(roundTo(x.amount, 100))}`), '',
+    `Estimate: QAR ${fmt(roundTo(q.low, 1000))} – ${fmt(roundTo(q.high, 1000))}`].join('\n');
+}
+
+function renderChrome() {
+  $$('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === state.mode));
+  $$('[data-tool="left"], [data-tool="right"], [data-tool="spin"]').forEach((b) => (b.style.display = state.mode === '3d' ? '' : 'none'));
+  const el = $('#model');
+  el.classList.toggle('edit', state.mode === 'layout');
+  el.classList.toggle('marking', state.mode === 'site' && state.tool !== 'select');
+  const hints = { site: state.site.shape === 'auto' ? 'Choose a shape in the Site panel to draw your real floor plan.' : TOOL_HINT[state.tool], layout: 'Drag a space to move it; drag its corner to resize. Red means it needs attention. Pin a space to keep it where it is.', '3d': '' };
+  $('#mode-hint').textContent = hints[state.mode];
+}
+
+function refresh({ layout = true, dur } = {}) {
+  analyze();
+  renderLibrary(); renderInspector(); renderEstimate(); renderChrome();
+  if (layout) relayout(dur); else kick();
+}
+const rearrange = (dur = 900) => { arrangeAll(); refresh({ dur }); };
+
+/* ============================================================
+   INTERACTION
+   ============================================================ */
+function addSpace(type) {
+  const z = makeZone(type);
+  state.zones.push(z); state.sel = z.id; state.insp = 'space'; state.lib = SPACES[type].where;
+  if (isIn(z)) placeNew(z);
+  refresh();
+}
+function removeSpace(id) { state.zones = state.zones.filter((z) => z.id !== id); if (state.sel === id) state.sel = null; if (state.site.shape === 'auto') arrangeAll(); refresh(); }
+function setTier(t) { state.tier = t; state.glass = FEEL[t].glass; state.lighting = FEEL[t].lighting; state.zones.forEach((z) => ['floor', 'walls', 'ceiling'].forEach((f) => { if (!z.custom.has(f)) z.mat[f] = defMat(z.type, f); })); refresh({ layout: false }); }
+function setMode(m) { state.mode = m; if (m !== 'site') state.tool = 'select'; if (m === 'site') state.insp = 'site'; renderChrome(); renderInspector(); kick(); }
+function setShape(shape) {
+  const s = state.site;
+  if (shape !== 'auto' && s.shape === 'auto') { s.W = Math.max(12, s.W); s.D = Math.max(10, s.D); }
+  s.shape = shape; s.entrance = null;
+  if (shape === 'L' || shape === 'U' || shape === 'T') { s.D = Math.max(s.D, 16); s.a = snap(s.D * 0.45); s.b = snap(shape === 'U' ? s.W * 0.3 : s.W * 0.4); }
+  // Start from a size that holds the spaces; real dimensions are typed or dragged in next.
+  const need = inArea() * 1.4 + 10, have = footRects().reduce((t, r) => t + r.w * r.h, 0);
+  if (shape !== 'auto' && have < need) { const f = Math.sqrt(need / have); s.W = snap(s.W * f); s.D = snap(s.D * f); s.a = snap(s.a * f); s.b = snap(s.b * f); }
+  if (shape !== 'auto') { state.mode = 'site'; state.tool = 'select'; }
+  state.insp = 'site';
+  rearrange();
+}
+/** Keeps a moved, rotated or resized space within the plan's outline box. */
+function keepOnSite(p) { p.x = clamp(p.x, 0, Math.max(0, state.site.W - p.w)); p.y = clamp(p.y, 0, Math.max(0, state.site.D - p.h)); return p; }
+function resizeKeepingShape(z) {
+  if (!z.place) return;
+  const A = foot(z), r = z.place.w / z.place.h;
+  const w = Math.max(1, snap(Math.sqrt(A * r))), h = Math.max(1, snap(A / w));
+  z.place.w = w; z.place.h = h;
+}
+
+document.addEventListener('click', (e) => {
+  const t = e.target;
+  const lib = t.closest('.library .tabs [data-lib]'); if (lib) { state.lib = lib.dataset.lib; return renderLibrary(); }
+  const add = t.closest('[data-add]'); if (add) return addSpace(add.dataset.add);
+  const tab = t.closest('[data-insp]'); if (tab) { state.insp = tab.dataset.insp; return renderInspector(); }
+  const rm = t.closest('[data-remove]'); if (rm) return removeSpace(+rm.dataset.remove);
+  if (t.closest('[data-arrange]') || t.closest('#arrange')) return rearrange();
+  const go = t.closest('[data-goto]'); if (go) { state.sel = +go.dataset.goto; state.insp = 'space'; setMode('layout'); return refresh({ layout: false }); }
+  const z = zoneById(state.sel);
+  if (t.closest('[data-pin]') && z?.place) { z.place.locked = !z.place.locked; return refresh({ layout: false }); }
+  if (t.closest('[data-rotate]') && z?.place) { const p = z.place, cxz = p.x + p.w / 2, cyz = p.y + p.h / 2; z.place = keepOnSite({ ...p, w: p.h, h: p.w, x: snap(cxz - p.h / 2), y: snap(cyz - p.w / 2) }); return refresh({ dur: 450 }); }
+  if (t.closest('[data-unpin]')) { state.zones.forEach((zz) => zz.place && (zz.place.locked = false)); return refresh({ layout: false }); }
+  const sw2 = t.closest('.swatch[data-surf]'); if (sw2 && z) { z.mat[sw2.dataset.surf] = sw2.dataset.mat; z.custom.add(sw2.dataset.surf); return refresh({ layout: false }); }
+  if (t.closest('[data-reset-mat]') && z) { z.custom.clear(); ['floor', 'walls', 'ceiling'].forEach((f) => (z.mat[f] = defMat(z.type, f))); return refresh({ layout: false }); }
+  const ft = t.closest('[data-feat]'); if (ft && z) { z.feat[ft.dataset.feat] = z.feat[ft.dataset.feat] ? 0 : 1; return refresh({ layout: false }); }
+  const pick = t.closest('[data-pick]'); if (pick && z) { const c = contentsOf(z).find((x) => x.it.equipment === pick.dataset.pick); if (c) z.picks[c.it.equipment] = !c.on; return refresh({ layout: false }); }
+  const fi = t.closest('[data-finc]'), fd = t.closest('[data-fdec]');
+  if ((fi || fd) && z) { const k = (fi || fd).dataset[fi ? 'finc' : 'fdec']; z.feat[k] = clamp((z.feat[k] || 0) + (fi ? 1 : -1), 0, FEATURES[k].max); return refresh({ layout: false }); }
+  const tier = t.closest('[data-tier]'); if (tier) return setTier(tier.dataset.tier);
+  const loc = t.closest('[data-loc]'); if (loc) { state.location = loc.dataset.loc; return refresh({ layout: false }); }
+  const gl = t.closest('[data-glass]'); if (gl) { state.glass = gl.dataset.glass; return refresh({ layout: false }); }
+  const li = t.closest('[data-light]'); if (li) { state.lighting = li.dataset.light; return refresh({ layout: false }); }
+  // Site
+  const sh = t.closest('[data-shape]'); if (sh) return setShape(sh.dataset.shape);
+  const dm = t.closest('[data-dim]'); if (dm) { const s = state.site, key = dm.dataset.dim, d = +dm.dataset.d; s[key] = clamp(s[key] + d, key === 'W' || key === 'D' ? 6 : 2, 120); if (key === 'W' || key === 'D') { s.a = armA(); s.b = armB(); } s.entrance = null; return rearrange(); }
+  const st = t.closest('[data-site-tool]'); if (st) { state.tool = st.dataset.siteTool; state.mode = 'site'; renderChrome(); renderInspector(); return kick(); }
+  const cg = t.closest('[data-colgrid]'); if (cg) { addColumnGrid(+(cg.dataset.colgrid || 8)); return rearrange(); }
+  const cl = t.closest('[data-clear]'); if (cl) { state.site[cl.dataset.clear] = []; return rearrange(); }
+  const wk = t.closest('[data-walk]'); if (wk) { state.site.walk = +wk.dataset.walk; return rearrange(); }
+  // View
+  const md = t.closest('[data-mode]'); if (md) return setMode(md.dataset.mode);
+  const tool = t.closest('[data-tool]');
+  if (tool) {
+    const k = tool.dataset.tool;
+    if (k === 'left' || k === 'right') view.turn += (k === 'left' ? -1 : 1) * (Math.PI / 4);
+    if (k === 'spin') { view.spin = !view.spin; tool.setAttribute('aria-pressed', view.spin); }
+    if (k === 'labels') { state.labels = !state.labels; tool.setAttribute('aria-pressed', state.labels); }
+    return kick();
+  }
+  if (t.closest('#toggle-items')) { const it = $('#itemised'); it.hidden = !it.hidden; t.closest('#toggle-items').textContent = it.hidden ? 'Itemised' : 'Hide items'; }
+  if (t.closest('#copy')) navigator.clipboard.writeText(summary()).then(() => { $('#copy').textContent = 'Copied'; setTimeout(() => ($('#copy').textContent = 'Copy'), 1500); }).catch(() => ($('#copy').textContent = 'Blocked'));
+});
+document.addEventListener('input', (e) => {
+  const z = zoneById(state.sel);
+  if (e.target.id === 'zone-name' && z) { z.name = e.target.value; $('.insp-head h2').textContent = zoneName(z); renderEstimate(); return kick(); }
+  if (e.target.id !== 'size' || !z) return;
+  z.amount = +e.target.value;
+  $('#size-o').textContent = amountLabel(z);
+  if (isIn(z)) { if (state.site.shape === 'auto') arrangeAll(); else resizeKeepingShape(z); }
+  analyze(); renderEstimate(); renderLibrary(); relayout(300);
+});
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'zone-name') return;
+  if (e.target.id === 'size') return refresh({ layout: false });
+  const x = e.target.closest('[data-x]'); if (!x) return;
+  const suggested = suggestions().some((s) => s.k === x.dataset.x);
+  if (suggested) x.checked ? state.extrasOff.delete(x.dataset.x) : state.extrasOff.add(x.dataset.x);
+  else x.checked ? state.extrasOn.add(x.dataset.x) : state.extrasOn.delete(x.dataset.x);
+  refresh({ layout: false });
+});
+
+/* Site editing helpers */
+function addColumnGrid(spacing) {
+  const s = state.site, have = new Set(s.pillars.map((p) => p.i + ',' + p.j)), G = makeGrid();
+  for (let x = spacing / 2 + 1; x < s.W - 0.5; x += spacing) for (let y = spacing / 2 + 1; y < s.D - 0.5; y += spacing) {
+    const i = Math.floor(x / CELL), j = Math.floor(y / CELL);
+    if (G.inside[j * G.GW + i] && !have.has(i + ',' + j)) { s.pillars.push({ i, j }); have.add(i + ',' + j); }
+  }
+}
+function nearestPerim(w) {
+  let best = null;
+  (state.analysis?.perim || []).forEach((r) => {
+    const dx = r.x1 - r.x0, dy = r.y1 - r.y0, L2 = dx * dx + dy * dy || 1, t = clamp(((w.x - r.x0) * dx + (w.y - r.y0) * dy) / L2, 0, 1), px = r.x0 + dx * t, py = r.y0 + dy * t, d = Math.hypot(w.x - px, w.y - py);
+    if (d < 1.5 && (!best || d < best.d)) best = { r, px, py, d };
+  });
+  return best;
+}
+function toggleWindow(w) {
+  const n = nearestPerim(w); if (!n) return false;
+  const s = state.site, horiz = n.r.y0 === n.r.y1;
+  const hitIdx = s.windows.findIndex((win) => (horiz ? win.y1 === win.y2 && Math.abs(win.y1 - n.py) < 0.01 && n.px >= Math.min(win.x1, win.x2) - 0.3 && n.px <= Math.max(win.x1, win.x2) + 0.3 : win.x1 === win.x2 && Math.abs(win.x1 - n.px) < 0.01 && n.py >= Math.min(win.y1, win.y2) - 0.3 && n.py <= Math.max(win.y1, win.y2) + 0.3));
+  if (hitIdx >= 0) s.windows.splice(hitIdx, 1);
+  else if (horiz) { const c = snap(n.px), a = clamp(c - 1, Math.min(n.r.x0, n.r.x1), Math.max(n.r.x0, n.r.x1)), b = clamp(c + 1, Math.min(n.r.x0, n.r.x1), Math.max(n.r.x0, n.r.x1)); if (b - a >= 0.5) s.windows.push({ x1: a, y1: n.py, x2: b, y2: n.py }); }
+  else { const c = snap(n.py), a = clamp(c - 1, Math.min(n.r.y0, n.r.y1), Math.max(n.r.y0, n.r.y1)), b = clamp(c + 1, Math.min(n.r.y0, n.r.y1), Math.max(n.r.y0, n.r.y1)); if (b - a >= 0.5) s.windows.push({ x1: n.px, y1: a, x2: n.px, y2: b }); }
+  return true;
+}
+function setEntrance(w) { const n = nearestPerim(w); if (!n) return false; state.site.entrance = { x: snap(n.px), y: snap(n.py), nx: n.r.nx, ny: n.r.ny }; return true; }
+
+/* Model pointer handling: turn in 3D; move and resize in Layout; draw the site in Site. */
+let drag = null;
+function toWorld(e) {
+  const svg = $('#model > svg'); if (!svg || !proj) return null;
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const m = pt.matrixTransform(svg.getScreenCTM().inverse()), c = Math.cos(proj.ang), s = Math.sin(proj.ang), Y = m.y / proj.k;
+  return { x: m.x * c + Y * s + proj.cx, y: -m.x * s + Y * c + proj.cy };
+}
+const settled = () => state.mode !== '3d' && Math.abs(view.cur.k - 1) < 0.03 && view.cur.zf < 0.03;
+(function wireModel() {
+  const el = $('#model');
+  el.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.toolbar')) return;
+    const w = toWorld(e);
+    if (state.mode === '3d' || !settled() || !w) { drag = { kind: 'turn', x: e.clientX, turn: view.turn, moved: false }; return; }
+    const handleEl = e.target.closest('[data-handle]');
+    if (state.mode === 'layout') {
+      if (handleEl?.dataset.handle === 'resize') { drag = { kind: 'resize', id: state.sel }; return; }
+      const hit = e.target.closest('[data-zone]'), z = hit && zoneById(+hit.dataset.zone);
+      if (z && isIn(z) && z.place) { state.sel = z.id; state.insp = 'space'; drag = { kind: 'move', id: z.id, dx: w.x - z.place.x, dy: w.y - z.place.y, moved: false }; renderInspector(); kick(); }
+      else { state.sel = z ? z.id : null; if (z) state.insp = 'space'; renderInspector(); kick(); }
+      return;
+    }
+    // Site
+    if (state.site.shape === 'auto') return;
+    if (handleEl) { drag = { kind: 'dim', key: handleEl.dataset.handle }; frozen = { minX: proj.minX, minY: proj.minY, maxX: proj.maxX, maxY: proj.maxY }; return; }
+    const tool = state.tool;
+    if (tool === 'pillar') {
+      const pi = e.target.closest('[data-pillar]');
+      if (pi) unmark('pillars', +pi.dataset.pillar);
+      else { const i = Math.floor(w.x / CELL), j = Math.floor(w.y / CELL), G = makeGrid(); if (i < 0 || j < 0 || i >= G.GW || j >= G.GD || !G.inside[j * G.GW + i]) return; state.site.pillars.push({ i, j }); }
+      return rearrange(600);
+    }
+    if (tool === 'wall') { const wh = e.target.closest('[data-wall]'); if (wh) { unmark('walls', +wh.dataset.wall); return rearrange(600); } drag = { kind: 'wall', x0: snap(w.x), y0: snap(w.y), x1: snap(w.x), y1: snap(w.y) }; return; }
+    if (tool === 'window') { if (toggleWindow(w)) rearrange(600); return; }
+    if (tool === 'entrance') { if (setEntrance(w)) rearrange(600); return; }
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    if (drag.kind === 'turn') { const dx = e.clientX - drag.x; if (Math.abs(dx) > 4) { drag.moved = true; el.classList.add('dragging'); } if (drag.moved && state.mode === '3d') { view.turn = drag.turn + dx * 0.006; view.cur.ang = Math.PI / 4 + view.turn; kick(); } return; }
+    const w = toWorld(e); if (!w) return;
+    const z = zoneById(drag.id);
+    if (drag.kind === 'move' && z) { drag.moved = true; z.place.x = snap(w.x - drag.dx); z.place.y = snap(w.y - drag.dy); keepOnSite(z.place); setImmediate(z); analyze(); return kick(); }
+    if (drag.kind === 'resize' && z?.place) {
+      const sp = SPACES[z.type];
+      z.place.w = clamp(snap(w.x - z.place.x), 1.5, state.site.W - z.place.x); z.place.h = clamp(snap(w.y - z.place.y), 1.5, state.site.D - z.place.y);
+      z.amount = clamp(Math.round((z.place.w * z.place.h) / (sp.deck || 1)), sp.min, sp.max);
+      setImmediate(z); analyze(); renderEstimate(); const o = $('#size-o'); if (o) o.textContent = amountLabel(z); return kick();
+    }
+    if (drag.kind === 'dim') {
+      const s = state.site;
+      if (drag.key === 'W') s.W = clamp(snap(w.x), 6, 120);
+      if (drag.key === 'D') s.D = clamp(snap(w.y), 6, 120);
+      if (drag.key === 'a') s.a = clamp(snap(w.y), 2, s.D - 2);
+      if (drag.key === 'b') s.b = clamp(snap(s.shape === 'T' ? Math.abs(w.x - s.W / 2) * 2 : s.shape === 'U' ? w.x : w.x), 2, s.shape === 'U' ? s.W / 2 - 1 : s.W - 2);
+      s.entrance = null; analyze(); return kick();
+    }
+    if (drag.kind === 'wall') { const x = snap(w.x), y = snap(w.y); if (Math.abs(x - drag.x0) >= Math.abs(y - drag.y0)) { drag.x1 = x; drag.y1 = drag.y0; } else { drag.x1 = drag.x0; drag.y1 = y; } return kick(); }
+  });
+  window.addEventListener('pointerup', (e) => {
+    if (!drag) return;
+    const d = drag; drag = null; el.classList.remove('dragging');
+    if (d.kind === 'turn') {
+      if (d.moved || !e.target.closest('#model') || e.target.closest('.toolbar')) return;
+      const hit = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-zone]');
+      state.sel = hit ? +hit.dataset.zone : null; if (hit) state.insp = 'space';
+      return refresh({ layout: false });
+    }
+    if (d.kind === 'move' || d.kind === 'resize') return refresh({ layout: false });
+    if (d.kind === 'dim') { frozen = null; return rearrange(); }
+    if (d.kind === 'wall') { if (Math.hypot(d.x1 - d.x0, d.y1 - d.y0) >= 1) { const wall = { x1: d.x0, y1: d.y0, x2: d.x1, y2: d.y1 }; if (ON_PLAN.walls(wall)) state.site.walls.push(wall); } return rearrange(600); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input')) return;
+    const z = zoneById(state.sel);
+    if ((e.key === 'Delete' || e.key === 'Backspace') && z) { e.preventDefault(); removeSpace(z.id); }
+    if (e.key === 'Escape') { state.sel = null; renderInspector(); kick(); }
+    if (state.mode === 'layout' && z?.place && e.key.startsWith('Arrow')) { e.preventDefault(); const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key]; z.place.x += d[0] * CELL; z.place.y += d[1] * CELL; keepOnSite(z.place); setImmediate(z); return refresh({ layout: false }); }
+    if (state.mode === '3d' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { view.turn += (e.key === 'ArrowLeft' ? -1 : 1) * (Math.PI / 8); kick(); }
+  });
+  window.addEventListener('resize', () => kick());
+})();
+
+/* ============================================================
+   START — a villa wellness wing on a real L-shaped floor, with
+   columns, one existing wall and a run of windows
+   ============================================================ */
+async function loadCatalog() {
+  try {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 6000);
+    const res = await fetch('/api/space-canvas', { signal: ctl.signal, cache: 'no-store' });
+    clearTimeout(timer);
+    if (res.ok) applyConfig(await res.json());
+  } catch { /* the built-in catalog stays */ }
+  warmTextures();
+}
+
+(async () => {
+await loadCatalog();
+Object.assign(state.site, { shape: 'L', W: 26, D: 22, a: 11, b: 11 });
+addColumnGrid(8);
+state.site.walls.push({ x1: 0, y1: 17, x2: 5, y2: 17 });
+state.site.windows.push({ x1: 2, y1: 0, x2: 8, y2: 0 }, { x1: 10, y1: 0, x2: 16, y2: 0 }, { x1: 18, y1: 0, x2: 24, y2: 0 }, { x1: 0, y1: 12, x2: 0, y2: 16 });
+[['gym', 70, { planters: 4, screens: 2 }], ['pool', 40, { skylight: 1 }], ['studio', 30, { mirror: 1 }], ['sauna', 1], ['steam', 1], ['plunge', 1], ['lounge', 30, { greenwall: 1 }], ['changing', 25], ['reception', 15], ['plantroom', 12],
+ ['sundeck', 45, { parasols: 3 }], ['garden', 70, { trees: 5 }], ['oshower', 1]]
+  .filter(([t]) => SPACES[t])
+  .forEach(([t, a, f]) => state.zones.push(makeZone(t, a, Object.fromEntries(Object.entries(f || {}).filter(([k]) => FEATURES[k])))));
+arrangeAll();
+state.sel = (state.zones.find((z) => z.type === 'gym') || state.zones[0])?.id ?? null;
+refresh({ dur: 1200 });
+})();
+</script>
+</body>
+</html>

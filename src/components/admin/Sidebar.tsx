@@ -9,6 +9,7 @@ import {
   CalendarDays,
   GalleryHorizontal,
   Globe,
+  Boxes,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -30,6 +31,7 @@ const NAV = [
     items: [
       { id: "portfolio", label: "Portfolio", href: "/admin/portfolio", icon: GalleryHorizontal, roles: ["manager"] },
       { id: "website", label: "Website", href: "/admin/website", icon: Globe, roles: ["manager"] },
+      { id: "canvas", label: "Space Canvas", href: "/admin/canvas", icon: Boxes, roles: ["manager"] },
     ],
   },
   {

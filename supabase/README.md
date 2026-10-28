@@ -43,6 +43,7 @@ If the hosted project was ever loaded with the old demo `seed.sql`, `20261021130
 | Projects, Calendar | `projects`, `project_milestones`, `project_media`, `calendar_events` | — (internal) |
 | Portfolio | `portfolio_items` | /portfolio, every case study, Selected Work and the before/after chapter on the home page, sitemap |
 | Website | `site_settings`, `testimonials`, `subscribers` | Footer, menu, contact page, map, About/home figures, home testimonial, WhatsApp and AI buttons, The Velora Edit sign-ups |
+| Space Canvas | `canvas_materials`, `canvas_equipment`, `canvas_spaces`, `canvas_space_items`, `canvas_features`, `canvas_settings` | The configurator at /space-canvas (reads `/api/space-canvas`) |
 | Settings | `team_members` + Auth | — |
 
 - **Images** in a case study are either the id of a photo already in `public/media` (see `src/content/mediaRegistry.ts`) or a photo uploaded from the admin to the public `site-media` bucket. Uploads carry their size and description in the URL fragment (`…/photo.webp#w=1600&h=1067&alt=…`); see `parseMediaRef` in `src/lib/media.ts`.
